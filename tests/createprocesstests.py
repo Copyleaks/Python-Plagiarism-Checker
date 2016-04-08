@@ -31,7 +31,7 @@ class CreateProcessTests(unittest.TestCase):
 
 
     def setUp(self):
-        self.cloud = CopyleaksCloud('yehonatan@discus.co.il', '34DE992F-E439-44F4-B0DB-556318C0CB62')
+        self.cloud = CopyleaksCloud('<YOUR_EMAIL_HERE>', '<YOUR_API_KEY_HERE>')
         self.options = ProcessOptions()
         self.options.setSandboxMode(True)
         pass

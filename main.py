@@ -31,7 +31,7 @@ from models.eocrlanguage import eOcrLanguage
 
 if __name__ == '__main__':
     
-    cloud = CopyleaksCloud('Yehonatan@discus.co.il', '34DE992F-E439-44F4-B0DB-556318C0CB62')
+    cloud = CopyleaksCloud('<YOUR_EMAIL_HERE>', '<YOUR_API_KEY_HERE>')
     
     print("You've got %s Copyleaks API credits" % (cloud.getCredits()))
     
