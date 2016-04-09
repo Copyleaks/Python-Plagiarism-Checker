@@ -2,3 +2,4 @@
 .pypirc
 setup.cfg
 setup.py
+publish.bat
