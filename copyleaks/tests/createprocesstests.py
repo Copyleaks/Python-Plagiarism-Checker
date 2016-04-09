@@ -23,9 +23,10 @@
 '''
 
 import unittest
-from copyleakscloud import CopyleaksCloud
-from models.processoptions import ProcessOptions
-from models.eocrlanguage import eOcrLanguage
+
+from copyleaks.copyleakscloud import CopyleaksCloud
+from copyleaks.models.processoptions import ProcessOptions
+from copyleaks.models.eocrlanguage import eOcrLanguage
 
 class CreateProcessTests(unittest.TestCase):
 

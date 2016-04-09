@@ -24,10 +24,11 @@
 
 import json
 import requests
+
 from dateutil import parser
 from datetime import datetime
-from consts import Consts
-from errors.commandfailederror import CommandFailedError
+from copyleaks.consts import Consts
+from copyleaks.errors.commandfailederror import CommandFailedError
 
 class LoginToken(object):
     '''

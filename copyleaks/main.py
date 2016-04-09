@@ -23,15 +23,15 @@
 '''
 
 import time
-import sys
-from copyleakscloud import CopyleaksCloud
-from models.processoptions import ProcessOptions
-from models.eocrlanguage import eOcrLanguage
+
+from copyleaks.copyleakscloud import CopyleaksCloud
+from copyleaks.models.processoptions import ProcessOptions
 
 
 if __name__ == '__main__':
     
-    cloud = CopyleaksCloud('<YOUR_EMAIL_HERE>', '<YOUR_API_KEY_HERE>')
+    #cloud = CopyleaksCloud('<YOUR_EMAIL_HERE>', '<YOUR_API_KEY_HERE>')
+    cloud = CopyleaksCloud('yehonatan@discus.co.il', 'ebdd26e5-6706-408c-897a-73a447a93967')
     
     print("You've got %s Copyleaks API credits" % (cloud.getCredits()))
     
