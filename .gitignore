@@ -1,1 +1,4 @@
 *.pyc
+.pypirc
+setup.cfg
+setup.py
