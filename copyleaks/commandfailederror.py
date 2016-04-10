@@ -22,7 +22,7 @@
  SOFTWARE.
 '''
 
-from consts import Consts
+from copyleaks.consts import Consts
 
 class CommandFailedError(Exception):
     '''

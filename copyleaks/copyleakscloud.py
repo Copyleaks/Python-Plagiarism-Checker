@@ -1,4 +1,5 @@
 '''
+ 
  The MIT License(MIT)
  
  Copyright(c) 2016 Copyleaks LTD (https://copyleaks.com)
@@ -20,6 +21,7 @@
  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
+ 
 '''
 
 import json
@@ -28,10 +30,10 @@ import re
 import os.path
 
 from copyleaks.consts import Consts
-from copyleaks.errors.commandfailederror import CommandFailedError
+from copyleaks.commandfailederror import CommandFailedError
 from copyleaks.copyleaksprocess import CopyleaksProcess
-from copyleaks.models.logintoken import LoginToken
-from copyleaks.models.eocrlanguage import eOcrLanguage
+from copyleaks.logintoken import LoginToken
+from copyleaks.eocrlanguage import eOcrLanguage
 
 class CopyleaksCloud(object):
     '''
@@ -141,6 +143,7 @@ class CopyleaksCloud(object):
         assert filePath, 'Missing filePath'
         assert os.path.exists(filePath), 'filePath is not exists!'
         assert os.path.getsize(filePath) <= Consts.MAX_FILE_SIZE_BYTES, 'Exceed max file size (max allowed: %s bytes)' % (Consts.MAX_FILE_SIZE_BYTES)
+        assert lang, 'Missing lang'
         assert lang.value in eOcrLanguage.__members__ , 'Unknown language'
         
         serviceUrl = "%s%s/detector/create-by-file-ocr?language=%s" % (Consts.SERVICE_ENTRY_POINT, Consts.SERVICE_VERSION, lang.value)

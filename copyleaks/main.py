@@ -25,13 +25,12 @@
 import time
 
 from copyleaks.copyleakscloud import CopyleaksCloud
-from copyleaks.models.processoptions import ProcessOptions
+from copyleaks.processoptions import ProcessOptions
 
 
 if __name__ == '__main__':
     
-    #cloud = CopyleaksCloud('<YOUR_EMAIL_HERE>', '<YOUR_API_KEY_HERE>')
-    cloud = CopyleaksCloud('yehonatan@discus.co.il', 'ebdd26e5-6706-408c-897a-73a447a93967')
+    cloud = CopyleaksCloud('<YOUR_EMAIL_HERE>', '<YOUR_API_KEY_HERE>')
     
     print("You've got %s Copyleaks API credits" % (cloud.getCredits()))
     
@@ -41,8 +40,8 @@ if __name__ == '__main__':
     print("Submitting a scan process...")
 
     process = cloud.createByUrl('http://python.com', options)
-    #process = cloud.createByOcr('C:\\Users\\Yehonatan\\Desktop\\ocr-example.jpg', eOcrLanguage.English, options)
-    #process = cloud.createByFile('C:\\temp\\test.txt', options)
+    #process = cloud.createByOcr('ocr-example.jpg', eOcrLanguage.English, options)
+    #process = cloud.createByFile('test.txt', options)
     
     print ("Submitted. In progress...")
     iscompleted = False
