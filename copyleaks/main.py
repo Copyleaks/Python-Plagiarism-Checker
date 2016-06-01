@@ -30,14 +30,14 @@ from copyleaks.processoptions import ProcessOptions
 
 if __name__ == '__main__':
     
-    cloud = CopyleaksCloud('<YOUR_EMAIL_HERE>', '<YOUR_API_KEY_HERE>')
+    cloud = CopyleaksCloud('<YOUR_EMAIL_HERE>', '<YOUR_API_KEY_HERE>') #login
     
-    print("You've got %s Copyleaks API credits" % (cloud.getCredits()))
+    print("You've got %s Copyleaks API credits" % (cloud.getCredits())) #get credit balance
     
     options = ProcessOptions()
-    options.setSandboxMode(True) # Sandbox scan
+    options.setSandboxMode(True) #scan in sandbox mode
 
-    print("Submitting a scan process...")
+    print("Submitting a scan requet...")
 
     process = cloud.createByUrl('http://python.com', options)
     #process = cloud.createByOcr('ocr-example.jpg', eOcrLanguage.English, options)
@@ -46,14 +46,14 @@ if __name__ == '__main__':
     print ("Submitted. In progress...")
     iscompleted = False
     while not iscompleted:
-        [iscompleted, percents] = process.isCompleted()
+        [iscompleted, percents] = process.isCompleted() #get process status
         print ('%s%%' % (percents))
         if not iscompleted:
             time.sleep(3)
     
     print ("Finished!")
     
-    results = process.getResutls()
+    results = process.getResutls() #get scan results
     print ('\nFound %s results...\n' % (len(results)))
     for result in results:
         print ('URL: %s' % (result.getUrl()))
