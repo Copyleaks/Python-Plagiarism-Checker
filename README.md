@@ -15,7 +15,7 @@ Detect plagiarism using Copyleaks SDK in:
 <ul>
 <li><b>Recommended</b> - Use the Python Package Manager - <a href="https://pypi.python.org/pypi/copyleaks">PiPy</a>.
   <br>
-  When integrating that way you will automatically be able to update the SDK to its latest version:
+  When integrating this way you will automatically be able to update the SDK to its latest version:
 <pre>
 pip install copyleaks
 </pre>
@@ -27,7 +27,7 @@ pip install copyleaks
  <p>Now, you can generate your personal API key. Do so by loging into your <a href="https://api.copyleaks.com/Home/Dashboard">dashboard</a>, and under 'Access Keys' you will be able to see and generate your API keys.</p>
  <p>For more information check out our <a href="https://api.copyleaks.com/Guides/HowToUse">API guide</a>.</p>
 <h3>Example</h3>
-<p><a href="https://github.com/Copyleaks/Python-Plagiarism-Checker/blob/master/copyleaks/main.py">Main.py</a> will show you how to scan for plagiarism the URL: 'http://python.com'. All you have to do is to update the following line with your email and API key:
+<p><a href="https://github.com/Copyleaks/Python-Plagiarism-Checker/blob/master/copyleaks/main.py">Main.py</a> will show you how to scan for plagiarism in the URL: 'http://python.com'. All you have to do is to update the following line with your email and API key:
 </p>
 <pre>
 cloud = CopyleaksCloud('YOUR_EMAIL_HERE', 'YOUR_API_KEY_HERE')
