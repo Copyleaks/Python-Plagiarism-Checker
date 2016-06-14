@@ -35,7 +35,7 @@ cloud = CopyleaksCloud('YOUR_EMAIL_HERE', 'YOUR_API_KEY_HERE')
 
 <p>This example shows how to scan a URL using the line:</p>
 <pre> process = cloud.createByUrl('http://python.com', options)</pre>
-<p>You can change 'createByURL' with 'creatByFile' to scan local files:</p>
+<p>You can change 'createByURL' with 'createByFile' to scan local files:</p>
 <pre> process = cloud.createByFile('test.txt', options) </pre>
 <p>or with 'createByOCR to scan local images containing text:</p>
 <pre>process = cloud.createByOcr('ocr-example.jpg', eOcrLanguage.English, options)</pre>
