@@ -7,6 +7,7 @@ Detect plagiarism using Copyleaks SDK in:
 <ul>
 <li>Online content and webpages</li>
 <li>Local and cloud files (<a href=https://api.copyleaks.com/Documentation/TechnicalSpecifications/#non-textual-formats">see supported files</a>)</li>
+<li>Free text</li>
 <li>OCR (Optical Character Recognition) - scanning pictures with textual content (<a href="https://api.copyleaks.com/Documentation/TechnicalSpecifications/#ocr-formats">see supported files</a>)</li>
 </ul>
 </p>
