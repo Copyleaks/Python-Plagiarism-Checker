@@ -26,13 +26,15 @@ import time
 
 from copyleaks.copyleakscloud import CopyleaksCloud
 from copyleaks.processoptions import ProcessOptions
+from copyleaks.product import Product
 
 
 if __name__ == '__main__':
     
-    cloud = CopyleaksCloud('<YOUR_EMAIL_HERE>', '<YOUR_API_KEY_HERE>') #login
+    #edit your login credentials.
+    cloud = CopyleaksCloud(Product.Businesses, '<YOUR_EMAIL_HERE>', '<YOUR_API_KEY_HERE>')
     
-    print("You've got %s Copyleaks API credits" % (cloud.getCredits())) #get credit balance
+    print("You've got %s Copyleaks %s API credits" % (cloud.getCredits(), cloud.getProduct())) #get credit balance
     
     options = ProcessOptions()
     options.setSandboxMode(True) #scan in sandbox mode

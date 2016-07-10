@@ -35,13 +35,19 @@ class CopyleaksProcess(object):
     Process on Copyleaks servers
     '''
 
-    def __init__(self, loginToken, infoDict):
+    def __init__(self, product, loginToken, infoDict):
+        assert product, 'Missing product!'
+        
+        self.product = product
         self.token = loginToken
         self.PID = infoDict['ProcessId']
         self.CreationTimeUtc = parser.parse(infoDict['CreationTimeUTC'])
         if 'CustomFields' in infoDict:
             self.__setCustomFields(infoDict['CustomFields'])
-        
+    
+    def getProduct(self):
+        return self.product
+    
     def getPID(self):
         return self.PID
     def __setPID(self, value):
@@ -61,7 +67,7 @@ class CopyleaksProcess(object):
         '''
             Checks if the operation has been completed
         '''
-        serviceUrl = '%s%s/detector/%s/status' % (Consts.SERVICE_ENTRY_POINT, Consts.SERVICE_VERSION, self.getPID())
+        serviceUrl = '%s%s/%s/%s/status' % (Consts.SERVICE_ENTRY_POINT, Consts.SERVICE_VERSION, self.getProduct(), self.getPID())
         headers = {
             Consts.AUTHORIZATION_HEADER: self.token.generateAuthrizationHeader()
         }
@@ -77,7 +83,7 @@ class CopyleaksProcess(object):
         '''
             Get the scan resutls from server.
         '''
-        serviceUrl = '%s%s/detector/%s/result' % (Consts.SERVICE_ENTRY_POINT, Consts.SERVICE_VERSION, self.getPID())
+        serviceUrl = '%s%s/%s/%s/result' % (Consts.SERVICE_ENTRY_POINT, Consts.SERVICE_VERSION, self.getProduct(), self.getPID())
         headers = {
             Consts.AUTHORIZATION_HEADER: self.token.generateAuthrizationHeader()
         }
@@ -92,7 +98,7 @@ class CopyleaksProcess(object):
         '''
             Deletes the process once it has finished running
         '''
-        serviceUrl = '%s%s/detector/%s/delete' % (Consts.SERVICE_ENTRY_POINT, Consts.SERVICE_VERSION, self.getPID())
+        serviceUrl = '%s%s/%s/%s/delete' % (Consts.SERVICE_ENTRY_POINT, Consts.SERVICE_VERSION, self.getProduct(), self.getPID())
         headers = {
             Consts.AUTHORIZATION_HEADER: self.token.generateAuthrizationHeader()
         }

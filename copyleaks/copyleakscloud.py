@@ -41,11 +41,14 @@ class CopyleaksCloud(object):
      scan for plagiarism and get your Copyleaks account status. 
     '''
 
-    def __init__(self, email, apiKey):
+    def __init__(self, product, email, apiKey):
         '''
         Create a new cloud connection with login credentials
         '''
+        assert product, 'Missing product!'
+        
         self.login(email, apiKey)
+        self.product = product
 
         
     def login(self, email, apiKey):
@@ -54,13 +57,15 @@ class CopyleaksCloud(object):
         
         self.token = LoginToken(email, apiKey)
         self.token.login()
-         
+
+    def getProduct(self):
+        return self.product
 
     def getCredits(self):
         '''
             Get your current credit balance
         '''
-        url = "%s%s/account/count-credits" % (Consts.SERVICE_ENTRY_POINT, Consts.SERVICE_VERSION)
+        url = "%s%s/%s/count-credits" % (Consts.SERVICE_ENTRY_POINT, Consts.SERVICE_VERSION, self.product)
         headers = {
             Consts.AUTHORIZATION_HEADER: self.token.generateAuthrizationHeader()
         }
@@ -74,7 +79,7 @@ class CopyleaksCloud(object):
         '''
             Get your active processes
         '''
-        url = "%s%s/detector/list" % (Consts.SERVICE_ENTRY_POINT, Consts.SERVICE_VERSION)
+        url = "%s%s/%s/list" % (Consts.SERVICE_ENTRY_POINT, Consts.SERVICE_VERSION, self.product)
         headers = {
             Consts.AUTHORIZATION_HEADER: self.token.generateAuthrizationHeader()
         }
@@ -92,7 +97,7 @@ class CopyleaksCloud(object):
         assert url, 'Missing URL'
         assert bool(re.match('http://|https://', url, re.I)), 'url must starts with "http://" or "https://"'
         
-        serviceUrl = "%s%s/detector/create-by-url" % (Consts.SERVICE_ENTRY_POINT, Consts.SERVICE_VERSION)
+        serviceUrl = "%s%s/%s/create-by-url" % (Consts.SERVICE_ENTRY_POINT, Consts.SERVICE_VERSION, self.product)
         payload = {
             'url': url 
         }
@@ -107,7 +112,7 @@ class CopyleaksCloud(object):
             
         response = requests.post(serviceUrl, headers=headers, data=json.dumps(payload))
         if (response.status_code == Consts.HTTP_SUCCESS):
-            return CopyleaksProcess(self.token, response.json())
+            return CopyleaksProcess(self.getProduct(), self.token, response.json())
         else:
             raise CommandFailedError(response) 
     
@@ -119,7 +124,7 @@ class CopyleaksCloud(object):
         assert os.path.exists(filePath), 'filePath is not exists!'
         assert os.path.getsize(filePath) <= Consts.MAX_FILE_SIZE_BYTES, 'Exceed max file size (max allowed: %s bytes)' % (Consts.MAX_FILE_SIZE_BYTES)
         
-        serviceUrl = "%s%s/detector/create-by-file" % (Consts.SERVICE_ENTRY_POINT, Consts.SERVICE_VERSION)
+        serviceUrl = "%s%s/%s/create-by-file" % (Consts.SERVICE_ENTRY_POINT, Consts.SERVICE_VERSION, self.product)
 
         headers = {
             Consts.AUTHORIZATION_HEADER: self.token.generateAuthrizationHeader()
@@ -132,7 +137,7 @@ class CopyleaksCloud(object):
         theFile = {'file': (os.path.basename(filePath), open(filePath, 'rb'))}
         response = requests.post(serviceUrl, headers=headers, files=theFile)
         if (response.status_code == Consts.HTTP_SUCCESS):
-            return CopyleaksProcess(self.token, response.json())
+            return CopyleaksProcess(self.getProduct(), self.token, response.json())
         else:
             raise CommandFailedError(response) 
 
@@ -146,7 +151,7 @@ class CopyleaksCloud(object):
         assert lang, 'Missing lang'
         assert lang.value in eOcrLanguage.__members__ , 'Unknown language'
         
-        serviceUrl = "%s%s/detector/create-by-file-ocr?language=%s" % (Consts.SERVICE_ENTRY_POINT, Consts.SERVICE_VERSION, lang.value)
+        serviceUrl = "%s%s/%s/create-by-file-ocr?language=%s" % (Consts.SERVICE_ENTRY_POINT, Consts.SERVICE_VERSION, self.product, lang.value)
 
         headers = {
             Consts.AUTHORIZATION_HEADER: self.token.generateAuthrizationHeader()
@@ -159,6 +164,6 @@ class CopyleaksCloud(object):
         theFile = {'file': (os.path.basename(filePath), open(filePath, 'rb'))}
         response = requests.post(serviceUrl, headers=headers, files=theFile)
         if (response.status_code == Consts.HTTP_SUCCESS):
-            return CopyleaksProcess(self.token, response.json())
+            return CopyleaksProcess(self.getProduct(), self.token, response.json())
         else:
             raise CommandFailedError(response)
