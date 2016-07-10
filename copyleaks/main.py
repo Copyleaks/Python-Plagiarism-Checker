@@ -39,7 +39,7 @@ if __name__ == '__main__':
     options = ProcessOptions()
     options.setSandboxMode(True) #scan in sandbox mode
 
-    print("Submitting a scan requet...")
+    print("Submitting a scan request...")
 
     process = cloud.createByUrl('http://python.com', options)
     #process = cloud.createByOcr('ocr-example.jpg', eOcrLanguage.English, options)
