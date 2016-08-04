@@ -23,10 +23,14 @@
 '''
 
 import time
+import sys
+dirPath = './copyleaks'
+if dirPath not in sys.path:
+    sys.path.insert(0, dirPath)
 
-from copyleaks.copyleakscloud import CopyleaksCloud
-from copyleaks.processoptions import ProcessOptions
-from copyleaks.product import Product
+from copyleakscloud import CopyleaksCloud
+from processoptions import ProcessOptions
+from product import Product
 
 
 if __name__ == '__main__':
