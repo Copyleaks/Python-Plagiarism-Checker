@@ -32,7 +32,8 @@ pip3 install copyleaks
 </p>
 <pre>
 from copyleaks.copyleakscloud import CopyleaksCloud
-cloud = CopyleaksCloud('YOUR_EMAIL_HERE', 'YOUR_API_KEY_HERE')
+from copyleaks.product import Product
+cloud = CopyleaksCloud(Product.Academic, 'YOUR_EMAIL_HERE', 'YOUR_API_KEY_HERE')
 </pre>
 
 <p>This example shows how to scan a URL using the line:</p>
@@ -43,9 +44,9 @@ cloud = CopyleaksCloud('YOUR_EMAIL_HERE', 'YOUR_API_KEY_HERE')
 <pre>process = cloud.createByOcr('ocr-example.jpg', eOcrLanguage.English, options)</pre>
 <h3>Dependencies</h3>
 <pre>
-pip install requests
-pip install python-dateutil
-pip install enum34
+pip3 install requests
+pip3 install python-dateutil
+pip3 install enum34
 </pre>
 <h3>Read More</h3>
 <ul>
