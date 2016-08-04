@@ -12,13 +12,13 @@ Detect plagiarism using Copyleaks SDK in:
 </ul>
 </p>
 <h3>Integration</h3>
-<p>You have two ways to integrate with the Copyleaks SDK:</p>
+<p>Supported Python version: 3.</p><p>You have two ways to integrate with the Copyleaks SDK:</p>
 <ul>
 <li><b>Recommended</b> - Use the Python Package Manager - <a href="https://pypi.python.org/pypi/copyleaks">PiPy</a>.
   <br>
   When integrating this way you will automatically be able to update the SDK to its latest version:
 <pre>
-pip install copyleaks
+pip3 install copyleaks
 </pre>
 </li>
 <li>Download the code from this repository and add it to your project.
