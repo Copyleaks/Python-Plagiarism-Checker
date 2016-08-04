@@ -27,8 +27,8 @@ import requests
 
 from dateutil import parser
 from datetime import datetime
-from copyleaks.consts import Consts
-from copyleaks.commandfailederror import CommandFailedError
+from consts import Consts
+from commandfailederror import CommandFailedError
 
 class LoginToken(object):
     '''

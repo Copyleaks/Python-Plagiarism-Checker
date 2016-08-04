@@ -29,11 +29,11 @@ import requests
 import re
 import os.path
 
-from copyleaks.consts import Consts
-from copyleaks.commandfailederror import CommandFailedError
-from copyleaks.copyleaksprocess import CopyleaksProcess
-from copyleaks.logintoken import LoginToken
-from copyleaks.eocrlanguage import eOcrLanguage
+from consts import Consts
+from commandfailederror import CommandFailedError
+from copyleaksprocess import CopyleaksProcess
+from logintoken import LoginToken
+from eocrlanguage import eOcrLanguage
 
 class CopyleaksCloud(object):
     '''
