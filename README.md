@@ -31,6 +31,7 @@ pip install copyleaks
 <p><a href="https://github.com/Copyleaks/Python-Plagiarism-Checker/blob/master/copyleaks/main.py">Main.py</a> will show you how to scan for plagiarism in the URL: 'http://python.com'. All you have to do is to update the following line with your email and API key:
 </p>
 <pre>
+from copyleaks.copyleakscloud import CopyleaksCloud
 cloud = CopyleaksCloud('YOUR_EMAIL_HERE', 'YOUR_API_KEY_HERE')
 </pre>
 
