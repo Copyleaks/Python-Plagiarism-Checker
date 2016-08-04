@@ -40,6 +40,12 @@ cloud = CopyleaksCloud('YOUR_EMAIL_HERE', 'YOUR_API_KEY_HERE')
 <pre> process = cloud.createByFile('test.txt', options) </pre>
 <p>or with 'createByOCR to scan local images containing text:</p>
 <pre>process = cloud.createByOcr('ocr-example.jpg', eOcrLanguage.English, options)</pre>
+<h3>Dependencies</h3>
+<pre>
+pip install requests
+pip install python-dateutil
+pip install enum34
+</pre>
 <h3>Read More</h3>
 <ul>
 <li><a href="https://api.copyleaks.com/Guides/HowToUse">Copyleaks API guide</a></li>
