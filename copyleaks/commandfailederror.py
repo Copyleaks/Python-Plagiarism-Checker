@@ -21,8 +21,10 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
 '''
-
-from consts import Consts
+try:
+    from consts import Consts
+except:
+    from copyleaks.consts import Consts
 
 class CommandFailedError(Exception):
     '''

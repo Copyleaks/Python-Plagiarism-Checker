@@ -25,10 +25,14 @@
 import requests
 from dateutil import parser
 
-from resultrecord import ResultRecord
-
-from consts import Consts
-from commandfailederror import CommandFailedError
+try:
+    from resultrecord import ResultRecord
+    from consts import Consts
+    from commandfailederror import CommandFailedError
+except:
+    from copyleaks.resultrecord import ResultRecord
+    from copyleaks.consts import Consts
+    from copyleaks.commandfailederror import CommandFailedError
 
 class CopyleaksProcess(object):
     '''
