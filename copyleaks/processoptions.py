@@ -22,7 +22,7 @@
  SOFTWARE.
 '''
 
-from copyleaks.consts import Consts
+from consts import Consts
 
 class ProcessOptions(object):
     '''
