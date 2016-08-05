@@ -37,6 +37,7 @@ class ProcessOptions(object):
         self.setCustomFields(None)
         self.setEmailCallback(None)
         self.setSandboxMode(None)
+        self.setAllowPartialScan(None)
         
     def getHttpCallback(self):
         return self.httpCallback
@@ -71,20 +72,32 @@ class ProcessOptions(object):
         '''
         self.sandboxMode = value
 
+    def getAllowPartialScan(self):
+        return self.allowPartialScan
+    def setAllowPartialScan(self, value):
+        '''
+            In case of lack of credits, allow partial scan of the content.
+            "value" is boolean
+        '''
+        self.allowPartialScan = value
+
     def getHeaders(self):
         headers = {}
         
         if self.getHttpCallback() != None:
-            headers["%shttp-callback" % Consts.COPYLEAKS_HEADER_PREFIX] = self.getHttpCallback()
+            headers[Consts.HTTP_CALLBACK] = self.getHttpCallback()
         
         if self.getCustomFields() != None and len(self.getCustomFields()) > 0:
             for key, value in self.getCustomFields().items():
                 headers[Consts.CLIENT_CUSTOM_PREFIX + key] = value 
 
         if self.getEmailCallback() != None:
-            headers["email-callback"] = self.getEmailCallback()
+            headers[Consts.EMAIL_CALLBACK] = self.getEmailCallback()
             
         if self.getSandboxMode() != None and self.getSandboxMode() == True:
             headers[Consts.SANDBOX_MODE_HEADER] = ''
+        
+        if self.getAllowPartialScan() != True:
+            headers[Consts.ALLOW_PARTIAL_SCAN] = 'true'
             
         return headers

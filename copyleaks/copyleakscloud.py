@@ -96,7 +96,7 @@ class CopyleaksCloud(object):
         else:
             raise CommandFailedError(response)
     
-    def createByUrl(self, url, options):
+    def createByUrl(self, url, options = None):
         '''
             Submitting URL to plagiarism scan
         '''
@@ -123,7 +123,7 @@ class CopyleaksCloud(object):
         else:
             raise CommandFailedError(response) 
     
-    def createByFile(self, filePath, options):
+    def createByFile(self, filePath, options = None):
         '''
             Submitting local file to plagiarism scan
         '''
@@ -148,7 +148,7 @@ class CopyleaksCloud(object):
         else:
             raise CommandFailedError(response) 
 
-    def createByOcr(self, filePath, lang, options):
+    def createByOcr(self, filePath, lang, options = None):
         '''
             Submitting picture, containing textual content, to plagiarism scan
         '''
