@@ -38,7 +38,10 @@ class ProcessOptions(object):
         self.setEmailCallback(None)
         self.setSandboxMode(None)
         self.setAllowPartialScan(None)
+<<<<<<< HEAD
         
+=======
+>>>>>>> refs/remotes/origin/master
         
     def getHttpCallback(self):
         return self.httpCallback
