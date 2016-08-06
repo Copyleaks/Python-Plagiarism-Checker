@@ -47,7 +47,11 @@ class Consts():
     
     EMAIL_CALLBACK = '%semail-callback' % (COPYLEAKS_HEADER_PREFIX)
     
+    HTTP_CALLBACK = '%shttp-callback' % (COPYLEAKS_HEADER_PREFIX)
+    
     SANDBOX_MODE_HEADER = '%ssandbox-mode' % (COPYLEAKS_HEADER_PREFIX)
+    
+    ALLOW_PARTIAL_SCAN = '%sallow-partial-scan' % (COPYLEAKS_HEADER_PREFIX)
     
     MAX_FILE_SIZE_BYTES = 25 * 1024 * 1024 # 25 MB
     
