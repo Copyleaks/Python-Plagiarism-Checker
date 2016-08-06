@@ -38,10 +38,6 @@ class ProcessOptions(object):
         self.setEmailCallback(None)
         self.setSandboxMode(None)
         self.setAllowPartialScan(None)
-<<<<<<< HEAD
-        
-=======
->>>>>>> refs/remotes/origin/master
         
     def getHttpCallback(self):
         return self.httpCallback
@@ -101,7 +97,7 @@ class ProcessOptions(object):
         if self.getSandboxMode() != None and self.getSandboxMode() == True:
             headers[Consts.SANDBOX_MODE_HEADER] = ''
         
-        if self.getAllowPartialScan() != True:
+        if self.getAllowPartialScan():
             headers[Consts.ALLOW_PARTIAL_SCAN] = 'true'
             
         return headers
