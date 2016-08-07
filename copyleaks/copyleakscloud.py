@@ -174,4 +174,50 @@ class CopyleaksCloud(object):
             return CopyleaksProcess(self.getProduct(), self.token, response.json())
         else:
             raise CommandFailedError(response)
+    
+    def createByText(self, utf8text, options = None):
+        '''
+            Submitting text for scan. 
+            The input text encoding must be UTF-8 encoded.
+        '''
+        assert utf8text, 'Missing text'
+        assert utf8text.strip()!='', 'Text cannot be empty'
         
+        
+        serviceUrl = "%s%s/%s/create-by-text" % (Consts.SERVICE_ENTRY_POINT, Consts.SERVICE_VERSION, self.product)
+
+        headers = {
+            Consts.AUTHORIZATION_HEADER: self.token.generateAuthrizationHeader()
+        }
+        
+        if options != None:
+            headers = headers.copy()
+            headers.update(options.getHeaders())
+        
+        response = requests.post(serviceUrl, headers=headers, data=utf8text)
+        if (response.status_code == Consts.HTTP_SUCCESS):
+            return CopyleaksProcess(self.getProduct(), self.token, response.json())
+        else:
+            raise CommandFailedError(response)
+    
+    def getSupportedOcrLanguages(self):
+        url = "%s%s/miscellaneous/ocr-languages-list" % (Consts.SERVICE_ENTRY_POINT, Consts.SERVICE_VERSION)
+        headers = {
+            Consts.AUTHORIZATION_HEADER: self.token.generateAuthrizationHeader()
+        }
+        response = requests.get(url, headers=headers)
+        if (response.status_code == Consts.HTTP_SUCCESS):
+            return response.json()
+        else:
+            raise CommandFailedError(response)
+        
+    def getSupportedFileTypes(self):
+        url = "%s%s/miscellaneous/supported-file-types" % (Consts.SERVICE_ENTRY_POINT, Consts.SERVICE_VERSION)
+        headers = {
+            Consts.AUTHORIZATION_HEADER: self.token.generateAuthrizationHeader()
+        }
+        response = requests.get(url, headers=headers)
+        if (response.status_code == Consts.HTTP_SUCCESS):
+            return response.json()
+        else:
+            raise CommandFailedError(response)
