@@ -201,6 +201,10 @@ class CopyleaksCloud(object):
             raise CommandFailedError(response)
     
     def getSupportedOcrLanguages(self):
+        '''
+            Get a list of supported OCR languages for OCR scan.
+            More information: https://api.copyleaks.com/GeneralDocumentation/OcrLanguages
+        '''
         url = "%s%s/miscellaneous/ocr-languages-list" % (Consts.SERVICE_ENTRY_POINT, Consts.SERVICE_VERSION)
         headers = {
             Consts.AUTHORIZATION_HEADER: self.token.generateAuthrizationHeader()
@@ -212,6 +216,9 @@ class CopyleaksCloud(object):
             raise CommandFailedError(response)
         
     def getSupportedFileTypes(self):
+        '''
+            Get supported file types by Copyleaks.
+        '''
         url = "%s%s/miscellaneous/supported-file-types" % (Consts.SERVICE_ENTRY_POINT, Consts.SERVICE_VERSION)
         headers = {
             Consts.AUTHORIZATION_HEADER: self.token.generateAuthrizationHeader()
