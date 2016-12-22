@@ -47,7 +47,9 @@ class Consts():
     
     EMAIL_CALLBACK = '%semail-callback' % (COPYLEAKS_HEADER_PREFIX)
     
-    HTTP_CALLBACK = '%shttp-callback' % (COPYLEAKS_HEADER_PREFIX)
+    HTTP_CALLBACK = '%shttp-completion-callback' % (COPYLEAKS_HEADER_PREFIX)
+    
+    HTTP_IN_PROGRESS_RESULT_CALLBACK = '%sin-progress-new-result' % (COPYLEAKS_HEADER_PREFIX)
     
     SANDBOX_MODE_HEADER = '%ssandbox-mode' % (COPYLEAKS_HEADER_PREFIX)
     
@@ -58,3 +60,5 @@ class Consts():
     SERVICE_ENTRY_POINT = 'https://api.copyleaks.com/' 
     
     SERVICE_VERSION = 'v1'
+    
+    DOWNLOADS_ENTRY_POINT = 'downloads'

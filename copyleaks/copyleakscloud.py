@@ -206,10 +206,7 @@ class CopyleaksCloud(object):
             More information: https://api.copyleaks.com/GeneralDocumentation/OcrLanguages
         '''
         url = "%s%s/miscellaneous/ocr-languages-list" % (Consts.SERVICE_ENTRY_POINT, Consts.SERVICE_VERSION)
-        headers = {
-            Consts.AUTHORIZATION_HEADER: self.token.generateAuthrizationHeader()
-        }
-        response = requests.get(url, headers=headers)
+        response = requests.get(url)
         if (response.status_code == Consts.HTTP_SUCCESS):
             return response.json()
         else:
@@ -220,10 +217,7 @@ class CopyleaksCloud(object):
             Get supported file types by Copyleaks.
         '''
         url = "%s%s/miscellaneous/supported-file-types" % (Consts.SERVICE_ENTRY_POINT, Consts.SERVICE_VERSION)
-        headers = {
-            Consts.AUTHORIZATION_HEADER: self.token.generateAuthrizationHeader()
-        }
-        response = requests.get(url, headers=headers)
+        response = requests.get(url)
         if (response.status_code == Consts.HTTP_SUCCESS):
             return response.json()
         else:

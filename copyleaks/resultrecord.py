@@ -32,7 +32,12 @@ class ResultRecord(object):
         self.__setUrl(dic['URL'])
         self.__setPercents(dic['Percents'])
         self.__setNumberOfCopiedWords(dic['NumberOfCopiedWords'])
-    
+        self.__setComparisonReport(dic['ComparisonReport'])
+        self.__setCachedVersion(dic['CachedVersion'])
+        self.__setTitle(dic['Title'])
+        self.__setIntroduction(dic['Introduction'])
+        self.__setEmbededComparison(dic['EmbededComparison'])
+        
     def getUrl(self):
         return self.Url
     def __setUrl(self, value):
@@ -47,6 +52,32 @@ class ResultRecord(object):
         return self.NumberOfCopiedWords
     def __setNumberOfCopiedWords(self, value):
         self.NumberOfCopiedWords = value
+    
+    def getComparisonReport(self):
+        return self.ComparisonReport
+    def __setComparisonReport(self, value):
+        self.ComparisonReport = value
+    
+    def getCachedVersion(self):
+        return self.CachedVersion
+    def __setCachedVersion(self, value):
+        self.CachedVersion = value
+        
+    def getTitle(self):
+        return self.Title
+    def __setTitle(self, value):
+        self.Title = value
+    
+    def getIntroduction(self):
+        return self.Introduction
+    def __setIntroduction(self, value):
+        self.Introduction = value
+
+    def getEmbededComparison(self):
+        return self.EmbededComparison
+    def __setEmbededComparison(self, value):
+        self.EmbededComparison = value    
+    
     
     @staticmethod
     def parseResults(results):

@@ -41,10 +41,10 @@ if __name__ == '__main__':
     print("You've got %s Copyleaks %s API credits" % (cloud.getCredits(), cloud.getProduct())) #get credit balance
     
     options = ProcessOptions()
-    options.setSandboxMode(True) #scan in sandbox mode
+    options.setSandboxMode(True) # In production, comment this line (skip sandbox mode).
 
     print("Submitting a scan request...")
-    process = cloud.createByUrl('http://python.com', options)
+    process = cloud.createByUrl('https://copyleaks.com', options)
     #process = cloud.createByOcr('ocr-example.jpg', eOcrLanguage.English, options)
     #process = cloud.createByFile('test.txt', options)
     #process = cloud.createByText("Lorem ipsum torquent placerat quisque rutrum tempor lacinia aliquam habitant ligula arcu faucibus gravida, aenean orci lacinia mattis purus consectetur conubia mauris amet nibh consequat turpis dictumst hac ut nullam sodales nunc aenean pharetra, aenean ut sagittis leo massa nisi duis nullam iaculis, nulla ultrices consectetur facilisis curabitur scelerisque quisque primis elit sagittis dictum felis ornare class porta rhoncus lobortis donec praesent curabitur cubilia nec eleifend fringilla fusce vivamus elementum semper nisi conubia dolor, eros habitant nisl suspendisse venenatis interdum nulla interdum, libero urna maecenas potenti nam habitant aliquam donec class sem hendrerit tempus.")
@@ -60,11 +60,23 @@ if __name__ == '__main__':
     print ("Finished!")
     
     results = process.getResutls() #get scan results
-    print ('\nFound %s results...\n' % (len(results)))
+    print ('\nFound %s results...' % (len(results)))
     for result in results:
+        print('')
+        print('------------------------------------------------')
+        print('Title: %s' % (result.getTitle()))
+        print('Introduction: %s' % (result.getIntroduction()))
+        print ("Information: %s copied words (%s%%)" % (result.getNumberOfCopiedWords(), result.getPercents()))
         print ('URL: %s' % (result.getUrl()))
-        print ('NumberOfCopiedWords: %s' % (result.getNumberOfCopiedWords()))
-        print ('Percents: %s' % (result.getPercents()))
-        print ('')
+        print ('Comparison link: %s' % (result.getEmbededComparison()))
+        
+        # Optional: Download result full text. Uncomment to activate
+        #print ("Result full-text:")
+        #print("*****************")
+        #print(process.getResultText(result))
     
+    # Optional: Download source full text. Uncomment to activate.
+    #print ("Source full-text:")
+    #print("*****************")
+    #print(process.getSourceText())
     pass

@@ -110,7 +110,50 @@ class CopyleaksProcess(object):
         response = requests.delete(serviceUrl, headers=headers)
         if (response.status_code != Consts.HTTP_SUCCESS):
             raise CommandFailedError(response)
+    
+    def getSourceText(self):
+        '''
+            Download the full-text of the content you uploaded.
+        '''
+        serviceUrl = '%s%s/%s/source-text?pid=%s' % (Consts.SERVICE_ENTRY_POINT, Consts.SERVICE_VERSION, Consts.DOWNLOADS_ENTRY_POINT, self.getPID())
+        headers = {
+            Consts.AUTHORIZATION_HEADER: self.token.generateAuthrizationHeader()
+        }
         
+        response = requests.get(serviceUrl, headers=headers)
+        if (response.status_code == Consts.HTTP_SUCCESS):
+            return response.text;
+        else:
+            raise CommandFailedError(response) 
+    
+    def getResultText(self, result):
+        '''
+            Download cached version of the result detected by Copyleaks.
+        '''
+        headers = {
+            Consts.AUTHORIZATION_HEADER: self.token.generateAuthrizationHeader()
+        }
+        
+        response = requests.get(result.getCachedVersion(), headers=headers)
+        if (response.status_code == Consts.HTTP_SUCCESS):
+            return response.text;
+        else:
+            raise CommandFailedError(response) 
+    
+    def getResultComparison(self, result):
+        '''
+            Get a comparison report that describe the matches with this result.
+        '''
+        headers = {
+            Consts.AUTHORIZATION_HEADER: self.token.generateAuthrizationHeader()
+        }
+        
+        response = requests.get(result.getComparisonReport(), headers=headers)
+        if (response.status_code == Consts.HTTP_SUCCESS):
+            return response.json();
+        else:
+            raise CommandFailedError(response) 
+    
     @staticmethod
     def parseProcesses(token, processes):
         lst = []

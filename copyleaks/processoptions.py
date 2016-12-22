@@ -33,6 +33,7 @@ class ProcessOptions(object):
     
     def __init__(self):
         #default settings - undefined
+        self.setHttpInProgressResultsCallback(None)
         self.setHttpCallback(None)
         self.setCustomFields(None)
         self.setEmailCallback(None)
@@ -46,6 +47,14 @@ class ProcessOptions(object):
             Add Http callback to your requests.
         '''
         self.httpCallback = value
+        
+    def getHttpInProgressResultsCallback(self):
+        return self.HttpInProgressResultsCallback
+    def setHttpInProgressResultsCallback(self, value):
+        '''
+            Add Http callback to your requests.
+        '''
+        self.HttpInProgressResultsCallback = value
         
     def getCustomFields(self):
         return self.customFields
@@ -86,6 +95,9 @@ class ProcessOptions(object):
         
         if self.getHttpCallback() != None:
             headers[Consts.HTTP_CALLBACK] = self.getHttpCallback()
+            
+        if self.getHttpInProgressResultsCallback() != None:
+            headers[Consts.HTTP_IN_PROGRESS_RESULT_CALLBACK] = self.getHttpInProgressResultsCallback()
         
         if self.getCustomFields() != None and len(self.getCustomFields()) > 0:
             for key, value in self.getCustomFields().items():
