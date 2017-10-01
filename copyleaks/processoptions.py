@@ -39,6 +39,7 @@ class ProcessOptions(object):
         self.setEmailCallback(None)
         self.setSandboxMode(None)
         self.setAllowPartialScan(None)
+        self.setCompareDocumentsForSimilarity(None)
         
     def getHttpCallback(self):
         return self.httpCallback
@@ -90,6 +91,15 @@ class ProcessOptions(object):
         '''
         self.allowPartialScan = value
 
+    def getCompareDocumentsForSimilarity(self):
+        return self.compareDocumentsForSimilarity
+    def setCompareDocumentsForSimilarity(self, value):
+        '''
+            Enable comparison only between uploaded files.
+            Read more: http://bit.ly/2xPLxyP
+        '''
+        self.compareDocumentsForSimilarity = value
+        
     def getHeaders(self):
         headers = {}
         
@@ -111,5 +121,8 @@ class ProcessOptions(object):
         
         if self.getAllowPartialScan():
             headers[Consts.ALLOW_PARTIAL_SCAN] = 'true'
+        
+        if self.getCompareDocumentsForSimilarity():
+            headers[Consts.COMPARE_BETWEEN_FILES] = 'true'
             
         return headers

@@ -1,4 +1,4 @@
 class Product:
     Businesses = "businesses"
-    Academic = "academic"
+    Education = "academic"
     Websites = "websites"

@@ -55,6 +55,8 @@ class Consts():
     
     ALLOW_PARTIAL_SCAN = '%sallow-partial-scan' % (COPYLEAKS_HEADER_PREFIX)
     
+    COMPARE_BETWEEN_FILES = '%scompare-documents-for-similarity' % (COPYLEAKS_HEADER_PREFIX)
+    
     MAX_FILE_SIZE_BYTES = 25 * 1024 * 1024 # 25 MB
     
     SERVICE_ENTRY_POINT = 'https://api.copyleaks.com/' 

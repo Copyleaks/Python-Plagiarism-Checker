@@ -44,10 +44,12 @@ if __name__ == '__main__':
     options.setSandboxMode(True) # In production, comment this line (skip sandbox mode).
 
     print("Submitting a scan request...")
+    
     process = cloud.createByUrl('https://copyleaks.com', options)
     #process = cloud.createByOcr('ocr-example.jpg', eOcrLanguage.English, options)
     #process = cloud.createByFile('test.txt', options)
     #process = cloud.createByText("Lorem ipsum torquent placerat quisque rutrum tempor lacinia aliquam habitant ligula arcu faucibus gravida, aenean orci lacinia mattis purus consectetur conubia mauris amet nibh consequat turpis dictumst hac ut nullam sodales nunc aenean pharetra, aenean ut sagittis leo massa nisi duis nullam iaculis, nulla ultrices consectetur facilisis curabitur scelerisque quisque primis elit sagittis dictum felis ornare class porta rhoncus lobortis donec praesent curabitur cubilia nec eleifend fringilla fusce vivamus elementum semper nisi conubia dolor, eros habitant nisl suspendisse venenatis interdum nulla interdum, libero urna maecenas potenti nam habitant aliquam donec class sem hendrerit tempus.")
+    #processes, errors = cloud.createByFiles(['path/to/file1', 'path/to/file2'], options)
     
     print ("Submitted. In progress...")
     iscompleted = False
@@ -74,6 +76,11 @@ if __name__ == '__main__':
         #print ("Result full-text:")
         #print("*****************")
         #print(process.getResultText(result))
+        
+        # Optional: Download comparison report. Uncomment to activate
+        #print ("Comparison report:")
+        #print("**************")
+        #print (process.getResultComparison(result))
     
     # Optional: Download source full text. Uncomment to activate.
     #print ("Source full-text:")

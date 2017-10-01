@@ -131,7 +131,7 @@ class CopyleaksCloud(object):
         assert os.path.exists(filePath), 'filePath is not exists!'
         assert os.path.getsize(filePath) <= Consts.MAX_FILE_SIZE_BYTES, 'Exceed max file size (max allowed: %s bytes)' % (Consts.MAX_FILE_SIZE_BYTES)
         
-        serviceUrl = "%s%s/%s/create-by-file" % (Consts.SERVICE_ENTRY_POINT, Consts.SERVICE_VERSION, self.product)
+        serviceUrl = "%sv2/%s/create-by-file" % (Consts.SERVICE_ENTRY_POINT, self.product)
 
         headers = {
             Consts.AUTHORIZATION_HEADER: self.token.generateAuthrizationHeader()
@@ -145,6 +145,46 @@ class CopyleaksCloud(object):
         response = requests.post(serviceUrl, headers=headers, files=theFile)
         if (response.status_code == Consts.HTTP_SUCCESS):
             return CopyleaksProcess(self.getProduct(), self.token, response.json())
+        else:
+            raise CommandFailedError(response)
+        
+    def createByFiles(self, filePaths, options = None):
+        '''
+            Submitting local files to plagiarism scan. The files are being submitted 
+            together on same HTTP request. 
+            
+            Args: 
+            filePaths - list of file paths (string)
+            options - Process options
+        '''
+        assert filePaths, 'Missing filePath'
+        for i in range(len(filePaths)):
+            assert os.path.exists(filePaths[i]), 'filePath is not exists!'
+            assert os.path.getsize(filePaths[i]) <= Consts.MAX_FILE_SIZE_BYTES, 'Exceed max file size (max allowed: %s bytes)' % (Consts.MAX_FILE_SIZE_BYTES)
+        
+        assert len(filePaths) <= 100, 'Too many files'
+        
+        serviceUrl = "%sv2/%s/create-by-file" % (Consts.SERVICE_ENTRY_POINT, self.product)
+
+        headers = {
+            Consts.AUTHORIZATION_HEADER: self.token.generateAuthrizationHeader()
+        }
+        
+        if options != None:
+            headers = headers.copy()
+            headers.update(options.getHeaders())
+        
+        theFiles = {}
+        for i in range(len(filePaths)):
+            theFiles['file%s' % (i)] = (os.path.basename(filePaths[i]), open(filePaths[i], 'rb'))
+            
+        response = requests.post(serviceUrl, headers=headers, files=theFiles)
+        if (response.status_code == Consts.HTTP_SUCCESS):
+            lstProcesses = [];
+            returnedObj = response.json()
+            for i in range(len(returnedObj["Success"])):
+                lstProcesses.append(CopyleaksProcess(self.getProduct(), self.token, returnedObj["Success"][i]))
+            return lstProcesses, returnedObj["Errors"]
         else:
             raise CommandFailedError(response) 
 
