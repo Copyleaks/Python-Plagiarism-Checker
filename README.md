@@ -33,7 +33,7 @@ pip3 install copyleaks
 <pre>
 from copyleaks.copyleakscloud import CopyleaksCloud
 from copyleaks.product import Product
-cloud = CopyleaksCloud(Product.Academic, 'YOUR_EMAIL_HERE', 'YOUR_API_KEY_HERE')# You can change the product.
+cloud = CopyleaksCloud(Product.Education, 'YOUR_EMAIL_HERE', 'YOUR_API_KEY_HERE')# You can change the product.
 </pre>
 
 <p>This example shows how to scan a URL using the line:</p>
