@@ -25,7 +25,7 @@ pip3 install copyleaks
 </ul>
 <h3>Register and Get Your API Key</h3>
  <p>To use the Copyleaks SDK you need to have a Copyleaks account. The registration to Copyleaks is free of charge and quick. <a href="https://copyleaks.com/Account/Register">Signup</a> and confirm your account to finalize your registration.</p>
- <p>Now, generate your personal API key on your dashboard (<a href="https://api.copyleaks.com/businessesapi">Businesses dashboard</a>, <a href="https://api.copyleaks.com/academicapi">Academic dashboard</a> or <a href="https://api.copyleaks.com/websitesapi">Websites dashboard</a>) under 'Access Keys'.</p>
+ <p>Now, generate your personal API key on your dashboard (<a href="https://api.copyleaks.com/businessesapi">Businesses dashboard</a>, <a href="https://api.copyleaks.com/academicapi">Education dashboard</a> or <a href="https://api.copyleaks.com/websitesapi">Websites dashboard</a>) under 'Access Keys'.</p>
  <p>For more information check out our <a href="https://api.copyleaks.com/Guides/HowToUse">API guide</a>.</p>
 <h3>Example</h3>
 <p><a href="https://github.com/Copyleaks/Python-Plagiarism-Checker/blob/master/main.py">Main.py</a> will show you how to scan for plagiarism in the URL: 'http://python.com'. All you have to do is to update the following line with your email and API key:
