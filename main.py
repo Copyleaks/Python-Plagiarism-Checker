@@ -34,7 +34,6 @@ from product import Product
 
 
 if __name__ == '__main__':
-    
     #edit your login credentials.
     cloud = CopyleaksCloud(Product.Businesses, '<YOUR_EMAIL_HERE>', '<YOUR_API_KEY_HERE>')
     

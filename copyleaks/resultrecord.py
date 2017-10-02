@@ -64,7 +64,10 @@ class ResultRecord(object):
         self.CachedVersion = value
         
     def getTitle(self):
-        return self.Title
+        if not hasattr(self, 'Title') or self.Title == None:
+            return ""
+        else:
+            return self.Title
     def __setTitle(self, value):
         self.Title = value
     
