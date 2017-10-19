@@ -22,8 +22,9 @@
  SOFTWARE.
 '''
 
-import requests
 from dateutil import parser
+import requests
+
 
 try:
     from resultrecord import ResultRecord
@@ -83,9 +84,9 @@ class CopyleaksProcess(object):
         else:
             raise CommandFailedError(response) 
 
-    def getResutls(self):
+    def getResults(self):
         '''
-            Get the scan resutls from server.
+            Get the scan results from server.
         '''
         serviceUrl = '%s%s/%s/%s/result' % (Consts.SERVICE_ENTRY_POINT, Consts.SERVICE_VERSION, self.getProduct(), self.getPID())
         headers = {
@@ -97,7 +98,11 @@ class CopyleaksProcess(object):
             return ResultRecord.parseResults(response.json());
         else:
             raise CommandFailedError(response) 
-        
+
+    # DEPRECATED - Misspelled
+    def getResutls(self):
+        return self.getResults()
+
     def delete(self):
         '''
             Deletes the process once it has finished running

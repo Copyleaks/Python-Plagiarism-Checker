@@ -26,13 +26,15 @@ try:
 except:
     from copyleaks.consts import Consts
 
+
 class ProcessOptions(object):
     '''
     Additional options to your processes.
+    For more info visit https://api.copyleaks.com/documentation/headers
     '''
-    
+
     def __init__(self):
-        #default settings - undefined
+        # Default settings are undefined
         self.setHttpInProgressResultsCallback(None)
         self.setHttpCallback(None)
         self.setCustomFields(None)
@@ -40,50 +42,59 @@ class ProcessOptions(object):
         self.setSandboxMode(None)
         self.setAllowPartialScan(None)
         self.setCompareDocumentsForSimilarity(None)
-        
+        self.setImportToDatabaseOnly(None)
+
     def getHttpCallback(self):
         return self.httpCallback
+
     def setHttpCallback(self, value):
         '''
             Add Http callback to your requests.
         '''
         self.httpCallback = value
-        
+
     def getHttpInProgressResultsCallback(self):
         return self.HttpInProgressResultsCallback
+
     def setHttpInProgressResultsCallback(self, value):
         '''
             Add Http callback to your requests.
         '''
         self.HttpInProgressResultsCallback = value
-        
+
     def getCustomFields(self):
         return self.customFields
+
     def setCustomFields(self, value):
         '''
-            Add your own custom fields to your requests. 
-            You can store any kind of information which will be later available under 'CopyleaksProcess'. 
+            Add your own custom fields to your requests.
+            You can store any kind of information which will be later available under 'CopyleaksProcess'.
         '''
         self.customFields = value
-    
+
     def getEmailCallback(self):
         return self.emailCallback
+
     def setEmailCallback(self, value):
         '''
-            You can register a callback email to get informed when the request is completed. 
+            You can register a callback email to get informed when the request is completed.
         '''
         self.emailCallback = value
-    
+
     def getSandboxMode(self):
         return self.sandboxMode
+
     def setSandboxMode(self, value):
         '''
-            Enable Sandbox mode for testing purposes
+            Enable sandbox mode for testing purposes
+            Will not consume any credits
+            Returns dummy results
         '''
         self.sandboxMode = value
 
     def getAllowPartialScan(self):
         return self.allowPartialScan
+
     def setAllowPartialScan(self, value):
         '''
             In case of lack of credits, allow partial scan of the content.
@@ -93,36 +104,50 @@ class ProcessOptions(object):
 
     def getCompareDocumentsForSimilarity(self):
         return self.compareDocumentsForSimilarity
+
     def setCompareDocumentsForSimilarity(self, value):
         '''
             Enable comparison only between uploaded files.
             Read more: http://bit.ly/2xPLxyP
         '''
         self.compareDocumentsForSimilarity = value
-        
+
+    def getImportToDatabaseOnly(self):
+        return self.importToDatabaseOnly
+
+    def setImportToDatabaseOnly(self, value):
+        '''
+            Import your file to our database in order to recieve results from your files.
+            Available on Education API only.
+        '''
+        self.importToDatabaseOnly = value
+
     def getHeaders(self):
         headers = {}
-        
-        if self.getHttpCallback() != None:
-            headers[Consts.HTTP_CALLBACK] = self.getHttpCallback()
-            
-        if self.getHttpInProgressResultsCallback() != None:
-            headers[Consts.HTTP_IN_PROGRESS_RESULT_CALLBACK] = self.getHttpInProgressResultsCallback()
-        
-        if self.getCustomFields() != None and len(self.getCustomFields()) > 0:
-            for key, value in self.getCustomFields().items():
-                headers[Consts.CLIENT_CUSTOM_PREFIX + key] = value 
 
-        if self.getEmailCallback() != None:
+        if self.getHttpCallback() is not None:
+            headers[Consts.HTTP_CALLBACK] = self.getHttpCallback()
+
+        if self.getHttpInProgressResultsCallback() is not None:
+            headers[Consts.HTTP_IN_PROGRESS_RESULT_CALLBACK] = self.getHttpInProgressResultsCallback()
+
+        if self.getCustomFields() is not None and len(self.getCustomFields()) > 0:
+            for key, value in self.getCustomFields().items():
+                headers[Consts.CLIENT_CUSTOM_PREFIX + key] = value
+
+        if self.getEmailCallback() is not None:
             headers[Consts.EMAIL_CALLBACK] = self.getEmailCallback()
-            
-        if self.getSandboxMode() != None and self.getSandboxMode() == True:
+
+        if self.getSandboxMode() is not None and self.getSandboxMode():
             headers[Consts.SANDBOX_MODE_HEADER] = ''
-        
+
         if self.getAllowPartialScan():
             headers[Consts.ALLOW_PARTIAL_SCAN] = 'true'
-        
+
         if self.getCompareDocumentsForSimilarity():
             headers[Consts.COMPARE_BETWEEN_FILES] = 'true'
-            
+
+        if self.getImportToDatabaseOnly():
+            headers[Consts.IMPORT_TO_DATABASE_ONLY_HEADER] = 'true'
+
         return headers

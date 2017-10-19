@@ -24,6 +24,12 @@
 
 from enum import Enum
 
+"""
+Deprecated
+Use cloud.getSupportedOcrLanguages() instead to get the update list of ocr languages.
+"""
+
+
 class eOcrLanguage(Enum):
     Afrikaans = 'Afrikaans'
     Albanian = 'Albanian' 

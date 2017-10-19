@@ -79,9 +79,20 @@ class ResultRecord(object):
     def getEmbededComparison(self):
         return self.EmbededComparison
     def __setEmbededComparison(self, value):
-        self.EmbededComparison = value    
-    
-    
+        self.EmbededComparison = value
+
+    def __repr__(self):
+        return str(self)
+
+    def __str__(self):
+        return 'URL: %s\n' % (self.getUrl()) +\
+               'Title: %s\n' % (self.getTitle()) +\
+               'Introduction: %s\n' % (self.getIntroduction()) +\
+               'Information: %s copied words (%s%%)\n' % (self.getNumberOfCopiedWords(), self.getPercents()) +\
+               'Embed Comparison: %s\n' % (self.getEmbededComparison()) +\
+               'Comparison Link: %s\n' % (self.getEmbededComparison()) +\
+               'Cached Version: %s' % (self.getCachedVersion())
+
     @staticmethod
     def parseResults(results):
         lst = []
