@@ -42,12 +42,21 @@ cloud = CopyleaksCloud(Product.Education, 'YOUR_EMAIL_HERE', 'YOUR_API_KEY_HERE'
 <pre>
 options = ProcessOptions()
 options.setSandboxMode(True)  # Scan will not consume any credits and will return dummy results.
-</pre
+options.setHttpCallback("http://yoursite.here/callback") # Recieve a completion callback with the results. For testing purposes we recommend using http://requestb.in
+</pre>
 <p>This example shows how to scan a URL using the line:</p>
 <pre>process = cloud.createByUrl('http://python.org', options)</pre>
 <p>Available create methods: `createByUrl`, `createByFile`, `createByText`, `createByOcr` and `createByFiles`.
 For more info visit the <a href="https://api.copyleaks.com/documentation">Api Documentation</a>.
 </p>
+<p>If you don't wish to use callbacks you can check the process status and get the process results.</p>
+<p>Check process status:
+</p>
+<pre>
+[iscompleted, percents] = process.isCompleted()
+</pre>
+<p>Get the results:</p>
+<pre>results = process.getResults()</pre>
 <h3>Configuration</h3>
 <p>Custumize your process using this optional headers. For more information visit <a href="https://api.copyleaks.com/documentation/headers">Optional Request Headers</a>
 </p>
