@@ -37,16 +37,11 @@ from copyleaks.copyleakscloud import CopyleaksCloud
 from copyleaks.product import Product
 cloud = CopyleaksCloud(Product.Education, 'YOUR_EMAIL_HERE', 'YOUR_API_KEY_HERE')# You can change the product.
 </pre>
-<p>Create `ProcessOptions` instance to add custom headers to your request:
+<p>Create `ProcessOptions` instance to add custom headers to your request. For more info see the <a href="https://github.com/Copyleaks/Python-Plagiarism-Checker#configuration">Configuration</a> section below.
 </p>
 <pre>
 options = ProcessOptions()
-"""
-Add this process option to your process to use sandbox mode.
-The process will not consume any credits and will return dummy results.
-For more info about optional headers visit https://api.copyleaks.com/documentation/headers/sandbox
-"""
-options.setSandboxMode(True)
+options.setSandboxMode(True)  # Scan will not consume any credits and will return dummy results.
 </pre
 <p>This example shows how to scan a URL using the line:</p>
 <pre>process = cloud.createByUrl('http://python.org', options)</pre>
