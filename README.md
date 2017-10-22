@@ -23,6 +23,7 @@ pip3 install copyleaks
 </li>
 <li>Download the code from this repository and add it to your project.
 </ul>
+  <p>You can also check out <a href="https://www.youtube.com/watch?v=B2Lck9Pst2M"> this video</a> showing how to use this SDK.</p>
 <h3>Register and Get Your API Key</h3>
  <p>To use the Copyleaks SDK you need to have a Copyleaks account. The registration to Copyleaks is free of charge and quick. <a href="https://copyleaks.com/Account/Register">Signup</a> and confirm your account to finalize your registration.</p>
  <p>Now, generate your personal API key on your dashboard (<a href="https://api.copyleaks.com/businessesapi">Businesses dashboard</a>, <a href="https://api.copyleaks.com/academicapi">Education dashboard</a> or <a href="https://api.copyleaks.com/websitesapi">Websites dashboard</a>) under 'Access Keys'.</p>
