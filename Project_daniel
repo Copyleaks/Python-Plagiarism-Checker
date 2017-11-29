@@ -1,0 +1,236 @@
+# R00156826 Daniel Cronin
+import datetime
+levyRate = .05
+redRate = .05
+price = 0
+currentYear = int(datetime.date.today().strftime("%Y"))
+currentMonth = int(datetime.date.today().strftime("%m"))
+currentDay = int(datetime.date.today().strftime("%d"))
+name = ''
+managerName = ''
+ok = False
+# This is a catch all exception handler that will provide a generic error.
+while not ok:
+    try:
+        while name == '':
+            name = input('Please enter your Band name: ')
+            if name == '':
+                print('You cannot leave Band name blank')
+
+        while managerName == '':
+            managerName = input('Please enter your Managers name: ')
+            if managerName == '':
+                print('You must enter your managers name. If you do not have a manager please enter a rep for your band.')
+
+        # Import date gives the current date. This function checks the user input against it. if it is blank, before today or not right it will create an error.
+        ok = False
+        while not ok:
+            date = input('What date do you require the studio (dd/mm/yy)  ')
+
+            if date == '':
+                print('You cannot leave date blank.')
+            elif len(date) != 8:
+                print('Date must be dd/mm/yy e.g 01/03/17')
+            elif date[2] != '/' and date[5] != '/':
+                print('Please type the date in format dd/mm/yy')
+            elif date[2] == '/' and date[5] == '/':
+                day = date[0] + date[1]
+                month = date[3] + date[4]
+                year = '20'+date[6] + date[7]
+                if int(year) < int(currentYear):
+                    print('Your booking must be in the current/coming year')
+                elif int(month) < int(currentMonth) and int(year) <= int(currentYear):
+                    print('Your booking must be in the current/coming month')
+                elif int(day) <= int(currentDay) and int(month) <= int(currentMonth) and int(year) <= int(currentYear):
+                    print('Your booking must be later than today')
+                elif month == '02':
+                    if int(day) > 29:
+                        print('Please enter a valid date (only 28 days in this month unless its a leap year)')
+                elif int(month) < 0 or int(month) > 12:
+                    print('Please check the month you have entered')
+                elif month == '04' or month == '06' or month == '09' or month == '11':
+                    if int(day) > 30:
+                        print('Please enter a valid date(only 30 days in this month)')
+                    else:
+                        ok = True
+                else:
+                    ok = True
+
+        # Email loops through each character and looks for the @ and . symbol that are usually found in a email
+        # This doesn't test to see if it is a valid working email.
+        ok = False
+        while not ok:
+            email = input('Please enter a valid email address: ')
+
+            if '@' in email and '.' in email:
+                ok = True
+            else:
+                print('You have entered an invalid email!')
+
+        # Function to check that phone number is not blank. Left it as just a input in case user wants to enter international dialing code
+        phoneNumber = input('Please enter your phone number:')
+        while phoneNumber == '':
+            try:
+                if phoneNumber == '':
+                    print('You must enter a phone number.')
+                    phoneNumber = input('Please enter your phone number:')
+            except phoneNumber:
+                print('You must enter a valid phone number. E.G 0871234567')
+
+        # created a variable called h to store the band members name. This can be called later
+
+        while True:
+            members = input('How many band Members:  ')
+            try:
+                members = int(members)
+            except ValueError:
+                print("Invalid entry '%s', try again" % members,)
+            else:
+                break
+
+        h = ''
+        while members <= 0 or members >= 8:
+                print('You must book for at least 1 musician and no more than 8!')
+                members = input('How many band Members:  ')
+        for p in range(1, members + 1):
+
+            MembersName = input('What is band member ' + str(p) + "'s name: ")
+            while MembersName == '':
+                print('You must provide a name for this Member')
+                MembersName = input('What is band member ' + str(p) + "'s name: ")
+
+            membersInstrument = input('What instrument do they play: ')
+            while membersInstrument == '':
+                print('You must provide a instrument for this Member')
+                membersInstrument = input('What instrument do they play: ')
+            h += (str(p) + ': ' + str(MembersName) + ' - ' + str(membersInstrument) + '\n')
+
+        # Payment method calls previously declared var to determine the Levy/Reduction. Catch all exception handler
+        while True:
+            paymentMethod = (input("How would you like to pay?\n "
+                                   "1.Credit card(5% levy will be charged)\n "
+                                   "2.Cheque\n "
+                                   "3.Cash (5% reduction in bill)"))
+            try:
+                paymentMethod = int(paymentMethod)
+            except ValueError:
+                print("\nInvalid entry '%s' you must choose a number between 1-3!\n" % paymentMethod)
+            else:
+                break
+
+        while True:
+            studioDays = (input('How many days do you require the studio for?'))
+            try:
+                studioDays = int(studioDays)
+            except ValueError:
+                print("\nInvalid entry '%s' you must enter a number!\n" % studioDays)
+            else:
+                break
+
+        extraMusicians = 8 - members
+
+        while True:
+            sessionMusicians = int(input('There is room for ' + str(extraMusicians) + ' Session Musicians ' + '. How many do you want? (€100 per Musician per day):     '))
+            try:
+                sessionMusicians = int(sessionMusicians)
+            except ValueError:
+                print("Invalid entry '%s', try again" % sessionMusicians,)
+            else:
+                break
+
+        while extraMusicians < sessionMusicians:
+            sessionMusicians = int(input('You can only book max ' + str(extraMusicians) + ':   '))
+
+        sessionPayment = (sessionMusicians * 100)
+
+        # To calculate price i have added multiplied and added the amount of days and the levy/reduction
+        while price <= 0:
+            try:
+                if studioDays == 1:
+                    price += 260 + sessionPayment
+                    # This function takes the amount of days and applies them to the Var price. Then * and adds the levy
+                    if paymentMethod == 1:
+                        price += price * levyRate
+                        paymentType = ' by Credit Card'
+
+                    # This is similar to above but in this case the days are different and it subtracts 5% reduction
+                    elif paymentMethod == 3:
+                        price -= price * redRate
+                        paymentType = 'in Cash'
+                    # finally this function applies the payment type and in this case it means their is no levy/Red the following code does the same as above but with different rates
+                    else:
+                        paymentType = ' by Cheque'
+
+                elif 1 < studioDays <= 4:
+                    price += 240 * studioDays + sessionPayment
+                    if paymentMethod == 1:
+                        price += price * levyRate
+                        paymentType = ' by Credit Card'
+
+                    elif paymentMethod == 3:
+                        price -= price * redRate
+                        paymentType = 'in Cash'
+
+                    else:
+                        paymentType = ' by Cheque'
+
+                elif 4 < studioDays <= 8:
+                    price += 210 * studioDays + sessionPayment
+                    if paymentMethod == 1:
+                        price += price * levyRate
+                        paymentType = ' by Credit Card'
+
+                    elif paymentMethod == 3:
+                        price -= price * redRate
+                        paymentType = 'in Cash'
+
+                    else:
+                        paymentType = ' by Cheque'
+
+                elif studioDays >= 9:
+                    price += 200 * studioDays + sessionPayment
+                    if paymentMethod == 1:
+                        price += price * levyRate
+                        paymentType = ' by Credit Card'
+
+                    elif paymentMethod == 3:
+                        price -= price * redRate
+                        paymentType = 'in Cash'
+
+                    else:
+                        paymentType = ' by Cheque'
+                else:
+                    print('Please enter how many days you require the studio.')
+
+            except price:
+                print('You must book the studio for at least 1 day.')
+            # End of price, levy/Red function
+
+            # filename will depend on the band name so that each client will have their
+            # own file for easy access can be used as email conformation.
+            # second file will be easy access storage if we need the info again.
+            f = open('%s.txt' % name, 'a')
+            f.write('Booking application\n')
+            f.write('--------------------\n')
+            f.write('Requested by: ' + str(managerName) + (' (Contact: ' + str(email) + ' & ' + str(phoneNumber)) + ')\n')
+            f.write('Band Name: ' + str(name) + '\n')
+            f.write('Date required --> ' + str(date) + '\n')
+            f.write('\n')
+            f.write('Band Members\n')
+            f.write('-------------\n')
+            f.write(str(h) + '\n')
+            f.write('Includes ' + str(sessionMusicians) + ' session musicians per day.\n''Payment will be ' + '€' + str(price) + ' to be paid ' + str(paymentType) + '\n')
+            f.close()
+
+            print('\nBooking application')
+            print('--------------------')
+            print('Requested by: ' + str(managerName) + (' (Contact: ' + str(email) + ' & ' + str(phoneNumber)) + ')\n')
+            print('Band Name: ' + str(name))
+            print('Date required --> ' + str(date) + '\n')
+            print('Band Members')
+            print('-------------')
+            print(h + '\n')
+            print('Includes ' + str(sessionMusicians) + ' session musicians per day.\n''Payment will be ' + '€' + str(price) + ' to be paid ' + str(paymentType) + '\n')
+
+    except ok:
+        print('Invalid entry.')
