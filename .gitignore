@@ -3,3 +3,5 @@
 setup.cfg
 setup.py
 publish.bat
+dist
+MANIFEST
