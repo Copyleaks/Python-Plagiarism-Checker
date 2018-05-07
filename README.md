@@ -36,6 +36,7 @@ Get started using this API with this examples. <a href="https://github.com/Copyl
 <pre>
 from copyleaks.copyleakscloud import CopyleaksCloud
 from copyleaks.product import Product
+from copyleaks.processoptions import ProcessOptions
 cloud = CopyleaksCloud(Product.Education, 'YOUR_EMAIL_HERE', 'YOUR_API_KEY_HERE')# You can change the product.
 </pre>
 <p>Create `ProcessOptions` instance to add custom headers to your request. For more info see the <a href="https://github.com/Copyleaks/Python-Plagiarism-Checker#configuration">Configuration</a> section below.
