@@ -92,7 +92,7 @@ class CopyleaksCloud(object):
         }
         response = requests.get(url, headers=headers)
         if (response.status_code == Consts.HTTP_SUCCESS):
-            return CopyleaksProcess.parseProcesses(self.login, response.json())
+            return CopyleaksProcess.parseProcesses(self.product, self.login, response.json())
         else:
             raise CommandFailedError(response)
     

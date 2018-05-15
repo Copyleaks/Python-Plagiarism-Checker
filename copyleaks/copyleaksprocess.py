@@ -160,10 +160,10 @@ class CopyleaksProcess(object):
             raise CommandFailedError(response) 
     
     @staticmethod
-    def parseProcesses(token, processes):
+    def parseProcesses(product, token, processes):
         lst = []
         
         for process in processes:
-            lst.append(CopyleaksProcess(token, process))
+            lst.append(CopyleaksProcess(product, token, process))
         
         return lst
