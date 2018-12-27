@@ -1,3 +1,4 @@
+<body>
 <h2>Copyleaks Python SDK</h2>
 <p>
 Copyleaks SDK is a simple framework that allows you to scan textual content for plagiarism and trace content distribution online, using the <a href="https://api.copyleaks.com">Copyleaks plagiarism checker cloud</a>.
@@ -12,15 +13,15 @@ Detect plagiarism using Copyleaks SDK in:
 </ul>
 </p>
 <h3>Installation</h3>
-<p>Supported Python version: 3.</p><p>You have two ways to integrate with the Copyleaks SDK:</p>
+<p>Supported Python version: 3.6 or greater</p><p>You have two ways to integrate with the Copyleaks SDK:</p>
 <ul>
-<li><b>Recommended</b> - Use the Python Package Manager - <a href="https://pypi.python.org/pypi/copyleaks">PiPy</a>.
+<li><b>Recommended</b> - Use the Python Package Manager - <i>Coming soon</i><!--a href="https://pypi.python.org/pypi/copyleaks">PiPy</a-->.
   <br>
   When integrating this way you will automatically be able to update the SDK to its latest version:
-<!--pre>
+<pre>
 pip3 install copyleaks
-</pre--> 
-<p><i>Coming soon</i></p>
+</pre> 
+
 </li>
 <li>Download the code from this repository and add it to your project.
 </ul>
@@ -31,8 +32,8 @@ pip3 install copyleaks
  <p>Now, generate your personal API key on your dashboard (<a href="https://api.copyleaks.com/businessesapi">Businesses dashboard</a>, <a href="https://api.copyleaks.com/academicapi">Education dashboard</a> or <a href="https://api.copyleaks.com/websitesapi">Websites dashboard</a>) under 'Access Keys'.</p>
  <p>For more information check out our <a href="https://api.copyleaks.com/Guides/HowToUse">API guide</a>.</p>
 <h3>Examples</h3>
-Get started using this API with this example. <a href="https://github.com/Copyleaks/Python-Plagiarism-Checker/blob/master/ExampleAsynchronous.py">ExampleAsynchronous.py</a> is an example of creating a process and getting a completion callback with the results.
-Copyleaks API can also be used in synchronous mode, <a href="mailto:Support@Copyleaks.com">Contact us</a> for assistance 
+<a href="https://github.com/Copyleaks/Python-Plagiarism-Checker/blob/master/ExampleAsynchronous.py">ExampleAsynchronous.py</a> is an example of creating a process and getting a completion callback with the results.
+Copyleaks API can also be used in synchronous mode, <a href="mailto:Support@Copyleaks.com">Contact us</a> for assistance.
 <!--a href="https://github.com/Copyleaks/Python-Plagiarism-Checker/blob/master/ExampleSynchronous.py">ExampleSynchronous.py</a> <a>is an example of creating a process, checking its status and getting the results programmatically.</a-->
 <h3>Usage</h3>
 <p>Login to your account using your email and api-key.
@@ -41,9 +42,21 @@ Copyleaks API can also be used in synchronous mode, <a href="mailto:Support@Copy
 identity = CopyleaksIdentityApi()
 login_response = identity.login('&lt;YOUR_EMAIL_HERE&gt;', '&lt;YOUR_API_KEY_HERE&gt;')
 </pre>
+<p>Create a unique scan id</p>
+<p>The scan id you provide is determined by you it will usually match the scan entity in your system.
+Each scan you submit to Copyleaks must have a unique ID and in the following format:<br>
+  Allowed characters: all alpha numeric characters and any of the following: <i>!@#$^&*-+%=_()[]{}<>'";:/?.,~`|\</i><br>
+  Maximum length: 36 characters</p>
+</p>
+
+```
+scan_id = uuid.uuid4()
+
+```
 <p>Create `ScanProperties` instance to define the properties of your scan.</p>
 
 ```
+
 scan_properties = ScanProperties(
         # Add this scan option to your process to submit your document to full scan
         # Other possible values:
@@ -69,45 +82,29 @@ scan_properties = ScanProperties(
           #        - Failed
           #        - CreditsChecked
           #        - Indexed
-          completion="http://yoursite.here/your-scanID/{STATUS}/completed-callback",
+          completion=f"http://yoursite.here/{scan_id}/{{STATUS}}/completed-callback",
 
           # An example callback url that will be called when a new result is found
-          onNewResult="http://yoursite.here/your-scanID/result-callback"
+          onNewResult=f"http://yoursite.here/{scan_id}/result-callback"
         )
     )
 ```
-<p>This example shows how to scan a URL using the line:</p>
-<pre>process = cloud.createByUrl('http://python.org', options)</pre>
-<p>Available create methods: `createByUrl`, `createByFile`, `createByText`, `createByOcr` and `createByFiles`.
-For more info visit the <a href="https://api.copyleaks.com/documentation">Api Documentation</a>.
-</p>
-<p>If you don't wish to use callbacks you can check the process status and get the process results.</p>
-<p>Check process status:
-</p>
+<p>This example shows how to scan a URL:</p>
 <pre>
-[iscompleted, percents] = process.isCompleted()
+api = CopyleaksScansApi(eProduct.Education, login_response.access_token)
+url_document = UrlDocument('https://example.com', scan_properties)
+api.submit_url(scan_id, url_document)
 </pre>
-<p>Get the results:</p>
-<pre>results = process.getResults()</pre>
-<h3>Configuration</h3>
-<p>Custumize your process using this optional headers. For more information visit <a href="https://api.copyleaks.com/documentation/headers">Optional Request Headers</a>
+<p>Available create methods: `submit_url`, `submit_file`, `submit_ocr`.
+For more info visit the <a href="https://api.copyleaks.com/swagger">Api Documentation</a>.
 </p>
-<pre>
-options = ProcessOptions()
-options.setSandboxMode(True) # Scan will not consume any credits and will return dummy results.
-options.setHttpCallback("http://yoursite.here/callback") # Recieve a completion callback. For testing purposes we recommend using http://requestb.in
-options.setHttpInProgressResultsCallback("http://yoursite.here/callback/results")
-options.setEmailCallback("Your@email.com")
-options.setCustomFields({'Custom': 'field'})
-options.setAllowPartialScan(True)
-options.setCompareDocumentsForSimilarity(True)  # Available only on compareByFiles
-options.setImportToDatabaseOnly(True)  # Available only on Education API
-</pre>
+<p>When a new result is found it will tirgger the 'onNewResult' callback, once the scan is completed it will trigger the 'completion' callback</p>
+<p>Get the results synchronously:</p>
+<pre>results = api.completion(scan_id)</pre>
+
 <h3>Dependencies</h3>
 <pre>
 pip3 install requests
-pip3 install python-dateutil
-pip3 install enum34
 </pre>
 <h3>Read More</h3>
 <ul>
@@ -116,3 +113,4 @@ pip3 install enum34
 <li><a href="https://api.copyleaks.com/Guides/HowToUse">Copyleaks API guide</a></li>
 <li><a href="https://copyleaks.com">Copyleaks Homepage</a></li>
 </ul>
+</body>
