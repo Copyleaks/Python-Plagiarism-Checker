@@ -22,6 +22,8 @@
  SOFTWARE.
 '''
 
+from copyleaksSdk.models.requests.properties.ScanProperties import ScanProperties
+
 class UrlDocument:
     '''
     This class represent a url to be submitted to scan in Copyleaks API

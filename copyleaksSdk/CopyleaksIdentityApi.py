@@ -25,7 +25,7 @@
 import requests
 import json
 
-from copyleaksSdk.helpers.ConfigurationManager import ConfigurationManager
+from copyleaksSdk.helpers.Settings import Settings
 from copyleaksSdk.exceptions.Commandfailederror import CommandFailedError
 from copyleaksSdk.models.responses.LoginResponse import LoginResponse
 from copyleaksSdk.helpers.RequestHelper import RequestHelper
@@ -35,9 +35,9 @@ class CopyleaksIdentityApi:
     Connect to Copyleaks identity server, get your token and perform readonly operations
     '''
     def __init__(self, certificate=None):
-        self.copyleaks_identity_server = ConfigurationManager.instance().configuration['idEndPoint']
-        self.api_version = ConfigurationManager.instance().configuration['apiVersion']
-        self.timeout = ConfigurationManager.instance().configuration['requestsTimeout']
+        self.copyleaks_identity_server = Settings.IdEndPoint
+        self.api_version = Settings.ApiVersion
+        self.timeout = Settings.RequestsTimeout
         self.certificate = certificate
 
     '''

@@ -25,6 +25,9 @@
 from copyleaksSdk.models.responses.result.BasicResult import BasicResult
 
 class InternetResult(BasicResult):
+    '''
+    A result from the Internet
+    '''
     def __init__(self, data):
         self.url = data.get('url')
         BasicResult.__init__(self, data)

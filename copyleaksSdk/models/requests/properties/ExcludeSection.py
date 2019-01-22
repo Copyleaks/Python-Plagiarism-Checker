@@ -29,7 +29,7 @@ class ExcludeSection:
     Attributes:
     -----------
         references : boolean
-            Exclude references from the scan.
+            Exclude references from the scan, relevant only for Education product.
         quotes: boolean
             Exclude quotes from the scan.
         titles: boolean
@@ -37,8 +37,9 @@ class ExcludeSection:
         htmlTemplate: boolean
             When scanning an HTML document, exclude the HTML tags and attribute metadata from the scan. 
     '''
-    def __init__(self, references=False, quotes=False, titles=False, htmlTemplate=False):
-        self.references = references
+    def __init__(self, references=None, quotes=False, titles=False, htmlTemplate=False):
+        if references is not None:
+            self.references = references
         self.quotes = quotes
         self.titles = titles
         self.htmlTemplate = htmlTemplate

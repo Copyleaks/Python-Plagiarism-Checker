@@ -27,6 +27,9 @@ from copyleaksSdk.models.responses.result.BaseResponse import BaseResponse
 from copyleaksSdk.models.responses.result.ResultsSection import ResultsSection
 
 class Result(BaseResponse):
+    '''
+    The result of a submitted scan
+    '''
     def __init__(self, data):
         self.scannedDocument = ScannedDocument(data.get('scannedDocument', {}))
         self.results = ResultsSection(data.get('results', {}))

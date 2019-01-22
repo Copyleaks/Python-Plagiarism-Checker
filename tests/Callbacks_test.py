@@ -78,7 +78,7 @@ class Callbacks_test(unittest.TestCase):
         self.assertEqual(completed_callback.results.score.relatedMeaningWords, json_data['results']['score']['relatedMeaningWords'])
 
     def test_CreditsCheckCallback(self):
-        data = '''{"status":4,"error":{"message":"Error meassage","code":1},"developerPayload":"payload"}'''
+        data = '''{"credits": 1, "status":4,"error":{"message":"Error meassage","code":1},"developerPayload":"payload"}'''
         json_data = json.loads(data)
         credits_calback = CreditsCheckCallback(json_data)
         self.assertEqual(credits_calback.status, json_data['status'])

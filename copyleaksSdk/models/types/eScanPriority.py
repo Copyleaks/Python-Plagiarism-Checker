@@ -22,8 +22,24 @@
  SOFTWARE.
 '''
 
-class ErrorSection:
-    def __init__(self, data):
-        if data:
-            self.message = data.get('message')
-            self.code = data.get('code')
+from enum import IntEnum
+
+class eScanPriority(IntEnum):
+    '''
+    The status of the scan request
+
+    Attributes:
+    -----------
+        Low: 
+            Start the scan in low priority.
+            Will consume the least amount of credits and will take the longest time to complete the scan
+        Normal: 
+            Start the scan in normal priority.
+        High:
+            Start the scan in high priority.
+            Will consume the highest amount of credits and will take the shortest time to complete the scan
+    '''
+    Low = 1
+    Normal = 2
+    High = 3
+    

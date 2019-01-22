@@ -34,7 +34,7 @@ import base64
 from copyleaksSdk.CopyleaksIdentityApi import CopyleaksIdentityApi
 from copyleaksSdk.CopyleaksScansApi import CopyleaksScansApi
 from copyleaksSdk.models.types.eProduct import eProduct
-from copyleaksSdk.models.requests.ScanProperties import ScanProperties
+from copyleaksSdk.models.requests.properties.ScanProperties import ScanProperties
 from copyleaksSdk.models.types.eDomainsFilteringMode import eDomainsFilteringMode
 from copyleaksSdk.models.types.eSubmitAction import eSubmitAction
 from copyleaksSdk.models.types.eSubmitOutputMode import eSubmitOutputMode

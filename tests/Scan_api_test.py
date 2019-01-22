@@ -32,7 +32,7 @@ from copyleaksSdk.models.types.eProduct import eProduct
 from copyleaksSdk.models.requests.FileDocument import FileDocument
 from copyleaksSdk.models.requests.UrlDocument import UrlDocument
 from copyleaksSdk.models.requests.FileOcrDocument import FileOcrDocument
-from copyleaksSdk.models.requests.ScanProperties import ScanProperties
+from copyleaksSdk.models.requests.properties.ScanProperties import ScanProperties
 from copyleaksSdk.models.types.eSubmitAction import eSubmitAction
 from copyleaksSdk.models.requests.StartRequest import StartRequest
 
@@ -42,9 +42,10 @@ class scan_api_test(unittest.TestCase):
     API_KEY = "YOUR API KEY"
     
     def setUp(self):
+        assert scan_api_test.EMAIL != "YOUR EMAIL", "Email is missing"
+        assert scan_api_test.API_KEY != "YOUR API KEY", "Api key is missing"
         self.token = CopyleaksIdentityApi().login(scan_api_test.EMAIL, scan_api_test.API_KEY).access_token
-        self.scan_id = uuid.uuid4()
-        #self.scan_id = "python_test2"
+        self.scan_id = str(uuid.uuid4())[:30]
         self.api = CopyleaksScansApi(eProduct.Education, self.token)
     
     def test_credit_balance(self):
@@ -58,7 +59,7 @@ class scan_api_test(unittest.TestCase):
             properties=ScanProperties(
                 action = eSubmitAction.checkCredits,
                 sandbox = True,
-                experation = 2880
+                expiration = 2880
             )
             
         )
@@ -90,11 +91,11 @@ class scan_api_test(unittest.TestCase):
             properties=ScanProperties(
                     action = eSubmitAction.checkCredits,
                     sandbox = True,
-                    experation = 2880
+                    expiration = 2880
             )
         )
         try:
-            self.api.submit_ocr(f"ocr_file_{self.scan_id}", ocr_document)
+            self.api.submit_ocr(f"ocr_{self.scan_id}", ocr_document)
         except Exception as ex:
             self.fail(f"submit ocr file has failed: {ex}")
     
@@ -102,19 +103,22 @@ class scan_api_test(unittest.TestCase):
         progress = self.api.progress(f"url_{self.scan_id}")
         self.assertTrue(type(progress) is int)
 
-    def test_results(self):
-        result = self.api.result(f"url_{self.scan_id}")
-        self.assertTrue(result.scannedDocument.totalWords == 2)
-
     def test_start(self):
+        scan_ids = [f"file_{self.scan_id}"]
         try:
-            self.api.start([f"file_{self.scan_id}"])
+            response = self.api.start(scan_ids)
         except Exception as ex:
             self.fail(f"start request failed: {ex}")
+        self.assertEqual(response.failed ,[])
+        self.assertEqual(list(map(lambda x: x.id, response.success)), scan_ids)
         
+    def test_results(self):
+        result = self.api.result(f"url_{self.scan_id}")
+        self.assertTrue(type(result.scannedDocument.totalWords) is int)
+
     def test_delete(self):
         try:
-            self.api.delete([f"file_{self.scan_id}"])
+            self.api.delete([f"url_{self.scan_id}"])
         except Exception as ex:
             self.fail(f"delete request failed: {ex}")
     

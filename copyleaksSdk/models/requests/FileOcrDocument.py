@@ -23,6 +23,7 @@
 '''
 
 from copyleaksSdk.models.requests.FileDocument import FileDocument
+from copyleaksSdk.models.requests.properties.ScanProperties import ScanProperties
 
 class FileOcrDocument(FileDocument):
     '''

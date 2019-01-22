@@ -33,7 +33,11 @@ class identity_test(unittest.TestCase):
     EMAIL = "YOUR EMAIL"
     API_KEY = "YOUR API KEY"
     SCAN_ID="YOUR SCAN ID"
-
+    
+    def setUp(self):
+        assert identity_test.EMAIL != "YOUR EMAIL", "Email is missing"
+        assert identity_test.API_KEY != "YOUR API KEY", "api key is missing"
+        assert identity_test.SCAN_ID != "YOUR SCAN ID", "Scan id is missing"
     def test_login(self):
         identity = CopyleaksIdentityApi()
         token = identity.login(identity_test.EMAIL, identity_test.API_KEY)

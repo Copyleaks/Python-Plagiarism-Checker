@@ -26,29 +26,9 @@ import os
 import json
 import threading
 
-class ConfigurationManager:
-    '''
-    Holds Copyleaks SDK HTTP configuration
-    '''
-    __singleton_lock = threading.Lock()
-    __singleton_instance = None
-
-    @staticmethod
-    def instance():
-        if not ConfigurationManager.__singleton_instance:
-            with ConfigurationManager.__singleton_lock:
-                if not ConfigurationManager.__singleton_instance:
-                    ConfigurationManager.__singleton_instance = ConfigurationManager()
-        return ConfigurationManager.__singleton_instance
-
-    '''
-    Copyleaks configuration constructor
-    '''
-    def __init__(self):
-        self.configuration = {
-            "apiEndPoint": "https://api.copyleaks.com/",
-            #"idEndPoint":  "https://id.copyleaks.com/",
-            "idEndPoint":  "https://localhost:5001/",
-            "requestsTimeout": 60000,
-            "apiVersion": "v3"
-        }
+class Settings:
+    ApiEndPoint = "https://api.copyleaks.com/"
+    IdEndPoint = "https://id.copyleaks.com/"
+    RequestsTimeout = 60000
+    ApiVersion = "v3"
+    

@@ -27,7 +27,7 @@ import json
 import requests
 
 from copyleaksSdk.exceptions.Commandfailederror import CommandFailedError
-from copyleaksSdk.helpers.ConfigurationManager import ConfigurationManager
+from copyleaksSdk.helpers.Settings import Settings
 from copyleaksSdk.helpers.RequestHelper import RequestHelper
 from copyleaksSdk.models.requests.FileDocument import FileDocument
 from copyleaksSdk.models.requests.FileOcrDocument import FileOcrDocument
@@ -52,12 +52,9 @@ class CopyleaksScansApi:
         self.product = product
         self.token = token
         self.headers = RequestHelper.get_authentication_header(self.token)
-        self.copyleaks_api_server = ConfigurationManager.instance(
-        ).configuration['apiEndPoint']
-        self.api_version = ConfigurationManager.instance(
-        ).configuration['apiVersion']
-        self.timeout = ConfigurationManager.instance(
-        ).configuration['requestsTimeout']
+        self.copyleaks_api_server = Settings.ApiEndPoint
+        self.api_version = Settings.ApiVersion
+        self.timeout = Settings.RequestsTimeout
         self.certificate = certificate
 
     def credit_balance(self):

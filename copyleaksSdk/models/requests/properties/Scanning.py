@@ -34,6 +34,7 @@ class Scanning:
             Scan against copyleaks internal database?
             If specified true, it will also index the scanned document into the database.
     '''
-    def __init__(self, internet=True, copyleaksDB=True):
+    def __init__(self, internet=True, copyleaksDB=None):
         self.internet = internet
-        self.copyleaksDB = copyleaksDB
+        if copyleaksDB is not None:
+            self.copyleaksDB = copyleaksDB

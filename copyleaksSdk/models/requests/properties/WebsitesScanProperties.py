@@ -22,13 +22,17 @@
  SOFTWARE.
 '''
 
+
+from copyleaksSdk.models.requests.properties.ScanProperties import ScanProperties
 from copyleaksSdk.models.types.eDomainsFilteringMode import eDomainsFilteringMode
 from copyleaksSdk.models.types.eSubmitAction import eSubmitAction
 from copyleaksSdk.models.types.eSubmitOutputMode import eSubmitOutputMode
+from copyleaksSdk.models.types.eScanPriority import eScanPriority
 
-class ScanProperties:
+
+class WebsitesScanProperties(ScanProperties):
     '''
-    The scan request properties
+    The scan request properties for Education product
 
     Attributes:
         action: eSubmitAction
@@ -37,18 +41,15 @@ class ScanProperties:
             The output of the scan results
         developerPayload : string
             Custom developer payload that will be attached to the scan results
+        priority : eScanPriority
+            The priority of the scan, lower priority will consume less credits and take longer to yield results 
         sandbox: boolean
             set true to enable sandbox mode, used for development
-        reportExport: ReportCustomization
-            Configuration for the results report
-            If left as None a report will not be generated
         callbacks: CallbacksSection
             Register your HTTP callback endpoints with Copyleaks API
-        experation: int (days)
+        expiration: int (days)
             The expiration time of the scan, when expired the scan results will be deleted from Copyleak's servers
             The maximum allowed value is 2880 (~ 4 month)
-        scanning: Scanning
-            Defines which mediums to scan.
         exclude: ExcludeSection
             Exclude properties from scan
         filters: Filters
@@ -56,22 +57,29 @@ class ScanProperties:
         author: Author
             Represent the author of the submitted content
     '''
-    def __init__(self, action=eSubmitAction.Scan, outputMode=eSubmitOutputMode.TXT, developerPayload=None, sandbox=False, callbacks=None
-        , experation=2880, scanning=None, exclude=None, filters=None, author=None, reportExport=None):
-        self.action = action
-        self.outputMode = outputMode
-        self.developerPayload = developerPayload
-        self.sandbox = sandbox
-        if reportExport:
-            self.reportExport = reportExport
-        if callbacks:
-            self.callbacks = callbacks
-        self.experation = experation
-        if scanning:
-            self.scanning = scanning
-        if exclude:
-            self.exclude = exclude
-        if filters:
-            self.filters = filters
-        if author:
-            self.author = author
+    def __init__(self, 
+        action=eSubmitAction.Scan, 
+        outputMode=eSubmitOutputMode.TXT, 
+        developerPayload=None, 
+        priority=eScanPriority.Normal,
+        sandbox=False, 
+        callbacks=None, 
+        expiration=2880, 
+        exclude=None, 
+        filters=None, 
+        author=None):
+        
+        ScanProperties.__init__(self, 
+                                action,
+                                outputMode,
+                                developerPayload,
+                                priority,
+                                sandbox, 
+                                callbacks, 
+                                expiration, 
+                                exclude, 
+                                filters, 
+                                author)
+
+
+

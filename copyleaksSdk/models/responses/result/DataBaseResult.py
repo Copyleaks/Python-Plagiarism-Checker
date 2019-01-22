@@ -25,6 +25,9 @@
 from copyleaksSdk.models.responses.result.BasicInternalResult import BasicInternalResult
 
 class DataBaseResult(BasicInternalResult):
+    '''
+    A result from Copyleaks internal database
+    '''
     def __init__(self, data):
         BasicInternalResult.__init__(self, data)
         self.IsUploadedByMe = data.get('IsUploadedByMe')
