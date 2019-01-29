@@ -23,6 +23,7 @@
 '''
 
 from copyleaksSdk.models.responses.result.Result import Result
+from copyleaksSdk.models.responses.result.DownloadableReport import DownloadableReport
 
 class CompletedCallback(Result):
     '''
@@ -31,3 +32,4 @@ class CompletedCallback(Result):
     '''
     def __init__(self, data):
         Result.__init__(self, data)
+        self.downloadableReport = DownloadableReport(data.get('downloadableReport', {}))

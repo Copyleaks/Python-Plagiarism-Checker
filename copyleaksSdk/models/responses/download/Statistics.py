@@ -22,31 +22,21 @@
  SOFTWARE.
 '''
 
-import unittest
+class Statistics:
+    '''
+    The number of 'identical', 'minorChanges' and 'relatedMeaning' matches found
 
-from datetime import datetime, timedelta
-from dateutil import parser
-from copyleaksSdk.CopyleaksIdentityApi import CopyleaksIdentityApi
-
-class identity_test(unittest.TestCase):
-    TOKEN = ""
-    EMAIL = "YOUR EMAIL"
-    API_KEY = "YOUR API KEY"
-    SCAN_ID="YOUR SCAN ID"
-    
-    def setUp(self):
-        assert identity_test.EMAIL != "YOUR EMAIL", "Email is missing"
-        assert identity_test.API_KEY != "YOUR API KEY", "api key is missing"
-        assert identity_test.SCAN_ID != "YOUR SCAN ID", "Scan id is missing"
-    def test_login(self):
-        identity = CopyleaksIdentityApi()
-        token = identity.login(identity_test.EMAIL, identity_test.API_KEY)
-
-        self.assertTrue(len(token.access_token) > 10)
+    Attributes:
+    -----------
+        identical: int
+            Number of exact words in the text
+        minorChanges: int
+            Number of nearly identical words with small differences like *slow* becomes *slowly*
+        relatedMeaning: int
+            Number of paraphrased content stating similar ideas with different words
         
-        issued = parser.parse(token.issued).replace(tzinfo=None)
-        self.assertAlmostEqual(issued, datetime.utcnow(), delta=timedelta(days=2))
-        
-        expires = parser.parse(token.expires).replace(tzinfo=None)
-        self.assertAlmostEqual(expires, datetime.utcnow(), delta=timedelta(days=2))
-        identity_test.TOKEN = token.access_token
+    '''
+    def __init__(self, data):
+        self.identical = data.get('identical')
+        self.minorChanges = data.get('minorChanges')
+        self.relatedMeaning = data.get('relatedMeaning')

@@ -43,7 +43,7 @@ from copyleaksSdk.models.requests.UrlDocument import UrlDocument
 class EducationRequestModelTests(unittest.TestCase):
 
     def test_education_full_file_document(self):
-        data = '''{"base64":"aGVsbG8gd29ybGQ=","filename":"file.txt","properties":{"action":0,"outputMode":1,"developerPayload":"DeveloperPayload","sandbox":true,"callbacks":{"completion":"https://completeion/callback","onNewResult":"https://new-result/callback"},
+        data = '''{"base64":"aGVsbG8gd29ybGQ=","filename":"file.txt","properties":{"action":0,"includeHtml":true,"developerPayload":"DeveloperPayload","sandbox":true,"callbacks":{"completion":"https://completeion/callback","onNewResult":"https://new-result/callback"},
         "expiration":123,"scanning":{"internet":true,"copyleaksDB":true},"exclude":{"references":false,"quotes":false,"titles":false,"htmlTemplate":false},
         "filters":{"idenitcalEnabled":true,"minorChangedEnabled":true,"relatedMeaningEnabled":true,"minCopiedWords":10,"safeSearch":true,"domains":["www.google.com","www.bing.com"],"domainsMode":1},"author":{"id":"AuthorId"}}}'''
         json_data = json.loads(data)
@@ -53,7 +53,7 @@ class EducationRequestModelTests(unittest.TestCase):
             filename = json_data['filename'],
             properties = EducationScanProperties(
                 action = json_data['properties']['action'],
-                outputMode = json_data['properties']['outputMode'],
+                includeHtml = json_data['properties']['includeHtml'],
                 developerPayload = json_data['properties']['developerPayload'],
                 sandbox = json_data['properties']['sandbox'],
                 callbacks = CallbacksSection(json_data['properties']['callbacks']['completion'], json_data['properties']['callbacks']['onNewResult']),
@@ -81,7 +81,7 @@ class EducationRequestModelTests(unittest.TestCase):
         self.assertEqual(fileDocument.base64, json_data['base64'])
         self.assertEqual(fileDocument.filename, json_data['filename'])
         self.assertEqual(fileDocument.properties.action, json_data['properties']['action'])
-        self.assertEqual(fileDocument.properties.outputMode, json_data['properties']['outputMode'])
+        self.assertEqual(fileDocument.properties.includeHtml, json_data['properties']['includeHtml'])
         self.assertEqual(fileDocument.properties.developerPayload, json_data['properties']['developerPayload'])
         self.assertEqual(fileDocument.properties.sandbox, json_data['properties']['sandbox'])
         self.assertEqual(fileDocument.properties.callbacks.completion, json_data['properties']['callbacks']['completion'])
@@ -110,7 +110,7 @@ class EducationRequestModelTests(unittest.TestCase):
         self.assertEqual(fileDocument.filename, filename)
 
     def test_education_full_ocr_file_document(self):
-        data = '''{"langCode":"en","base64":"aGVsbG8gd29ybGQ=","filename":"file.txt","properties":{"action":0,"outputMode":1,"developerPayload":"DeveloperPayload","sandbox":true,"callbacks":{"completion":"https://completeion/callback","onNewResult":"https://new-result/callback"},"expiration":123,"scanning":{"internet":true,"copyleaksDB":true},"exclude":{"references":false,"quotes":false,"titles":false,"htmlTemplate":false},"filters":{"idenitcalEnabled":true,"minorChangedEnabled":true,"relatedMeaningEnabled":true,"minCopiedWords":10,"safeSearch":true,"domains":["www.google.com","www.bing.com"],"domainsMode":1},"author":{"id":"AuthorId"}}}'''
+        data = '''{"langCode":"en","base64":"aGVsbG8gd29ybGQ=","filename":"file.txt","properties":{"action":0,"includeHtml":true,"developerPayload":"DeveloperPayload","sandbox":true,"callbacks":{"completion":"https://completeion/callback","onNewResult":"https://new-result/callback"},"expiration":123,"scanning":{"internet":true,"copyleaksDB":true},"exclude":{"references":false,"quotes":false,"titles":false,"htmlTemplate":false},"filters":{"idenitcalEnabled":true,"minorChangedEnabled":true,"relatedMeaningEnabled":true,"minCopiedWords":10,"safeSearch":true,"domains":["www.google.com","www.bing.com"],"domainsMode":1},"author":{"id":"AuthorId"}}}'''
         json_data = json.loads(data)
     
         fileOcrDocument = FileOcrDocument(
@@ -119,7 +119,7 @@ class EducationRequestModelTests(unittest.TestCase):
                 filename=json_data['filename'],
                 properties=EducationScanProperties(
                 action = json_data['properties']['action'],
-                outputMode = json_data['properties']['outputMode'],
+                includeHtml = json_data['properties']['includeHtml'],
                 developerPayload = json_data['properties']['developerPayload'],
                 sandbox = json_data['properties']['sandbox'],
                 callbacks = CallbacksSection(json_data['properties']['callbacks']['completion'], json_data['properties']['callbacks']['onNewResult']),
@@ -147,7 +147,7 @@ class EducationRequestModelTests(unittest.TestCase):
         self.assertEqual(fileOcrDocument.base64, json_data['base64'])
         self.assertEqual(fileOcrDocument.filename, json_data['filename'])
         self.assertEqual(fileOcrDocument.properties.action, json_data['properties']['action'])
-        self.assertEqual(fileOcrDocument.properties.outputMode, json_data['properties']['outputMode'])
+        self.assertEqual(fileOcrDocument.properties.includeHtml, json_data['properties']['includeHtml'])
         self.assertEqual(fileOcrDocument.properties.developerPayload, json_data['properties']['developerPayload'])
         self.assertEqual(fileOcrDocument.properties.sandbox, json_data['properties']['sandbox'])
         self.assertEqual(fileOcrDocument.properties.callbacks.completion, json_data['properties']['callbacks']['completion'])
@@ -182,13 +182,13 @@ class EducationRequestModelTests(unittest.TestCase):
         self.assertEqual(fileOcrDocument.filename, filename)
 
     def test_education_full_url_document(self):
-        data = '''{"url":"http://www.example.com","properties":{"action":0,"outputMode":1,"developerPayload":"DeveloperPayload","sandbox":true,"callbacks":{"completion":"https://completeion/callback","onNewResult":"https://new-result/callback"},"expiration":123,"scanning":{"internet":true,"copyleaksDB":true},"exclude":{"references":false,"quotes":false,"titles":false,"htmlTemplate":false},"filters":{"idenitcalEnabled":true,"minorChangedEnabled":true,"relatedMeaningEnabled":true,"minCopiedWords":10,"safeSearch":true,"domains":["www.google.com","www.bing.com"],"domainsMode":1},"author":{"id":"AuthorId"}}}'''
+        data = '''{"url":"http://www.example.com","properties":{"action":0,"includeHtml":true,"developerPayload":"DeveloperPayload","sandbox":true,"callbacks":{"completion":"https://completeion/callback","onNewResult":"https://new-result/callback"},"expiration":123,"scanning":{"internet":true,"copyleaksDB":true},"exclude":{"references":false,"quotes":false,"titles":false,"htmlTemplate":false},"filters":{"idenitcalEnabled":true,"minorChangedEnabled":true,"relatedMeaningEnabled":true,"minCopiedWords":10,"safeSearch":true,"domains":["www.google.com","www.bing.com"],"domainsMode":1},"author":{"id":"AuthorId"}}}'''
         json_data = json.loads(data)
         urlDocument = UrlDocument(
                 url = json_data['url'],
                 properties=EducationScanProperties(
                 action = json_data['properties']['action'],
-                outputMode = json_data['properties']['outputMode'],
+                includeHtml = json_data['properties']['includeHtml'],
                 developerPayload = json_data['properties']['developerPayload'],
                 sandbox = json_data['properties']['sandbox'],
                 callbacks = CallbacksSection(json_data['properties']['callbacks']['completion'], json_data['properties']['callbacks']['onNewResult']),
@@ -215,7 +215,7 @@ class EducationRequestModelTests(unittest.TestCase):
 
         self.assertEqual(urlDocument.url, json_data['url'])
         self.assertEqual(urlDocument.properties.action, json_data['properties']['action'])
-        self.assertEqual(urlDocument.properties.outputMode, json_data['properties']['outputMode'])
+        self.assertEqual(urlDocument.properties.includeHtml, json_data['properties']['includeHtml'])
         self.assertEqual(urlDocument.properties.developerPayload, json_data['properties']['developerPayload'])
         self.assertEqual(urlDocument.properties.sandbox, json_data['properties']['sandbox'])
         self.assertEqual(urlDocument.properties.callbacks.completion, json_data['properties']['callbacks']['completion'])
@@ -247,7 +247,7 @@ class EducationRequestModelTests(unittest.TestCase):
 class BusinessesRequestModelTests(unittest.TestCase):
 
     def test_businesses_full_file_document(self):
-        data = '''{"base64":"aGVsbG8gd29ybGQ=","filename":"file.txt","properties":{"action":0,"outputMode":1,"developerPayload":"DeveloperPayload","sandbox":true,"callbacks":{"completion":"https://completeion/callback","onNewResult":"https://new-result/callback"},
+        data = '''{"base64":"aGVsbG8gd29ybGQ=","filename":"file.txt","properties":{"action":0,"includeHtml":true,"developerPayload":"DeveloperPayload","sandbox":true,"callbacks":{"completion":"https://completeion/callback","onNewResult":"https://new-result/callback"},
         "expiration":123,"scanning":{"internet":true,"copyleaksDB":true},"exclude":{"references":false,"quotes":false,"titles":false,"htmlTemplate":false},
         "filters":{"idenitcalEnabled":true,"minorChangedEnabled":true,"relatedMeaningEnabled":true,"minCopiedWords":10,"safeSearch":true,"domains":["www.google.com","www.bing.com"],"domainsMode":1},"author":{"id":"AuthorId"}}}'''
         json_data = json.loads(data)
@@ -257,7 +257,7 @@ class BusinessesRequestModelTests(unittest.TestCase):
             filename=json_data['filename'],
             properties=BusinessesScanProperties(
                 action=json_data['properties']['action'],
-                outputMode=json_data['properties']['outputMode'],
+                includeHtml=json_data['properties']['includeHtml'],
                 developerPayload=json_data['properties']['developerPayload'],
                 sandbox=json_data['properties']['sandbox'],
                 callbacks=CallbacksSection(
@@ -286,8 +286,8 @@ class BusinessesRequestModelTests(unittest.TestCase):
         self.assertEqual(fileDocument.filename, json_data['filename'])
         self.assertEqual(fileDocument.properties.action,
                          json_data['properties']['action'])
-        self.assertEqual(fileDocument.properties.outputMode,
-                         json_data['properties']['outputMode'])
+        self.assertEqual(fileDocument.properties.includeHtml,
+                         json_data['properties']['includeHtml'])
         self.assertEqual(fileDocument.properties.developerPayload,
                          json_data['properties']['developerPayload'])
         self.assertEqual(fileDocument.properties.sandbox,
@@ -331,7 +331,7 @@ class BusinessesRequestModelTests(unittest.TestCase):
         self.assertEqual(fileDocument.filename, filename)
 
     def test_businesses_full_ocr_file_document(self):
-        data = '''{"langCode":"en","base64":"aGVsbG8gd29ybGQ=","filename":"file.txt","properties":{"action":0,"outputMode":1,"developerPayload":"DeveloperPayload","sandbox":true,"callbacks":{"completion":"https://completeion/callback","onNewResult":"https://new-result/callback"},"expiration":123,"scanning":{"internet":true,"copyleaksDB":true},"exclude":{"references":false,"quotes":false,"titles":false,"htmlTemplate":false},"filters":{"idenitcalEnabled":true,"minorChangedEnabled":true,"relatedMeaningEnabled":true,"minCopiedWords":10,"safeSearch":true,"domains":["www.google.com","www.bing.com"],"domainsMode":1},"author":{"id":"AuthorId"}}}'''
+        data = '''{"langCode":"en","base64":"aGVsbG8gd29ybGQ=","filename":"file.txt","properties":{"action":0,"includeHtml":true,"developerPayload":"DeveloperPayload","sandbox":true,"callbacks":{"completion":"https://completeion/callback","onNewResult":"https://new-result/callback"},"expiration":123,"scanning":{"internet":true,"copyleaksDB":true},"exclude":{"references":false,"quotes":false,"titles":false,"htmlTemplate":false},"filters":{"idenitcalEnabled":true,"minorChangedEnabled":true,"relatedMeaningEnabled":true,"minCopiedWords":10,"safeSearch":true,"domains":["www.google.com","www.bing.com"],"domainsMode":1},"author":{"id":"AuthorId"}}}'''
         json_data = json.loads(data)
 
         fileOcrDocument = FileOcrDocument(
@@ -340,7 +340,7 @@ class BusinessesRequestModelTests(unittest.TestCase):
             filename=json_data['filename'],
             properties=BusinessesScanProperties(
                 action=json_data['properties']['action'],
-                outputMode=json_data['properties']['outputMode'],
+                includeHtml=json_data['properties']['includeHtml'],
                 developerPayload=json_data['properties']['developerPayload'],
                 sandbox=json_data['properties']['sandbox'],
                 callbacks=CallbacksSection(
@@ -371,8 +371,8 @@ class BusinessesRequestModelTests(unittest.TestCase):
         self.assertEqual(fileOcrDocument.filename, json_data['filename'])
         self.assertEqual(fileOcrDocument.properties.action,
                          json_data['properties']['action'])
-        self.assertEqual(fileOcrDocument.properties.outputMode,
-                         json_data['properties']['outputMode'])
+        self.assertEqual(fileOcrDocument.properties.includeHtml,
+                         json_data['properties']['includeHtml'])
         self.assertEqual(fileOcrDocument.properties.developerPayload,
                          json_data['properties']['developerPayload'])
         self.assertEqual(fileOcrDocument.properties.sandbox,
@@ -426,13 +426,13 @@ class BusinessesRequestModelTests(unittest.TestCase):
         self.assertEqual(fileOcrDocument.filename, filename)
 
     def test_businesses_full_url_document(self):
-        data = '''{"url":"http://www.example.com","properties":{"action":0,"outputMode":1,"developerPayload":"DeveloperPayload","sandbox":true,"callbacks":{"completion":"https://completeion/callback","onNewResult":"https://new-result/callback"},"expiration":123,"scanning":{"internet":true,"copyleaksDB":true},"exclude":{"references":false,"quotes":false,"titles":false,"htmlTemplate":false},"filters":{"idenitcalEnabled":true,"minorChangedEnabled":true,"relatedMeaningEnabled":true,"minCopiedWords":10,"safeSearch":true,"domains":["www.google.com","www.bing.com"],"domainsMode":1},"author":{"id":"AuthorId"}}}'''
+        data = '''{"url":"http://www.example.com","properties":{"action":0,"includeHtml":true,"developerPayload":"DeveloperPayload","sandbox":true,"callbacks":{"completion":"https://completeion/callback","onNewResult":"https://new-result/callback"},"expiration":123,"scanning":{"internet":true,"copyleaksDB":true},"exclude":{"references":false,"quotes":false,"titles":false,"htmlTemplate":false},"filters":{"idenitcalEnabled":true,"minorChangedEnabled":true,"relatedMeaningEnabled":true,"minCopiedWords":10,"safeSearch":true,"domains":["www.google.com","www.bing.com"],"domainsMode":1},"author":{"id":"AuthorId"}}}'''
         json_data = json.loads(data)
         urlDocument = UrlDocument(
             url=json_data['url'],
             properties=BusinessesScanProperties(
                 action=json_data['properties']['action'],
-                outputMode=json_data['properties']['outputMode'],
+                includeHtml=json_data['properties']['includeHtml'],
                 developerPayload=json_data['properties']['developerPayload'],
                 sandbox=json_data['properties']['sandbox'],
                 callbacks=CallbacksSection(
@@ -460,8 +460,8 @@ class BusinessesRequestModelTests(unittest.TestCase):
         self.assertEqual(urlDocument.url, json_data['url'])
         self.assertEqual(urlDocument.properties.action,
                          json_data['properties']['action'])
-        self.assertEqual(urlDocument.properties.outputMode,
-                         json_data['properties']['outputMode'])
+        self.assertEqual(urlDocument.properties.includeHtml,
+                         json_data['properties']['includeHtml'])
         self.assertEqual(urlDocument.properties.developerPayload,
                          json_data['properties']['developerPayload'])
         self.assertEqual(urlDocument.properties.sandbox,
@@ -508,13 +508,13 @@ class BusinessesRequestModelTests(unittest.TestCase):
 
 class WebsitesRequestModelTests(unittest.TestCase):
     def test_websites_full_url_document(self):
-        data = '''{"url":"http://www.example.com","properties":{"action":0,"outputMode":1,"developerPayload":"DeveloperPayload","sandbox":true,"callbacks":{"completion":"https://completeion/callback","onNewResult":"https://new-result/callback"},"expiration":123,"scanning":{"internet":true,"copyleaksDB":true},"exclude":{"references":false,"quotes":false,"titles":false,"htmlTemplate":false},"filters":{"idenitcalEnabled":true,"minorChangedEnabled":true,"relatedMeaningEnabled":true,"minCopiedWords":10,"safeSearch":true,"domains":["www.google.com","www.bing.com"],"domainsMode":1},"author":{"id":"AuthorId"}}}'''
+        data = '''{"url":"http://www.example.com","properties":{"action":0,"includeHtml":true,"developerPayload":"DeveloperPayload","sandbox":true,"callbacks":{"completion":"https://completeion/callback","onNewResult":"https://new-result/callback"},"expiration":123,"scanning":{"internet":true,"copyleaksDB":true},"exclude":{"references":false,"quotes":false,"titles":false,"htmlTemplate":false},"filters":{"idenitcalEnabled":true,"minorChangedEnabled":true,"relatedMeaningEnabled":true,"minCopiedWords":10,"safeSearch":true,"domains":["www.google.com","www.bing.com"],"domainsMode":1},"author":{"id":"AuthorId"}}}'''
         json_data = json.loads(data)
         urlDocument = UrlDocument(
             url=json_data['url'],
             properties=WebsitesScanProperties(
                 action=json_data['properties']['action'],
-                outputMode=json_data['properties']['outputMode'],
+                includeHtml=json_data['properties']['includeHtml'],
                 developerPayload=json_data['properties']['developerPayload'],
                 sandbox=json_data['properties']['sandbox'],
                 callbacks=CallbacksSection(
@@ -541,8 +541,8 @@ class WebsitesRequestModelTests(unittest.TestCase):
         self.assertEqual(urlDocument.url, json_data['url'])
         self.assertEqual(urlDocument.properties.action,
                          json_data['properties']['action'])
-        self.assertEqual(urlDocument.properties.outputMode,
-                         json_data['properties']['outputMode'])
+        self.assertEqual(urlDocument.properties.includeHtml,
+                         json_data['properties']['includeHtml'])
         self.assertEqual(urlDocument.properties.developerPayload,
                          json_data['properties']['developerPayload'])
         self.assertEqual(urlDocument.properties.sandbox,

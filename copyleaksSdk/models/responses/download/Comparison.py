@@ -22,31 +22,22 @@
  SOFTWARE.
 '''
 
-import unittest
+from copyleaksSdk.models.responses.download.SuspectedComparisonResults import SuspectedComparisonResults
 
-from datetime import datetime, timedelta
-from dateutil import parser
-from copyleaksSdk.CopyleaksIdentityApi import CopyleaksIdentityApi
+class Comparison:
+    '''
+    The suspected result match details
 
-class identity_test(unittest.TestCase):
-    TOKEN = ""
-    EMAIL = "YOUR EMAIL"
-    API_KEY = "YOUR API KEY"
-    SCAN_ID="YOUR SCAN ID"
-    
-    def setUp(self):
-        assert identity_test.EMAIL != "YOUR EMAIL", "Email is missing"
-        assert identity_test.API_KEY != "YOUR API KEY", "api key is missing"
-        assert identity_test.SCAN_ID != "YOUR SCAN ID", "Scan id is missing"
-    def test_login(self):
-        identity = CopyleaksIdentityApi()
-        token = identity.login(identity_test.EMAIL, identity_test.API_KEY)
-
-        self.assertTrue(len(token.access_token) > 10)
-        
-        issued = parser.parse(token.issued).replace(tzinfo=None)
-        self.assertAlmostEqual(issued, datetime.utcnow(), delta=timedelta(days=2))
-        
-        expires = parser.parse(token.expires).replace(tzinfo=None)
-        self.assertAlmostEqual(expires, datetime.utcnow(), delta=timedelta(days=2))
-        identity_test.TOKEN = token.access_token
+    Attributes:
+    -----------
+        identical: SuspectedComparisonResults
+            The full details of the identical matches
+        minorChanges: SuspectedComparisonResults
+            The full details of the minorChanges matches
+        relatedMeaning: SuspectedComparisonResults
+            The full details of the relatedMeaning matches
+    '''
+    def __init__(self, data):
+        self.identical = SuspectedComparisonResults(data.get('identical', {}))
+        self.minorChanges = SuspectedComparisonResults(data.get('minorChanges', {}))
+        self.relatedMeaning = SuspectedComparisonResults(data.get('relatedMeaning', {}))

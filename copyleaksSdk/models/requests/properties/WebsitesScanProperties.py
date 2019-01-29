@@ -26,7 +26,6 @@
 from copyleaksSdk.models.requests.properties.ScanProperties import ScanProperties
 from copyleaksSdk.models.types.eDomainsFilteringMode import eDomainsFilteringMode
 from copyleaksSdk.models.types.eSubmitAction import eSubmitAction
-from copyleaksSdk.models.types.eSubmitOutputMode import eSubmitOutputMode
 from copyleaksSdk.models.types.eScanPriority import eScanPriority
 
 
@@ -37,8 +36,8 @@ class WebsitesScanProperties(ScanProperties):
     Attributes:
         action: eSubmitAction
             The type of action to submit
-        outputMode: eSubmitOutputMode
-            The output of the scan results
+        includeHtml: boolean
+            When set to true the output mode of the report will be in HTML format
         developerPayload : string
             Custom developer payload that will be attached to the scan results
         priority : eScanPriority
@@ -59,7 +58,7 @@ class WebsitesScanProperties(ScanProperties):
     '''
     def __init__(self, 
         action=eSubmitAction.Scan, 
-        outputMode=eSubmitOutputMode.TXT, 
+        includeHtml=False, 
         developerPayload=None, 
         priority=eScanPriority.Normal,
         sandbox=False, 
@@ -71,7 +70,7 @@ class WebsitesScanProperties(ScanProperties):
         
         ScanProperties.__init__(self, 
                                 action,
-                                outputMode,
+                                includeHtml,
                                 developerPayload,
                                 priority,
                                 sandbox, 

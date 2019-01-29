@@ -22,31 +22,24 @@
  SOFTWARE.
 '''
 
-import unittest
+from copyleaksSdk.models.responses.download.MatchRanges import MatchRanges
 
-from datetime import datetime, timedelta
-from dateutil import parser
-from copyleaksSdk.CopyleaksIdentityApi import CopyleaksIdentityApi
+class SuspectedComparisonResults:
+    '''
 
-class identity_test(unittest.TestCase):
-    TOKEN = ""
-    EMAIL = "YOUR EMAIL"
-    API_KEY = "YOUR API KEY"
-    SCAN_ID="YOUR SCAN ID"
-    
-    def setUp(self):
-        assert identity_test.EMAIL != "YOUR EMAIL", "Email is missing"
-        assert identity_test.API_KEY != "YOUR API KEY", "api key is missing"
-        assert identity_test.SCAN_ID != "YOUR SCAN ID", "Scan id is missing"
-    def test_login(self):
-        identity = CopyleaksIdentityApi()
-        token = identity.login(identity_test.EMAIL, identity_test.API_KEY)
-
-        self.assertTrue(len(token.access_token) > 10)
+    Attributes:
+    -----------
+        groupId: array
+            The matches group id
+            In case of html the matched text can be seperated by html elements which are not part of the text.
+            In order to properly show the compared text the group id is used to get a sequential match.
+        source: MatchRanges
+            The match ranges of your content
+        suspected: MatchRanges
+            The match ranges of the suspected result
         
-        issued = parser.parse(token.issued).replace(tzinfo=None)
-        self.assertAlmostEqual(issued, datetime.utcnow(), delta=timedelta(days=2))
-        
-        expires = parser.parse(token.expires).replace(tzinfo=None)
-        self.assertAlmostEqual(expires, datetime.utcnow(), delta=timedelta(days=2))
-        identity_test.TOKEN = token.access_token
+    '''
+    def __init__(self, data):
+        self.groupId = data.get('groupId', [])
+        self.source = MatchRanges(data.get('source', {}))
+        self.suspected = MatchRanges(data.get('suspected', {}))

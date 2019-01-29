@@ -116,6 +116,13 @@ class scan_api_test(unittest.TestCase):
         result = self.api.result(f"url_{self.scan_id}")
         self.assertTrue(type(result.scannedDocument.totalWords) is int)
 
+    def test_download(self):
+        download_result = self.api.download_result(f"url_{self.scan_id}")
+        self.assertTrue(type(download_result.statistics.identical) is int)
+        self.assertTrue(type(download_result.statistics.minorChanges) is int)
+        self.assertTrue(type(download_result.statistics.relatedMeaning) is int)
+        
+
     def test_delete(self):
         try:
             self.api.delete([f"url_{self.scan_id}"])

@@ -22,18 +22,17 @@
  SOFTWARE.
 '''
 
-from enum import IntEnum
-
-class eSubmitOutputMode(IntEnum):
+class Ranges:
     '''
-    Configure the scan output mode
+    Match ranges
 
     Attributes:
     -----------
-        TXT:
-            The scan results will be in text format
-        HTML:
-            The scan results will be in HTML format when possible, i.e.: when submitting a url for scan
+        starts: array
+            An array of matches start positions
+        lengths: array
+            An array of matches lengths
     '''
-    TXT = 0,
-    HTML = 1
+    def __init__(self, data):
+        self.starts = data.get('starts',[])
+        self.lengths = data.get('lengths', [])

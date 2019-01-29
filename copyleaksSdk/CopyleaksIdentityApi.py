@@ -59,28 +59,3 @@ class CopyleaksIdentityApi:
         response = requests.post(url, headers=headers, data=json.dumps(payload), timeout=self.timeout, cert=self.certificate)
         json_response = RequestHelper.extract_json_from_response(response)
         return LoginResponse(json_response)
-
-    def __readonly_token(self, token, scan_id, request_method):
-        url = f"{self.copyleaks_identity_server}{self.api_version}/account/permissions/{scan_id}/readonly"
-        headers = RequestHelper.get_authentication_header(token)
-        response = request_method(url, headers=headers, cert=self.certificate)
-        return RequestHelper.extract_string_from_response(response)
-    
-    def get_read_only_key(self, token, scan_id):
-        '''
-        Get an existing readonly key for scan
-        '''
-        return self.__readonly_token(token, scan_id, requests.get)
-
-    def regenerate_readonly_key(self, token, scan_id):
-        '''
-        Get or create a readonly key for scan
-        '''
-        return self.__readonly_token(token, scan_id, requests.post)
-
-    def delete_readonly_key(self, token, scan_id):
-        '''
-        Delete a readonly key for scan
-        '''
-        return self.__readonly_token(token, scan_id, requests.delete)
-    

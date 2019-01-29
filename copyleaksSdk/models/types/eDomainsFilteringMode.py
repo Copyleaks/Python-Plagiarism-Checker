@@ -30,10 +30,10 @@ class eDomainsFilteringMode(IntEnum):
 
     Attributes:
     -----------
-        BlackList: 
-            Exclude the domains
-        WhiteList: 
-            Include the domain
+        Include: 
+            Include the domains
+        Exclude: 
+            Exclude the domain
     '''
-    BlackList = 0
-    WhiteList = 1
+    Include = 0
+    Exclude = 1

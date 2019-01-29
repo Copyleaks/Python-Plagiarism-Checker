@@ -46,7 +46,7 @@ class Filters:
             Treat `domains` as include or exclude list
     '''
     def __init__(self, idenitcalEnabled=True, minorChangedEnabled=True, relatedMeaningEnabled=True, minCopiedWords=None, 
-                safeSearch=False, domains=[], domainsMode=eDomainsFilteringMode.WhiteList):
+                safeSearch=False, domains=[], domainsMode=eDomainsFilteringMode.Exclude):
         self.idenitcalEnabled = idenitcalEnabled
         self.minorChangedEnabled = minorChangedEnabled
         self.relatedMeaningEnabled = relatedMeaningEnabled

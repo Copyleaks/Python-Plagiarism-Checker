@@ -21,32 +21,24 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
 '''
+from copyleaksSdk.models.responses.download.Statistics import Statistics
+from copyleaksSdk.models.responses.download.SuspectedVersion import SuspectedVersion
 
-import unittest
+class DownloadResponse:
+    '''
+    The full details of a suspected result found while scanning your content
 
-from datetime import datetime, timedelta
-from dateutil import parser
-from copyleaksSdk.CopyleaksIdentityApi import CopyleaksIdentityApi
-
-class identity_test(unittest.TestCase):
-    TOKEN = ""
-    EMAIL = "YOUR EMAIL"
-    API_KEY = "YOUR API KEY"
-    SCAN_ID="YOUR SCAN ID"
-    
-    def setUp(self):
-        assert identity_test.EMAIL != "YOUR EMAIL", "Email is missing"
-        assert identity_test.API_KEY != "YOUR API KEY", "api key is missing"
-        assert identity_test.SCAN_ID != "YOUR SCAN ID", "Scan id is missing"
-    def test_login(self):
-        identity = CopyleaksIdentityApi()
-        token = identity.login(identity_test.EMAIL, identity_test.API_KEY)
-
-        self.assertTrue(len(token.access_token) > 10)
+    Attributes:
+    -----------
+        statistics: Statistics
+            The match statistics of the suspected result
+        text: SuspectedVersion
+            The full details of the text comparison between the suspected result and your content
+        html: SuspectedVersion
+            The full details of the HTML comparison between the suspected result and your content
+    '''
+    def __init__(self, data):
+        self.statistics = Statistics(data.get('statistics', {}))
+        self.text = SuspectedVersion(data.get('text', {}))
+        self.html = SuspectedVersion(data.get('html', {}))
         
-        issued = parser.parse(token.issued).replace(tzinfo=None)
-        self.assertAlmostEqual(issued, datetime.utcnow(), delta=timedelta(days=2))
-        
-        expires = parser.parse(token.expires).replace(tzinfo=None)
-        self.assertAlmostEqual(expires, datetime.utcnow(), delta=timedelta(days=2))
-        identity_test.TOKEN = token.access_token

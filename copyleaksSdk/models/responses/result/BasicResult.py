@@ -27,19 +27,17 @@ class BasicResult:
     '''
     A basic result returned from Copyleaks API when requesting the result of a scan
     Attributes:
-        -----------
-            id: string
-                Unique result id
-                title: string
-                Result title
-                introduction: string
-                The results introduction
-                matchedWords: int
-                Number of matched words
-                scanId: string
-                The scan id that was provided when submitting the batch request
-                comparison: string (url)
-                downloadable comparison report
+    -----------
+        id: string
+            Unique result id
+        title: string
+            Result title
+        introduction: string
+            The results introduction
+        matchedWords: int
+            Number of matched words
+        scanId: string
+            The scan id that was provided when submitting the batch request
     '''
 
     def __init__(self, data):
@@ -47,4 +45,3 @@ class BasicResult:
         self.title = data.get('title')
         self.introduction = data.get('introduction')
         self.matchedWords = data.get('matchedWords')
-        self.comparison = data.get('comparison')

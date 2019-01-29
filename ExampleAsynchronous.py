@@ -37,7 +37,6 @@ from copyleaksSdk.models.types.eProduct import eProduct
 from copyleaksSdk.models.requests.properties.ScanProperties import ScanProperties
 from copyleaksSdk.models.types.eDomainsFilteringMode import eDomainsFilteringMode
 from copyleaksSdk.models.types.eSubmitAction import eSubmitAction
-from copyleaksSdk.models.types.eSubmitOutputMode import eSubmitOutputMode
 from copyleaksSdk.models.requests.properties.CallbacksSection import CallbacksSection
 from copyleaksSdk.models.requests.UrlDocument import UrlDocument
 from copyleaksSdk.models.requests.FileDocument import FileDocument

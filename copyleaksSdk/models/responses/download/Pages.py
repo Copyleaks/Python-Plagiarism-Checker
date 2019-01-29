@@ -22,31 +22,15 @@
  SOFTWARE.
 '''
 
-import unittest
+class Pages:
+    '''
+    The page split by start positions
 
-from datetime import datetime, timedelta
-from dateutil import parser
-from copyleaksSdk.CopyleaksIdentityApi import CopyleaksIdentityApi
-
-class identity_test(unittest.TestCase):
-    TOKEN = ""
-    EMAIL = "YOUR EMAIL"
-    API_KEY = "YOUR API KEY"
-    SCAN_ID="YOUR SCAN ID"
-    
-    def setUp(self):
-        assert identity_test.EMAIL != "YOUR EMAIL", "Email is missing"
-        assert identity_test.API_KEY != "YOUR API KEY", "api key is missing"
-        assert identity_test.SCAN_ID != "YOUR SCAN ID", "Scan id is missing"
-    def test_login(self):
-        identity = CopyleaksIdentityApi()
-        token = identity.login(identity_test.EMAIL, identity_test.API_KEY)
-
-        self.assertTrue(len(token.access_token) > 10)
-        
-        issued = parser.parse(token.issued).replace(tzinfo=None)
-        self.assertAlmostEqual(issued, datetime.utcnow(), delta=timedelta(days=2))
-        
-        expires = parser.parse(token.expires).replace(tzinfo=None)
-        self.assertAlmostEqual(expires, datetime.utcnow(), delta=timedelta(days=2))
-        identity_test.TOKEN = token.access_token
+    Attributes:
+    -----------
+        startPosition: array
+            An array of indexes indicating the start position of the page in the text
+    '''
+    def __init__(self, data):
+        if data is not None:
+            self.startPosition = data.get('startPosition', [])

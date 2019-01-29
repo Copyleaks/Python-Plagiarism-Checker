@@ -22,31 +22,23 @@
  SOFTWARE.
 '''
 
-import unittest
+from copyleaksSdk.models.responses.download.Pages import Pages
+from copyleaksSdk.models.responses.download.Comparison import Comparison
 
-from datetime import datetime, timedelta
-from dateutil import parser
-from copyleaksSdk.CopyleaksIdentityApi import CopyleaksIdentityApi
+class SuspectedVersion:
+    '''
+    The details of the document
 
-class identity_test(unittest.TestCase):
-    TOKEN = ""
-    EMAIL = "YOUR EMAIL"
-    API_KEY = "YOUR API KEY"
-    SCAN_ID="YOUR SCAN ID"
-    
-    def setUp(self):
-        assert identity_test.EMAIL != "YOUR EMAIL", "Email is missing"
-        assert identity_test.API_KEY != "YOUR API KEY", "api key is missing"
-        assert identity_test.SCAN_ID != "YOUR SCAN ID", "Scan id is missing"
-    def test_login(self):
-        identity = CopyleaksIdentityApi()
-        token = identity.login(identity_test.EMAIL, identity_test.API_KEY)
-
-        self.assertTrue(len(token.access_token) > 10)
-        
-        issued = parser.parse(token.issued).replace(tzinfo=None)
-        self.assertAlmostEqual(issued, datetime.utcnow(), delta=timedelta(days=2))
-        
-        expires = parser.parse(token.expires).replace(tzinfo=None)
-        self.assertAlmostEqual(expires, datetime.utcnow(), delta=timedelta(days=2))
-        identity_test.TOKEN = token.access_token
+    Attributes:
+    -----------
+        value: string
+            The raw text
+        pages: Pages
+            The start positions of pages in the raw text
+        comparison: Comparison
+            The comparison details of the suspected result and your content
+    '''
+    def __init__(self, data):
+        self.value = data.get('value')
+        self.pages = Pages(data.get('pages', {}))
+        self.comparison = Comparison(data.get('comparison', {}))

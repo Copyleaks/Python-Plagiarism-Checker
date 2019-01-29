@@ -35,7 +35,7 @@ class Callbacks_test(unittest.TestCase):
 
     def test_CompletedCallback(self):
         
-        data = '''{"scannedDocument":{"totalWords":100,"totalExcluded":10,"credits":10,"creationTime":"0001-01-01T00:00:00","cachedVersion":"https://report/url"},"results":{"internet":[{"url":"https://internet1","id":"internet1","title":"internet1 title","introduction":"internet1","matchedWords":1,"comparison":"https://internet1/comperison/result"},{"url":"https://internet2","id":"internet2","title":"internet2 title","introduction":"internet2","matchedWords":2,"comparison":"https://internet2/comperison/result"}],"database":[{"scanId":"scanid1","id":"Database1","title":"Database1 title","introduction":"Database1","matchedWords":1,"comparison":"https://Database1/comperison/result"},{"scanId":"scanid2","id":"Database2","title":"Database2 title","introduction":"Database2","matchedWords":2,"comparison":"https://Database2/comperison/result"}],"batch":[{"scanId":"scanid1","id":"batch1","title":"batch1 title","introduction":"batch1","matchedWords":1,"comparison":"https://batch1/comperison/result"},{"scanId":"scanid2","id":"batch2","title":"batch2 title","introduction":"batch2","matchedWords":2,"comparison":"https://batch2/comperison/result"}],"score":{"identicalWords":10,"minorChangedWords":5,"relatedMeaningWords":3}},"status":4,"error":{"message":"Error meassage","code":1},"developerPayload":"payload"}'''
+        data = '''{"scannedDocument":{"totalWords":100,"totalExcluded":10,"credits":10,"creationTime":"0001-01-01T00:00:00","cachedVersion":"https://report/url"},"results":{"internet":[{"url":"https://internet1","id":"internet1","title":"internet1 title","introduction":"internet1","matchedWords":1,"comparison":"https://internet1/comperison/result"},{"url":"https://internet2","id":"internet2","title":"internet2 title","introduction":"internet2","matchedWords":2,"comparison":"https://internet2/comperison/result"}],"database":[{"scanId":"scanid1","id":"Database1","title":"Database1 title","introduction":"Database1","matchedWords":1,"comparison":"https://Database1/comperison/result"},{"scanId":"scanid2","id":"Database2","title":"Database2 title","introduction":"Database2","matchedWords":2,"comparison":"https://Database2/comperison/result"}],"batch":[{"scanId":"scanid1","id":"batch1","title":"batch1 title","introduction":"batch1","matchedWords":1,"comparison":"https://batch1/comperison/result"},{"scanId":"scanid2","id":"batch2","title":"batch2 title","introduction":"batch2","matchedWords":2,"comparison":"https://batch2/comperison/result"}],"score":{"identicalWords":10,"minorChangedWords":5,"relatedMeaningWords":3}},"status":4,"error":{"message":"Error meassage","code":1},"downloadableReport":{"report":"https://beta-api.copyleaks.com/v3/downloads/compare-to-prod-4/report.pdf","status":0},"developerPayload":"payload"}'''
         json_data = json.loads(data)
         completed_callback = CompletedCallback(json_data)
         
@@ -56,14 +56,13 @@ class Callbacks_test(unittest.TestCase):
             self.assertEqual(completed_callback.results.internet[idx].title, json_data['results']['internet'][idx]['title'])
             self.assertEqual(completed_callback.results.internet[idx].introduction, json_data['results']['internet'][idx]['introduction'])
             self.assertEqual(completed_callback.results.internet[idx].matchedWords, json_data['results']['internet'][idx]['matchedWords'])
-            self.assertEqual(completed_callback.results.internet[idx].comparison, json_data['results']['internet'][idx]['comparison'])
+
         for idx, _ in enumerate(json_data['results']['database']):
             self.assertEqual(completed_callback.results.database[idx].scanId, json_data['results']['database'][idx]['scanId'])
             self.assertEqual(completed_callback.results.database[idx].id, json_data['results']['database'][idx]['id'])
             self.assertEqual(completed_callback.results.database[idx].title, json_data['results']['database'][idx]['title'])
             self.assertEqual(completed_callback.results.database[idx].introduction, json_data['results']['database'][idx]['introduction'])
             self.assertEqual(completed_callback.results.database[idx].matchedWords, json_data['results']['database'][idx]['matchedWords'])
-            self.assertEqual(completed_callback.results.database[idx].comparison, json_data['results']['database'][idx]['comparison'])
     
         for idx, _ in enumerate(json_data['results']['batch']):
             self.assertEqual(completed_callback.results.batch[idx].scanId, json_data['results']['batch'][idx]['scanId'])
@@ -71,11 +70,12 @@ class Callbacks_test(unittest.TestCase):
             self.assertEqual(completed_callback.results.batch[idx].title, json_data['results']['batch'][idx]['title'])
             self.assertEqual(completed_callback.results.batch[idx].introduction, json_data['results']['batch'][idx]['introduction'])
             self.assertEqual(completed_callback.results.batch[idx].matchedWords, json_data['results']['batch'][idx]['matchedWords'])
-            self.assertEqual(completed_callback.results.batch[idx].comparison, json_data['results']['batch'][idx]['comparison'])
 
         self.assertEqual(completed_callback.results.score.identicalWords, json_data['results']['score']['identicalWords'])
         self.assertEqual(completed_callback.results.score.minorChangedWords, json_data['results']['score']['minorChangedWords'])
         self.assertEqual(completed_callback.results.score.relatedMeaningWords, json_data['results']['score']['relatedMeaningWords'])
+        self.assertEqual(completed_callback.downloadableReport.report, json_data['downloadableReport']['report'])
+        self.assertEqual(completed_callback.downloadableReport.status, json_data['downloadableReport']['status'])
 
     def test_CreditsCheckCallback(self):
         data = '''{"credits": 1, "status":4,"error":{"message":"Error meassage","code":1},"developerPayload":"payload"}'''
@@ -107,14 +107,12 @@ class Callbacks_test(unittest.TestCase):
             self.assertEqual(new_result_callback.internet[idx].title, json_data['internet'][idx]['title'])
             self.assertEqual(new_result_callback.internet[idx].introduction, json_data['internet'][idx]['introduction'])
             self.assertEqual(new_result_callback.internet[idx].matchedWords, json_data['internet'][idx]['matchedWords'])
-            self.assertEqual(new_result_callback.internet[idx].comparison, json_data['internet'][idx]['comparison'])
         for idx, _ in enumerate(json_data['database']):
             self.assertEqual(new_result_callback.database[idx].scanId, json_data['database'][idx]['scanId'])
             self.assertEqual(new_result_callback.database[idx].id, json_data['database'][idx]['id'])
             self.assertEqual(new_result_callback.database[idx].title, json_data['database'][idx]['title'])
             self.assertEqual(new_result_callback.database[idx].introduction, json_data['database'][idx]['introduction'])
             self.assertEqual(new_result_callback.database[idx].matchedWords, json_data['database'][idx]['matchedWords'])
-            self.assertEqual(new_result_callback.database[idx].comparison, json_data['database'][idx]['comparison'])
     
         for idx, _ in enumerate(json_data['batch']):
             self.assertEqual(new_result_callback.batch[idx].scanId, json_data['batch'][idx]['scanId'])
@@ -122,7 +120,6 @@ class Callbacks_test(unittest.TestCase):
             self.assertEqual(new_result_callback.batch[idx].title, json_data['batch'][idx]['title'])
             self.assertEqual(new_result_callback.batch[idx].introduction, json_data['batch'][idx]['introduction'])
             self.assertEqual(new_result_callback.batch[idx].matchedWords, json_data['batch'][idx]['matchedWords'])
-            self.assertEqual(new_result_callback.batch[idx].comparison, json_data['batch'][idx]['comparison'])
 
         self.assertEqual(new_result_callback.score.identicalWords, json_data['score']['identicalWords'])
         self.assertEqual(new_result_callback.score.minorChangedWords, json_data['score']['minorChangedWords'])

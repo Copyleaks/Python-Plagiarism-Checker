@@ -39,7 +39,7 @@ from copyleaksSdk.models.responses.StartResponse import StartResponse
 from copyleaksSdk.models.requests.StartBatchRequest import StartBatchRequest
 from copyleaksSdk.models.types.eErrorHandling import eErrorHandling
 from copyleaksSdk.models.responses.SupportedTypesResponse import SupportedTypesResponse
-
+from copyleaksSdk.models.responses.download.DownloadResponse import DownloadResponse
 
 class CopyleaksScansApi:
     '''
@@ -164,6 +164,15 @@ class CopyleaksScansApi:
             url, headers=self.headers, timeout=self.timeout, cert=self.certificate)
         json_response = RequestHelper.extract_json_from_response(response)
         return Result(json_response)
+
+    def download_result(self, result_id):
+        '''
+        Get the report for the result id
+        '''
+        url = f"{self.copyleaks_api_server}{self.api_version}/downloads/{result_id}"
+        response = requests.get(url, headers=self.headers, timeout=self.timeout, cert=self.certificate)
+        json_response = RequestHelper.extract_json_from_response(response)
+        return DownloadResponse(json_response)
 
     def get_supported_file_types(self):
         '''
