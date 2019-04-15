@@ -174,9 +174,19 @@ class CopyleaksScansApi:
         json_response = RequestHelper.extract_json_from_response(response)
         return DownloadResponse(json_response)
 
+    def download_pdf_report(self, scan_id):
+        '''
+        Get the pdf report for your scan request
+        '''
+        url = f"{self.copyleaks_api_server}{self.api_version}/downloads/{scan_id}"
+        response = requests.get(url, headers=self.headers, timeout=self.timeout, cert=self.certificate)
+        RequestHelper.validate_response(response)
+        return response.content
+
+
     def get_supported_file_types(self):
         '''
-        
+        Get a list of the supported file types.
         '''
         url = f"{self.copyleaks_api_server}v1/miscellaneous/supported-file-types"
         response = requests.get(url)
@@ -184,6 +194,9 @@ class CopyleaksScansApi:
         return SupportedTypesResponse(json_response)
     
     def get_ocr_language_list(self):
+        '''
+        Get OCR Supported Langauges
+        '''
         url = f"{self.copyleaks_api_server}v1/miscellaneous/ocr-languages-list"
         response = requests.get(url)
         json_response = RequestHelper.extract_json_from_response(response)

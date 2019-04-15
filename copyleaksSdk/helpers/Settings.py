@@ -22,11 +22,8 @@
  SOFTWARE.
 '''
 
-import os
-import json
-import threading
-
 class Settings:
+    
     ApiEndPoint = "https://api.copyleaks.com/"
     IdEndPoint = "https://id.copyleaks.com/"
     RequestsTimeout = 60000

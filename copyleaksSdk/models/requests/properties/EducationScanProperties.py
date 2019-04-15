@@ -55,7 +55,7 @@ class EducationScanProperties(ScanProperties):
             Customizeable filters
         author: Author
             Represent the author of the submitted content
-        reportExport: ReportCustomization
+        pdf: ReportCustomization
             Configuration for the results report
             If left as None a report will not be generated
     '''
@@ -71,10 +71,10 @@ class EducationScanProperties(ScanProperties):
                  exclude=None,
                  filters=None,
                  author=None,
-                 reportExport=None):
+                 pdf=None):
 
         self.scanning = scanning
-        self.reportExport = reportExport
+        self.pdf = pdf
         ScanProperties.__init__(self,
                                 action,
                                 includeHtml,

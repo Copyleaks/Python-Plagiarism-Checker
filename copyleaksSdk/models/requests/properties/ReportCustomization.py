@@ -43,7 +43,8 @@ class ReportCustomization:
         colors : ReportCustomizationColors
             Customizable colors
     '''
-    def __init__(self, title, largeLogo, smallLogo, rtl, colors):
+    def __init__(self, create,title, largeLogo, smallLogo, rtl, colors):
+        self.Create = create
         self.Title = title
         self.LargeLogo = largeLogo
         self.SmallLogo = smallLogo
