@@ -131,7 +131,7 @@ class CopyleaksCloud(object):
         assert os.path.exists(filePath), 'filePath is not exists!'
         assert os.path.getsize(filePath) <= Consts.MAX_FILE_SIZE_BYTES, 'Exceed max file size (max allowed: %s bytes)' % (Consts.MAX_FILE_SIZE_BYTES)
         
-        serviceUrl = "%sv2/%s/create-by-file" % (Consts.SERVICE_ENTRY_POINT, self.product)
+        serviceUrl = "%sv1/%s/create-by-file" % (Consts.SERVICE_ENTRY_POINT, self.product)
 
         headers = {
             Consts.AUTHORIZATION_HEADER: self.token.generateAuthrizationHeader()
