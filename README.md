@@ -1,4 +1,7 @@
-This package is supporting v1 of the API which will no longer be in use as of July 1, ,2020. It's recommended to use the new v3 of the API, see full documentation with code snippets here - https://api.copyleaks.com/documentation/v3.                                       
+<p>
+	<i>This package is supporting v1 of the API which will no longer be in use as of July 1, ,2020. It's recommended to use the new v3 of the API, see full documentation with code snippets here - https://api.copyleaks.com/documentation/v3
+</i></p>
+<p>Copyleaks finds plagiarism online using copyright infringement detection technology. Find those who have used your content with Copyleaks. See here how to integrate Copyleaks easily with your services, using Java, to detect plagiarism.</p>                                     
 <h2>Copyleaks Python SDK</h2>
 <p>
 Copyleaks SDK is a simple framework that allows you to scan textual content for plagiarism and trace content distribution online, using the <a href="https://api.copyleaks.com">Copyleaks plagiarism checker cloud</a>.
