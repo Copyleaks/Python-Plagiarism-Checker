@@ -132,8 +132,8 @@ class Copyleaks(object):
                 `CommandError`: Server reject the request. See response status code, headers and content for more info.
                 `UnderMaintenanceError`: Copyleaks servers are unavailable for maintenance. We recommend to implement exponential backoff algorithm as described here: https://api.copyleaks.com/documentation/v3/exponential-backoff
         '''
-        url = f"{Consts.API_SERVER_URI}/v3/education/submit/file/{scan_id}"
-
+        assert product
+        url = f"{Consts.API_SERVER_URI}/v3/{product}/submit/file/{scan_id}"
         Copyleaks.__submit(url, auth_token, scan_id, submission)
 
     @staticmethod
@@ -148,8 +148,8 @@ class Copyleaks(object):
                 `CommandError`: Server reject the request. See response status code, headers and content for more info.
                 `UnderMaintenanceError`: Copyleaks servers are unavailable for maintenance. We recommend to implement exponential backoff algorithm as described here: https://api.copyleaks.com/documentation/v3/exponential-backoff
         '''
-        url = f"{Consts.API_SERVER_URI}/v3/education/submit/file/ocr/{scan_id}"
-
+        assert product
+        url = f"{Consts.API_SERVER_URI}/v3/{product}/submit/file/ocr/{scan_id}"
         Copyleaks.__submit(url, auth_token, scan_id, submission)
 
     @staticmethod
@@ -164,8 +164,8 @@ class Copyleaks(object):
                 `CommandError`: Server reject the request. See response status code, headers and content for more info.
                 `UnderMaintenanceError`: Copyleaks servers are unavailable for maintenance. We recommend to implement exponential backoff algorithm as described here: https://api.copyleaks.com/documentation/v3/exponential-backoff
         '''
-        url = f"{Consts.API_SERVER_URI}/v3/education/submit/url/{scan_id}"
-
+        assert product
+        url = f"{Consts.API_SERVER_URI}/v3/{product}/submit/url/{scan_id}"
         Copyleaks.__submit(url, auth_token, scan_id, submission)
 
     @staticmethod
@@ -357,7 +357,7 @@ class Copyleaks(object):
                 product: `Products`. Which product (education or business) is being use.
                 auth_token: Your login token to Copyleaks server.
                 start_date: String. The start date to collect usage history from. Date Format: `dd-MM-yyyy`
-                end_date: String. The start date to collect usage history from. Date Format: `dd-MM-yyyy`
+                end_date: String. The end date to collect usage history from. Date Format: `dd-MM-yyyy`
 
             Raises:
                 `CommandError`: Server reject the request. See response status code, headers and content for more info.
