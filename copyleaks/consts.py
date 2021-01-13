@@ -22,8 +22,9 @@
  SOFTWARE.
 '''
 
+
 class Consts:
     API_SERVER_URI = 'https://api.copyleaks.com'
     IDENTITY_SERVER_URI = 'https://id.copyleaks.com'
 
-    USER_AGENT = 'python-sdk/2.0'
+    USER_AGENT = 'python-sdk/4.0'
