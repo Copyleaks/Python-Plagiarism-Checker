@@ -28,7 +28,7 @@ from copyleaks.copyleaks import Copyleaks, Products
 from copyleaks.exceptions.command_error import CommandError
 from copyleaks.models.submit.document import FileDocument, UrlDocument, OcrFileDocument
 from copyleaks.models.submit.properties.scan_properties import ScanProperties
-
+from copyleaks.models.export import *
 # Register on https://api.copyleaks.com and grab your secret key (from the dashboard page).
 EMAIL_ADDRESS = 'your@email.addresss'
 KEY = '00000000-0000-0000-0000-000000000000'
@@ -66,34 +66,34 @@ print("You will notify, using your webhook, once the scan was completed.")
 
 # Wait for completion webhook arrival...
 # Read more: https://api.copyleaks.com/documentation/v3/webhooks
+# Uncomment the following code to create an export task:
+# # Once the webhooks arrived and the scan was completed successfully (see the `status` flag) you can
+# # proceed to exporting all the artifacts related to your scan.
+# export = Export()
+# export.set_completion_webhook('https://your.server/webhook/export/completion')
+# crawled = ExportCrawledVersion()  # Uncomment if you want to download the crawled version of your submitted document.
+# crawled.set_endpoint('https://your.server/webhook/export/crawled')
+# crawled.set_verb('POST')
+# crawled.set_headers([['key', 'value'], ['key2', 'value2']])  # optional
+# export.set_crawled_version(crawled)
 
-# Once the webhooks arrived and the scan was completed successfully (see the `status` flag) you can
-# proceed to exporting all the artifacts related to your scan.
-export = Export()
-export.set_completion_webhook('https://your.server/webhook/export/completion')
-crawled = ExportCrawledVersion()  # Uncomment if you want to download the crawled version of your submitted document.
-crawled.set_endpoint('https://your.server/webhook/export/crawled')
-crawled.set_verb('POST')
-crawled.set_headers([['key', 'value'], ['key2', 'value2']])  # optional
-export.set_crawled_version(crawled)
+# # For each of the results in the Completed Webhook, you will get a unique `id`.
+# # In the following example we will export 2 results from Copyleaks's servers:
+# results1 = ExportResult()
+# results1.set_id('2b42c39fba')  # change with your result id
+# results1.set_endpoint('https://your.server/webhook/export/result/2b42c39fba')
+# results1.set_verb('POST')
+# results1.set_headers([['key', 'value'], ['key2', 'value2']])
 
-# For each of the results in the Completed Webhook, you will get a unique `id`.
-# In the following example we will export 2 results from Copyleaks's servers:
-results1 = ExportResult()
-results1.set_id('2b42c39fba')  # change with your result id
-results1.set_endpoint('https://your.server/webhook/export/result/2b42c39fba')
-results1.set_verb('POST')
-results1.set_headers([['key', 'value'], ['key2', 'value2']])
+# results2 = ExportResult()
+# results2.set_id('08338e505d')  # change with your result id
+# results2.set_endpoint('https://your.server/webhook/export/result/08338e505d')
+# results2.set_verb('POST')
+# results2.set_headers([['key', 'value'], ['key2', 'value2']])
 
-results2 = ExportResult()
-results2.set_id('08338e505d')  # change with your result id
-results2.set_endpoint('https://your.server/webhook/export/result/08338e505d')
-results2.set_verb('POST')
-results2.set_headers([['key', 'value'], ['key2', 'value2']])
+# export.set_results([results1, results2])
 
-export.set_results([results1, results2])
-
-Copyleaks.export(auth_token, scan_id, 'export-id', export)  # 'export-id' value determind by you.
+# Copyleaks.export(auth_token, scan_id, 'export-id', export)  # 'export-id' value determind by you.
 
 # Wait while Copyleaks servers exporting artifacts...
 # Once process completed, you will get the "Export Completed" webhook.
