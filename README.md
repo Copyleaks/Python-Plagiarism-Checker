@@ -1,11 +1,3 @@
-<p>
-	<b>This package is supporting v1 of the API which will no longer be in use as of July 1, ,2020. 
-		<br>
-		It's recommended to use the new v3 of the API, see full documentation with code snippets here - https://api.copyleaks.com/documentation/v3
-</b>
-</p>
-<br>
-<br>
 <p>Copyleaks finds plagiarism online using copyright infringement detection technology. Find those who have used your content with Copyleaks. See here how to integrate Copyleaks easily with your services, using Java, to detect plagiarism.</p>                                     
 <h2>Copyleaks Python SDK</h2>
 <p>
@@ -38,50 +30,6 @@ pip3 install copyleaks
  <p>Now, generate your personal API key on your dashboard (<a href="https://api.copyleaks.com/businessesapi">Businesses dashboard</a>, <a href="https://api.copyleaks.com/academicapi">Education dashboard</a> or <a href="https://api.copyleaks.com/websitesapi">Websites dashboard</a>) under 'Access Keys'.</p>
  <p>For more information check out our <a href="https://api.copyleaks.com/Guides/HowToUse">API guide</a>.</p>
 <h3>Examples</h3>
-Get started using this API with this examples. <a href="https://github.com/Copyleaks/Python-Plagiarism-Checker/blob/master/ExampleAsynchronous.py">ExampleAsynchronous.py</a> is an example of creating a process and getting a completion callback with the results. <a href="https://github.com/Copyleaks/Python-Plagiarism-Checker/blob/master/ExampleSynchronous.py">ExampleSynchronous.py</a> is an example of creating a process, checking its status and getting the results programmatically.
-<h3>Usage</h3>
-<p>Login to your account using your email, api-key and the product that you would like to use.
-</p>
-<pre>
-from copyleaks.copyleakscloud import CopyleaksCloud
-from copyleaks.product import Product
-from copyleaks.processoptions import ProcessOptions
-cloud = CopyleaksCloud(Product.Education, 'YOUR_EMAIL_HERE', 'YOUR_API_KEY_HERE')# You can change the product.
-</pre>
-<p>Create `ProcessOptions` instance to add custom headers to your request. For more info see the <a href="https://github.com/Copyleaks/Python-Plagiarism-Checker#configuration">Configuration</a> section below.
-</p>
-<pre>
-options = ProcessOptions()
-options.setSandboxMode(True)  # Scan will not consume any credits and will return dummy results.
-options.setHttpCallback("http://yoursite.here/callback") # Recieve a completion callback with the results. For testing purposes we recommend using http://requestb.in
-</pre>
-<p>This example shows how to scan a URL using the line:</p>
-<pre>process = cloud.createByUrl('http://python.org', options)</pre>
-<p>Available create methods: `createByUrl`, `createByFile`, `createByText`, `createByOcr` and `createByFiles`.
-For more info visit the <a href="https://api.copyleaks.com/documentation">Api Documentation</a>.
-</p>
-<p>If you don't wish to use callbacks you can check the process status and get the process results.</p>
-<p>Check process status:
-</p>
-<pre>
-[iscompleted, percents] = process.isCompleted()
-</pre>
-<p>Get the results:</p>
-<pre>results = process.getResults()</pre>
-<h3>Configuration</h3>
-<p>Custumize your process using this optional headers. For more information visit <a href="https://api.copyleaks.com/documentation/headers">Optional Request Headers</a>
-</p>
-<pre>
-options = ProcessOptions()
-options.setSandboxMode(True) # Scan will not consume any credits and will return dummy results.
-options.setHttpCallback("http://yoursite.here/callback") # Recieve a completion callback. For testing purposes we recommend using http://requestb.in
-options.setHttpInProgressResultsCallback("http://yoursite.here/callback/results")
-options.setEmailCallback("Your@email.com")
-options.setCustomFields({'Custom': 'field'})
-options.setAllowPartialScan(True)
-options.setCompareDocumentsForSimilarity(True)  # Available only on compareByFiles
-options.setImportToDatabaseOnly(True)  # Available only on Education API
-</pre>
 <h3>Dependencies</h3>
 <pre>
 pip3 install requests
