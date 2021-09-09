@@ -84,7 +84,7 @@ class Copyleaks(object):
     @staticmethod
     def verify_auth_token(auth_token):
         '''
-            Verify that Copyleaks authentication token is exists and not exipired.
+            Verify that Copyleaks authentication token is exists and not expired.
 
             Parameters:
                 auth_token: Copyleaks authentication token
