@@ -43,6 +43,14 @@ class Products:
 class Copyleaks(object):
 
     @staticmethod
+    def set_identity_uri(uri):
+       Consts.IDENTITY_SERVER_URI = uri
+
+    @staticmethod
+    def set_api_uri(uri):
+        Consts.API_SERVER_URI = uri
+
+    @staticmethod
     def login(email, key):
         '''
             Login to Copyleaks authentication server.
