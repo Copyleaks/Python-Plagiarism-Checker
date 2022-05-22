@@ -23,6 +23,7 @@
 '''
 
 import abc
+from xmlrpc.client import Boolean
 from copyleaks.models.submit.properties.submit_action import SubmitAction
 from copyleaks.models.submit.properties.submit_webhooks import SubmitWebhooks
 
@@ -119,7 +120,7 @@ class ScanProperties:
                 value: Boolean. To turn on, specify `True`. On production, choose `False`.
         '''
 
-        assert value
+        assert value != None and type(value) is Boolean
 
         self.sandbox = value
 

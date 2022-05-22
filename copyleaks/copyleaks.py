@@ -35,11 +35,6 @@ from copyleaks.exceptions.auth_expired_error import AuthExipredError
 from enum import Enum
 
 
-class Products:
-    BUSINESSES = 'businesses'
-    EDUCATION = 'education'
-
-
 class Copyleaks(object):
 
     @staticmethod
@@ -129,51 +124,45 @@ class Copyleaks(object):
             raise CommandError(response)
 
     @staticmethod
-    def submit_file(product, auth_token, scan_id, submission):
+    def submit_file(auth_token, scan_id, submission):
         '''
             Starting a new process by providing a file to scan.
             For more info: 
-            https://api.copyleaks.com/documentation/v3/education/submit/file
-            https://api.copyleaks.com/documentation/v3/businesses/submit/file
+            https://api.copyleaks.com/documentation/v3/scans/submit/file
 
             Raises:
                 `CommandError`: Server reject the request. See response status code, headers and content for more info.
                 `UnderMaintenanceError`: Copyleaks servers are unavailable for maintenance. We recommend to implement exponential backoff algorithm as described here: https://api.copyleaks.com/documentation/v3/exponential-backoff
         '''
-        assert product
-        url = f"{Consts.API_SERVER_URI}/v3/{product}/submit/file/{scan_id}"
+        url = f"{Consts.API_SERVER_URI}/v3/scans/submit/file/{scan_id}"
         Copyleaks.__submit(url, auth_token, scan_id, submission)
 
     @staticmethod
-    def submit_file_ocr(product, auth_token, scan_id, submission):
+    def submit_file_ocr(auth_token, scan_id, submission):
         '''
             Starting a new process by providing a OCR image file to scan.
             For more info: 
-            https://api.copyleaks.com/documentation/v3/education/submit/ocr
-            https://api.copyleaks.com/documentation/v3/businesses/submit/ocr
+            https://api.copyleaks.com/documentation/v3/scans/submit/ocr
 
             Raises:
                 `CommandError`: Server reject the request. See response status code, headers and content for more info.
                 `UnderMaintenanceError`: Copyleaks servers are unavailable for maintenance. We recommend to implement exponential backoff algorithm as described here: https://api.copyleaks.com/documentation/v3/exponential-backoff
         '''
-        assert product
-        url = f"{Consts.API_SERVER_URI}/v3/{product}/submit/file/ocr/{scan_id}"
+        url = f"{Consts.API_SERVER_URI}/v3/scans/submit/file/ocr/{scan_id}"
         Copyleaks.__submit(url, auth_token, scan_id, submission)
 
     @staticmethod
-    def submit_url(product, auth_token, scan_id, submission):
+    def submit_url(auth_token, scan_id, submission):
         '''
             Starting a new process by providing a URL to scan.
             For more info: 
-            https://api.copyleaks.com/documentation/v3/education/submit/url
-            https://api.copyleaks.com/documentation/v3/businesses/submit/url
+            https://api.copyleaks.com/documentation/v3/scans/submit/url
 
             Raises:
                 `CommandError`: Server reject the request. See response status code, headers and content for more info.
                 `UnderMaintenanceError`: Copyleaks servers are unavailable for maintenance. We recommend to implement exponential backoff algorithm as described here: https://api.copyleaks.com/documentation/v3/exponential-backoff
         '''
-        assert product
-        url = f"{Consts.API_SERVER_URI}/v3/{product}/submit/url/{scan_id}"
+        url = f"{Consts.API_SERVER_URI}/v3/scans/submit/url/{scan_id}"
         Copyleaks.__submit(url, auth_token, scan_id, submission)
 
     @staticmethod
@@ -214,15 +203,13 @@ class Copyleaks(object):
             raise CommandError(response)
 
     @staticmethod
-    def start(product, auth_token, model):
+    def start(auth_token, model):
         '''
             Start scanning all the files you submitted for a price-check.
             For more info: 
-            https://api.copyleaks.com/documentation/v3/education/start
-            https://api.copyleaks.com/documentation/v3/businesses/start
+            https://api.copyleaks.com/documentation/v3/scans/start
 
             Parameters: 
-                product: `Products`. Which product (education or business) is being use.
                 auth_token: Your login token to Copyleaks server.
                 model: `Start` object. Include information about which scans should be started.
 
@@ -233,11 +220,11 @@ class Copyleaks(object):
             Returns: 
                 Server response including success/failed info.
         '''
-        assert product and model
+        assert model
 
         Copyleaks.verify_auth_token(auth_token)
 
-        url = f"{Consts.API_SERVER_URI}/v3/{product}/start"
+        url = f"{Consts.API_SERVER_URI}/v3/scans/start"
 
         headers = {
             'Content-Type': 'application/json',
@@ -254,22 +241,21 @@ class Copyleaks(object):
             raise CommandError(response)
 
     @staticmethod
-    def delete(product, auth_token, delete_model):
+    def delete(auth_token, delete_model):
         '''
             Delete the specific process from the server.
             For more info: 
-            https://api.copyleaks.com/documentation/v3/education/delete
-            https://api.copyleaks.com/documentation/v3/businesses/delete
+            https://api.copyleaks.com/documentation/v3/scans/delete
 
             Raises:
                 `CommandError`: Server reject the request. See response status code, headers and content for more info.
                 `UnderMaintenanceError`: Copyleaks servers are unavailable for maintenance. We recommend to implement exponential backoff algorithm as described here: https://api.copyleaks.com/documentation/v3/exponential-backoff
         '''
-        assert product and delete_model
+        assert delete_model
 
         Copyleaks.verify_auth_token(auth_token)
 
-        url = f"{Consts.API_SERVER_URI}/v3.1/{product}/delete"
+        url = f"{Consts.API_SERVER_URI}/v3.1/scans/delete"
 
         headers = {
             'Content-Type': 'application/json',
@@ -286,22 +272,21 @@ class Copyleaks(object):
             raise CommandError(response)
 
     @staticmethod
-    def resend_webhook(product, auth_token, scan_id):
+    def resend_webhook(auth_token, scan_id):
         '''
             Resend status webhooks for existing scans.
             For more info: 
-            https://api.copyleaks.com/documentation/v3/education/webhook-resend
-            https://api.copyleaks.com/documentation/v3/businesses/webhook-resend
+            https://api.copyleaks.com/documentation/v3/scans/webhook-resend
 
             Raises:
                 `CommandError`: Server reject the request. See response status code, headers and content for more info.
                 `UnderMaintenanceError`: Copyleaks servers are unavailable for maintenance. We recommend to implement exponential backoff algorithm as described here: https://api.copyleaks.com/documentation/v3/exponential-backoff
         '''
-        assert product and scan_id
+        assert scan_id
 
         Copyleaks.verify_auth_token(auth_token)
 
-        url = f"{Consts.API_SERVER_URI}/v3/{product}/scans/{scan_id}/webhooks/resend"
+        url = f"{Consts.API_SERVER_URI}/v3/scans/scans/{scan_id}/webhooks/resend"
 
         headers = {
             'Content-Type': 'application/json',
@@ -318,12 +303,11 @@ class Copyleaks(object):
             raise CommandError(response)
 
     @staticmethod
-    def credits_balance(product, auth_token):
+    def credits_balance(auth_token):
         '''
             Get current credits balance for the Copyleaks account
             For more info: 
-            https://api.copyleaks.com/documentation/v3/education/credits
-            https://api.copyleaks.com/documentation/v3/businesses/credits
+            https://api.copyleaks.com/documentation/v3/scans/credits
 
             Raises:
                 `CommandError`: Server reject the request. See response status code, headers and content for more info.
@@ -333,10 +317,9 @@ class Copyleaks(object):
             Returns:
                 Number of remaining credits on the account.
         '''
-        assert product
         Copyleaks.verify_auth_token(auth_token)
 
-        url = f"{Consts.API_SERVER_URI}/v3/{product}/credits"
+        url = f"{Consts.API_SERVER_URI}/v3/scans/credits"
         headers = {
             'User-Agent': Consts.USER_AGENT,
             'Authorization': f"Bearer {auth_token['access_token']}"
@@ -353,16 +336,14 @@ class Copyleaks(object):
             raise CommandError(response)
 
     @staticmethod
-    def usages_history_csv(product, auth_token, start_date, end_date):
+    def usages_history_csv(auth_token, start_date, end_date):
         '''
             This endpoint allows you to export your usage history between two dates.
             The output results will be exported to a csv file and it will be attached to the response.
             For more info: 
-            https://api.copyleaks.com/documentation/v3/education/usages/history
-            https://api.copyleaks.com/documentation/v3/businesses/usages/history
+            https://api.copyleaks.com/documentation/v3/scans/usages/history
 
             Parameters: 
-                product: `Products`. Which product (education or business) is being use.
                 auth_token: Your login token to Copyleaks server.
                 start_date: String. The start date to collect usage history from. Date Format: `dd-MM-yyyy`
                 end_date: String. The end date to collect usage history from. Date Format: `dd-MM-yyyy`
@@ -375,11 +356,11 @@ class Copyleaks(object):
             Returns: 
                 Server response including success/failed info.
         '''
-        assert product and start_date and end_date
+        assert start_date and end_date
 
         Copyleaks.verify_auth_token(auth_token)
 
-        url = f"{Consts.API_SERVER_URI}/v3/{product}/usages/history?start={start_date}&end={end_date}"
+        url = f"{Consts.API_SERVER_URI}/v3/scans/usages/history?start={start_date}&end={end_date}"
 
         headers = {
             'Content-Type': 'application/json',

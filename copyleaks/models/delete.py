@@ -23,6 +23,7 @@
 '''
 
 import json
+from xmlrpc.client import Boolean
 
 
 class Delete:
@@ -58,7 +59,7 @@ class Delete:
                 value: Boolean.
         '''
 
-        assert value
+        assert value != None and type(value) is Boolean 
 
         self.purge = value
 
