@@ -40,7 +40,7 @@ class Copyleaks(object):
     @staticmethod
     def set_identity_uri(uri):
         '''
-            Set the Identity uri.
+            Set the Identity server URI.
 
             Parameters:
                 uri: string.
@@ -50,7 +50,7 @@ class Copyleaks(object):
     @staticmethod
     def set_api_uri(uri):
         '''
-            Set the api uri.
+            Set the API server URI.
             
             Parameters:
                 uri: string.
@@ -298,7 +298,7 @@ class Copyleaks(object):
 
         Copyleaks.verify_auth_token(auth_token)
 
-        url = f"{Consts.API_SERVER_URI}/v3/scans/scans/{scan_id}/webhooks/resend"
+        url = f"{Consts.API_SERVER_URI}/v3/scans/{scan_id}/webhooks/resend"
 
         headers = {
             'Content-Type': 'application/json',
