@@ -39,10 +39,22 @@ class Copyleaks(object):
 
     @staticmethod
     def set_identity_uri(uri):
-       Consts.IDENTITY_SERVER_URI = uri
+        '''
+            Set the Identity uri.
+
+            Parameters:
+                uri: string.
+        '''
+        Consts.IDENTITY_SERVER_URI = uri
 
     @staticmethod
     def set_api_uri(uri):
+        '''
+            Set the api uri.
+            
+            Parameters:
+                uri: string.
+        '''
         Consts.API_SERVER_URI = uri
 
     @staticmethod
