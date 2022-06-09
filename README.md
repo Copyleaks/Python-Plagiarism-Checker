@@ -25,9 +25,9 @@ You have two ways to integrate with the Copyleaks SDK:
 
 ### Register and Get Your API Key
 
-To use the Copyleaks SDK you need to have a Copyleaks account. The registration to Copyleaks is free of charge and quick. [Sign up](https://copyleaks.com/) and confirm your account to finalize your registration.
+To use the Copyleaks SDK you need to have a Copyleaks account. The registration to Copyleaks is free of charge and quick. [Sign up](https://api.copyleaks.com/?register=true) and confirm your account to finalize your registration.
 
-Now, generate your personal API key on your [dashboard](https://api.copyleaks.com/dashboard/:product) under 'API Access Credentials'.
+Now, generate your personal API key on your [dashboard](https://api.copyleaks.com/dashboard) under 'API Access Credentials'.
 
 For more information check out our [API guide](https://api.copyleaks.com/documentation/v3).
 
