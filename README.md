@@ -36,13 +36,14 @@ For more information check out our [API guide](https://api.copyleaks.com/documen
 See the [example.py](https://github.com/Copyleaks/Python-Plagiarism-Checker/blob/master/example.py) file.
 
 * To change the Identity server URI (default:"https://id.copyleaks.com"):
-```rb
-Copyleaks.set_identity_uri("<your identity server uri>");
-```
+
+<pre>Copyleaks.set_identity_uri("your identity server uri");
+</pre>
+
 * To change the API server URI (default:"https://api.copyleaks.com"):
-```rb
-Copyleaks.set_api_uri("<your api server uri>");
-```
+
+<pre>Copyleaks.set_api_uri("your api server uri");
+</pre>
 
 ### Dependencies
 
