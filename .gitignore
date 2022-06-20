@@ -5,3 +5,5 @@ setup.py
 publish.bat
 dist
 MANIFEST
+build/*
+copyleaks.egg-info/*

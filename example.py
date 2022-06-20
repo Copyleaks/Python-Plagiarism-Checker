@@ -24,7 +24,7 @@
 
 import base64
 import random
-from copyleaks.copyleaks import Copyleaks, Products
+from copyleaks.copyleaks import Copyleaks
 from copyleaks.exceptions.command_error import CommandError
 from copyleaks.models.submit.document import FileDocument, UrlDocument, OcrFileDocument
 from copyleaks.models.submit.properties.scan_properties import ScanProperties
@@ -32,7 +32,6 @@ from copyleaks.models.export import *
 # Register on https://api.copyleaks.com and grab your secret key (from the dashboard page).
 EMAIL_ADDRESS = 'your@email.addresss'
 KEY = '00000000-0000-0000-0000-000000000000'
-PRODUCT = Products.BUSINESSES  # BUSINESSES or EDUCATION, depending on your Copyleaks account type.
 
 try:
     auth_token = Copyleaks.login(EMAIL_ADDRESS, KEY)
@@ -60,7 +59,7 @@ file_submission = FileDocument(BASE64_FILE_CONTENT, FILENAME)
 scan_properties = ScanProperties('https://your.server/webhook?event={{STATUS}}')
 scan_properties.set_sandbox(True)  # Turn on sandbox mode. Turn off on production.
 file_submission.set_properties(scan_properties)
-Copyleaks.submit_file(PRODUCT, auth_token, scan_id, file_submission)  # sending the submission to scanning
+Copyleaks.submit_file(auth_token, scan_id, file_submission)  # sending the submission to scanning
 print("Send to scanning")
 print("You will notify, using your webhook, once the scan was completed.")
 
