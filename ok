@@ -1,0 +1,73 @@
+import random
+
+easy_random_words = ["dew", "old", "kid", "sun", "tag"]
+
+medium_random_words = ["dream", "agent", "basic", "trick", "adult"]
+
+hard_random_words = ["falseworks", "trampoline", "republican", "paintbrush", "lumberjack"]
+
+hidden_letter = []
+
+guessed_word_answer = []
+
+
+def level(choice):
+  global word
+  if choice == "easy":
+    phrase = (easy_random_words)
+  if choice == "medium":
+    phrase = (medium_random_words)
+  if choice == "hard":
+    phrase = (hard_random_words)    
+  word = random.choice(phrase)
+  for i in range(len(word)):
+    hidden_letter.append("_")
+  print(" ".join(hidden_letter))
+
+
+
+
+
+def game(word):
+  hangman_lives = 6
+  guessed_letter = " "
+  while hangman_lives > 0:
+    if "_" not in hidden_letter:
+      print("You Win!")
+      break
+    guess_word = input("\nWould you like to guess the whole word?(yes or no): ").lower()
+    if guess_word == "yes":
+      guessed_word_answer = input("Input your answer: ").lower()
+      if guessed_word_answer == word:
+        print("You Win!")
+        break
+      elif guessed_word_answer != word:
+        print("\nINCORRECT -1 life")
+        hangman_lives = hangman_lives - 1
+        guessed_letter = input("\nChoose your letter: ").lower()
+    elif guess_word == "no":
+      guessed_letter = input("Choose your letter: ").lower()
+    if guessed_letter in word:
+      print("\nCORRECT!")
+      letter_location = word.find(guessed_letter)
+      print("\nYour letter is located at underscore " + str(letter_location+1))
+      hidden_letter.pop(letter_location)
+      hidden_letter.insert(letter_location, guessed_letter)
+      print("".join(hidden_letter))
+    if not guessed_letter in word:
+      print("\nINCORRECT! -1 life")
+      hangman_lives = hangman_lives - 1
+    if hangman_lives == 3:
+      print("\nBe careful! Only 3 lives left...")
+    if hangman_lives == 0:
+      print("\nYou Lose!")
+      print("The word was " + str(word))
+
+    
+def true_game():
+  choice = input("Welcome to Hangman! You have a total of 6 lives. \nWould you like Hangman to be easy, medium, or hard?: ").lower()
+  level(choice)
+  print("\nTime to guess! The word is " + str(len(word)) + " letters long.")
+  game(word)
+
+true_game()
