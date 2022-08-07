@@ -97,3 +97,10 @@ print("You will notify, using your webhook, once the scan was completed.")
 # Wait while Copyleaks servers exporting artifacts...
 # Once process completed, you will get the "Export Completed" webhook.
 # Read more: https://api.copyleaks.com/documentation/v3/webhooks/export-completed
+
+# # For Repositories:
+# repo = SearchRepository()
+# repo.set_include_my_submissions(True)
+# repo.set_include_others_submissions(True)
+# repo.set_id("ID_FETCHED_DASHBOARD")
+# scan_properties.set_scanning(Scanning().set_repositories(repo))
