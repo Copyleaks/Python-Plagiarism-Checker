@@ -108,3 +108,35 @@ class Exclude:
         assert value
 
         self.htmlTemplate = value
+
+    def get_citations(self):
+
+        return self.citations
+
+    def set_citations(self, value):
+
+        assert value
+
+        self.citations = value
+
+
+    def get_document_template_ids(self):
+
+        return self.document_template_ids
+
+    def set_document_template_ids(self, value):
+
+        assert value
+
+        self.document_template_ids = value
+
+
+    def get_code(self):
+
+        return self.code
+
+    def set_code(self, value):
+
+        assert value
+
+        self.code = value

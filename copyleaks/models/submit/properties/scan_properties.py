@@ -35,6 +35,7 @@ class ScanProperties:
         webhooks.set_status(status_webhook)
         self.set_webhooks(webhooks)
 
+
     def get_action(self):
         '''
             Get the selected type of content submission action.
@@ -303,3 +304,24 @@ class ScanProperties:
         assert value
 
         self.cheatDetection = value
+
+    def get_scan_method_algorithm(self):
+        return self.scan_method_algorithm
+    
+    def set_scan_method_algorithm(self, value):
+        assert value
+        self.scan_method_algorithm = value
+
+    def get_ai_generated_text(self):
+        return self.ai_generated_text
+    
+    def set_ai_generated_text(self, value):
+        assert value
+        self.ai_generated_text = value
+
+    def get_custom_metadata(self):
+        return self.custom_metadata
+    
+    def set_custom_metadata(self, value):
+        assert value
+        self.custom_metadata = value

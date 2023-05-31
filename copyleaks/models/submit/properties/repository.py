@@ -43,7 +43,7 @@ class Repository:
 
 
 class SearchRepository(Repository):
-   def get_include_my_submissions(self):
+    def get_include_my_submissions(self):
         '''
             Compare the scanned document against MY submittions in the repository.
         '''
@@ -76,3 +76,12 @@ class SearchRepository(Repository):
         assert value
 
         self.includeOthersSubmissions = value
+
+class IndexingRepository(Repository):
+    def get_masking_policy(self):
+        return self.masking_policy
+
+    def set_masking_policy(self, value):
+        assert value
+
+        self.masking_policy = value

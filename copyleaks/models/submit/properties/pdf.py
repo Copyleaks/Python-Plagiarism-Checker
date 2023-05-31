@@ -57,6 +57,7 @@ class Pdf:
         assert value
 
         self.largeLogo = value
+    
 
     def get_rtl(self):
         '''
@@ -74,3 +75,20 @@ class Pdf:
         assert value
 
         self.rtl = value
+
+
+    def get_version(self):
+        return self.version
+
+    def set_version(self, value):
+        assert value
+
+        self.version = value
+
+    def get_small_logo_base64(self):
+        return self.smallLogo
+
+    def set_small_logo_base64(self, value):
+        assert value
+
+        self.smallLogo = value
