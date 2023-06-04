@@ -115,7 +115,14 @@ class Scanning:
         return self.cross_languages
 
     def set_cross_languages(self, value):
+        '''
+            Cross language plagiarism detection. Choose which languages to scan your content against. 
+            For each additional language chosen, your pages will be deducted per page submitted. 
+            The language of the original document submitted is always scanned, 
+            therefore should not be included in the additional languages chosen.
 
+            value: Language array
+        '''
         assert value
 
         self.cross_languages = value

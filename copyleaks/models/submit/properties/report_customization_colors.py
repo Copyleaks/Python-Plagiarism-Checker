@@ -24,45 +24,86 @@
 
 class ReportCustomizationColors:
     def get_main_strip(self):
+        '''
+            The color of the main strip in the header
+        '''
         return self.mainStrip
 
     def set_main_strip(self, value):
+        '''
+           Set the color of the main strip in the header
+
+           value: string
+        '''
         assert value
 
         self.mainStrip = value
 
 
     def get_titles(self):
+        '''
+            The color for titles in copyleaks result report
+        '''
         return self.titles
 
     def set_titles(self, value):
+        '''
+            Set the color for titles in copyleaks result report
+
+            value: string
+        '''
         assert value
 
         self.titles = value
 
 
     def get_identical(self):
+        '''
+            The highlight color for identical matches
+        '''
         return self.identical
 
     def set_identical(self, value):
+
+        '''
+            Set the highlight color for identical matches
+
+            value: string
+        '''
         assert value
 
         self.identical = value
 
 
     def get_minor_changes(self):
+        '''
+            The highlight color for minor changes matches
+        '''
         return self.minorChanges
 
     def set_minor_changes(self, value):
+        '''
+            Set the highlight color for minor changes matches
+
+            value: string
+        '''
         assert value
 
         self.minorChanges = value
 
     def get_related_meaning(self):
+        '''
+            The highlight color for related meaning matches
+        '''
         return self.relatedMeaning
 
 
     def set_related_meaning(self, value):
+        '''
+            Set the highlight color for related meaning matches
+
+            value: string
+        '''
         assert value
 
         self.relatedMeaning = value

@@ -78,18 +78,34 @@ class Pdf:
 
 
     def get_version(self):
+        '''
+            PDF version to generate
+        '''
         return self.version
 
     def set_version(self, value):
+        '''
+            PDF version to generate
+
+            value: `PdfVersion` enum
+        '''
         assert value
 
         self.version = value
 
 
     def get_report_customization_colors(self):
+        '''
+            Customizable colors
+        '''
         return self.report_customization_colors
 
     def set_report_customization_colors(self, value):
+        '''
+            Set customizable colors
+
+            value: `ReportCustomizationColors`
+        '''
         assert value
 
         self.report_customization_colors = value

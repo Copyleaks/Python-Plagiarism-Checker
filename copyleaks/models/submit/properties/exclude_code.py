@@ -25,11 +25,17 @@
 
 class ExcludeCode:
     def get_comments(self):
-
+        '''
+            Exclude comments
+        '''
         return self.comments
 
     def set_comments(self, value):
+        '''
+            Set exclude comments
 
+            value: Boolean
+        '''
         assert value
 
         self.comments = value

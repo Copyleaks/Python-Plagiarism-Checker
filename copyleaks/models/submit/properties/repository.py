@@ -82,6 +82,14 @@ class IndexingRepository(Repository):
         return self.maskingPolicy
 
     def set_masking_policy(self, value):
+
+        '''
+            allows to specify a document masking policy on the document level.
+
+            If the repo has it's own masking policy, the stricter policy will be applied to results from this document.
+
+            value: `MaskingPolicy` enum
+        '''
         assert value
 
         self.maskingPolicy = value

@@ -110,31 +110,51 @@ class Exclude:
         self.htmlTemplate = value
 
     def get_citations(self):
-
+        '''
+            Exclude citations from the scan.
+        '''
         return self.citations
 
     def set_citations(self, value):
+        '''
+            Exclude citations from the scan.
 
+            value: Boolean
+        '''
         assert value
 
         self.citations = value
 
 
     def get_document_template_ids(self):
-
+        '''
+            Exclude text based on text found within other documents. 
+        '''
         return self.documentTemplateIds
 
     def set_document_template_ids(self, value):
+        '''
+            Exclude text based on text found within other documents. 
+            Specify an array of scan ids containing text to exclude from your scan's text. 
+            Each scan ID specified should be in a completed success state and should not have expired at the time of submission.
 
+            value: String array
+        '''
         self.documentTemplateIds = value
 
 
     def get_code(self):
-
+        '''
+            Exclude sections of source code
+        '''
         return self.code
 
     def set_code(self, value):
+        '''
+            set exclude code settings
 
+            value: `ExcludeCode`
+        '''
         assert value
 
         self.code = value

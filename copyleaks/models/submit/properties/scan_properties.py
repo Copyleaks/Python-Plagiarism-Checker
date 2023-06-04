@@ -306,23 +306,54 @@ class ScanProperties:
         self.cheatDetection = value
 
     def get_scan_method_algorithm(self):
+        '''
+            Choose the algorithm goal. You can set this value depending on your use-case.
+        '''
         return self.scanMethodAlgorithm
     
+    
     def set_scan_method_algorithm(self, value):
+        '''
+            Choose the algorithm goal. You can set this value depending on your use-case.
+
+            Parameters:
+                value: ScanMethodAlgorithm enum
+        '''
         assert 0 <= value <= 1
         
         self.scanMethodAlgorithm = value
 
     def get_ai_generated_text(self):
+        '''
+            Ai Generated text settings.
+        '''
         return self.aiGeneratedText
     
     def set_ai_generated_text(self, value):
+        '''
+            Ai Generated text settings.
+
+            Parameters:
+                value: `AIGeneratedText`
+        '''
         assert value
         self.aiGeneratedText = value
 
     def get_custom_metadata(self):
+        '''
+            Add custom properties that will be attached to your document in a Copyleaks repository.
+
+            If this document is found as a repository result, your custom properties will be added to the result.
+        '''
         return self.customMetadata
     
     def set_custom_metadata(self, value):
+        '''
+            Add custom properties that will be attached to your document in a Copyleaks repository.
+
+            If this document is found as a repository result, your custom properties will be added to the result.
+
+            value: `CustomMetadata` array
+        '''
         assert value
         self.customMetadata = value
