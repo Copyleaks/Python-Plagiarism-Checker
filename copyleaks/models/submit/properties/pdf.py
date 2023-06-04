@@ -92,3 +92,12 @@ class Pdf:
         assert value
 
         self.smallLogo = value
+
+
+    def get_report_customization_colors(self):
+        return self.report_customization_colors
+
+    def set_report_customization_colors(self, value):
+        assert value
+
+        self.report_customization_colors = value

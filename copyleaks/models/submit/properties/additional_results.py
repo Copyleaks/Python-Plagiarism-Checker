@@ -22,9 +22,11 @@
  SOFTWARE.
 '''
 
-from enum import IntEnum
+class AdditionalResults:
+    def get_internet_urls(self):
+        return self.internet_urls
 
+    def set_internet_urls(self, value):
+        assert value
 
-class PdfVersion(IntEnum):
-    V1 = 1
-    V2 = 2
+        self.internet_urls = value

@@ -108,3 +108,14 @@ class Scanning:
         assert value
 
         self.exclude = value
+
+
+    def get_cross_languages(self):
+
+        return self.cross_languages
+
+    def set_cross_languages(self, value):
+
+        assert value
+
+        self.cross_languages = value

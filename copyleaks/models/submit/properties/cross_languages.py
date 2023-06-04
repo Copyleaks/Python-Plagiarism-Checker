@@ -22,9 +22,28 @@
  SOFTWARE.
 '''
 
-from enum import IntEnum
+
+class CrossLanguages:
+    def get_languages(self):
+
+        return self.languages
+
+    def set_languages(self, value):
+
+        assert value
+
+        self.languages = value
 
 
-class PdfVersion(IntEnum):
-    V1 = 1
-    V2 = 2
+class Language:
+    def get_code(self):
+
+        return self.code
+
+    def set_code(self, value):
+
+        assert value
+
+        self.code = value
+
+

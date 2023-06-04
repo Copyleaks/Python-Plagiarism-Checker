@@ -22,9 +22,47 @@
  SOFTWARE.
 '''
 
-from enum import IntEnum
+class ReportCustomizationColors:
+    def get_main_strip(self):
+        return self.main_strip
+
+    def set_main_strip(self, value):
+        assert value
+
+        self.main_strip = value
 
 
-class PdfVersion(IntEnum):
-    V1 = 1
-    V2 = 2
+    def get_titles(self):
+        return self.titles
+
+    def set_titles(self, value):
+        assert value
+
+        self.titles = value
+
+
+    def get_identical(self):
+        return self.identical
+
+    def set_identical(self, value):
+        assert value
+
+        self.identical = value
+
+
+    def get_minor_changes(self):
+        return self.minor_changes
+
+    def set_minor_changes(self, value):
+        assert value
+
+        self.minor_changes = value
+
+    def get_related_meaning(self):
+        return self.related_meaning
+
+
+    def set_related_meaning(self, value):
+        assert value
+
+        self.related_meaning = value

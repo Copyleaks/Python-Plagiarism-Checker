@@ -126,8 +126,6 @@ class Exclude:
 
     def set_document_template_ids(self, value):
 
-        assert value
-
         self.document_template_ids = value
 
 

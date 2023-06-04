@@ -309,7 +309,8 @@ class ScanProperties:
         return self.scan_method_algorithm
     
     def set_scan_method_algorithm(self, value):
-        assert value
+        assert 0 <= value <= 1
+        
         self.scan_method_algorithm = value
 
     def get_ai_generated_text(self):
@@ -325,3 +326,12 @@ class ScanProperties:
     def set_custom_metadata(self, value):
         assert value
         self.custom_metadata = value
+
+
+    def get_additional_results(self):
+        return self.additional_results
+    
+    def set_additional_results(self, value):
+        assert value
+        self.additional_results = value
+
