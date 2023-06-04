@@ -85,14 +85,6 @@ class Pdf:
 
         self.version = value
 
-    def get_small_logo_base64(self):
-        return self.smallLogo
-
-    def set_small_logo_base64(self, value):
-        assert value
-
-        self.smallLogo = value
-
 
     def get_report_customization_colors(self):
         return self.report_customization_colors

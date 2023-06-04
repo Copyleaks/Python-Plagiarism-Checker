@@ -326,11 +326,3 @@ class ScanProperties:
     def set_custom_metadata(self, value):
         assert value
         self.customMetadata = value
-
-    def get_additional_results(self):
-        return self.additionalResults
-    
-    def set_additional_results(self, value):
-        assert value
-        self.additionalResults = value
-
