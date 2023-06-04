@@ -24,12 +24,12 @@
 
 class ReportCustomizationColors:
     def get_main_strip(self):
-        return self.main_strip
+        return self.mainStrip
 
     def set_main_strip(self, value):
         assert value
 
-        self.main_strip = value
+        self.mainStrip = value
 
 
     def get_titles(self):
@@ -51,18 +51,18 @@ class ReportCustomizationColors:
 
 
     def get_minor_changes(self):
-        return self.minor_changes
+        return self.minorChanges
 
     def set_minor_changes(self, value):
         assert value
 
-        self.minor_changes = value
+        self.minorChanges = value
 
     def get_related_meaning(self):
-        return self.related_meaning
+        return self.relatedMeaning
 
 
     def set_related_meaning(self, value):
         assert value
 
-        self.related_meaning = value
+        self.relatedMeaning = value

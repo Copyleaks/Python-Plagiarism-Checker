@@ -122,11 +122,11 @@ class Exclude:
 
     def get_document_template_ids(self):
 
-        return self.document_template_ids
+        return self.documentTemplateIds
 
     def set_document_template_ids(self, value):
 
-        self.document_template_ids = value
+        self.documentTemplateIds = value
 
 
     def get_code(self):

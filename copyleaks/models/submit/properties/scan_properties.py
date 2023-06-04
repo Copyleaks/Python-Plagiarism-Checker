@@ -306,32 +306,31 @@ class ScanProperties:
         self.cheatDetection = value
 
     def get_scan_method_algorithm(self):
-        return self.scan_method_algorithm
+        return self.scanMethodAlgorithm
     
     def set_scan_method_algorithm(self, value):
         assert 0 <= value <= 1
         
-        self.scan_method_algorithm = value
+        self.scanMethodAlgorithm = value
 
     def get_ai_generated_text(self):
-        return self.ai_generated_text
+        return self.aiGeneratedText
     
     def set_ai_generated_text(self, value):
         assert value
-        self.ai_generated_text = value
+        self.aiGeneratedText = value
 
     def get_custom_metadata(self):
-        return self.custom_metadata
+        return self.customMetadata
     
     def set_custom_metadata(self, value):
         assert value
-        self.custom_metadata = value
-
+        self.customMetadata = value
 
     def get_additional_results(self):
-        return self.additional_results
+        return self.additionalResults
     
     def set_additional_results(self, value):
         assert value
-        self.additional_results = value
+        self.additionalResults = value
 

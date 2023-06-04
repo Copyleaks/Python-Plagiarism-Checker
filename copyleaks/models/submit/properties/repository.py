@@ -79,9 +79,9 @@ class SearchRepository(Repository):
 
 class IndexingRepository(Repository):
     def get_masking_policy(self):
-        return self.masking_policy
+        return self.maskingPolicy
 
     def set_masking_policy(self, value):
         assert value
 
-        self.masking_policy = value
+        self.maskingPolicy = value
