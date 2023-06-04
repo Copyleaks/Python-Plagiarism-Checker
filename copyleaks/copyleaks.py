@@ -127,10 +127,6 @@ class Copyleaks(object):
             'Authorization': f"Bearer {auth_token['access_token']}"
         }
 
-        print('Request URL:', url)
-        print('Request Headers:', headers)
-        print('Request Payload:', submission.toJSON())
-
         response = requests.put(url, headers=headers, data=submission.toJSON())
         if response.ok:
             return  # Completed successfully
