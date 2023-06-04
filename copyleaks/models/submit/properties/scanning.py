@@ -126,3 +126,16 @@ class Scanning:
         assert value
 
         self.cross_languages = value
+
+
+    def get_copylekas_db(self):
+
+        return self.copyleaksDb
+
+    def set_copylekas_db(self, value):
+
+        assert value
+
+        self.copyleaksDb = value
+
+
