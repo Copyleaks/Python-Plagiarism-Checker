@@ -26,13 +26,13 @@
 class ExcludeCode:
     def get_comments(self):
         '''
-            Exclude comments
+            Get whether code comments are excluded
         '''
         return self.comments
 
     def set_comments(self, value):
         '''
-            Set exclude comments
+            Set whether code comments should be excluded
 
             value: Boolean
         '''

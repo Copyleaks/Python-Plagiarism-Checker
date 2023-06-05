@@ -23,13 +23,17 @@
 '''
 
 
-class AIGerneratedText:
+class AIGeneratedText:
     def get_detect(self):
+        '''
+            Detects whether the text was written by an AI.
+        '''
         return self.detect
+        
 
     def set_detect(self, value):
         '''
-            Exclude quoted text from the scan.
+            Set whether to detect AI Generated text.
 
             Parameters: 
                 value: Boolean.

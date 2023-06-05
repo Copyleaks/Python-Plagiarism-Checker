@@ -111,13 +111,13 @@ class Exclude:
 
     def get_citations(self):
         '''
-            Exclude citations from the scan.
+            Get whether citations are excluded from the scan.
         '''
         return self.citations
 
     def set_citations(self, value):
         '''
-            Exclude citations from the scan.
+            Set exclude citations from the scan.
 
             value: Boolean
         '''
@@ -128,7 +128,7 @@ class Exclude:
 
     def get_document_template_ids(self):
         '''
-            Exclude text based on text found within other documents. 
+            Get document template Ids. 
         '''
         return self.documentTemplateIds
 

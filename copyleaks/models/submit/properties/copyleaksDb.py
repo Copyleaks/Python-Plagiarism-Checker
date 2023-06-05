@@ -26,7 +26,7 @@
 class CopyleaksDb:
     def get_include_my_submissions(self):
         '''
-            Compare the scanned document against MY submittions in the copyleaks internal database.
+            Get whether the document will be scanned against MY submittions in the copyleaks internal database.
         '''
         return self.includeMySubmissions
 
@@ -43,7 +43,7 @@ class CopyleaksDb:
 
     def get_include_others_submissions(self):
         '''
-            Compare the scanned document against OTHER users submittions in the copyleaks internal database.
+            Get whether the document will be scanned against OTHER users submittions in the copyleaks internal database.
         '''
         return self.includeOthersSubmissions
 

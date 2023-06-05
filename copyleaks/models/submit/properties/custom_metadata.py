@@ -38,3 +38,4 @@ class CustomMetadata:
         assert value
 
         self.value = value
+        

@@ -307,7 +307,7 @@ class ScanProperties:
 
     def get_scan_method_algorithm(self):
         '''
-            Choose the algorithm goal. You can set this value depending on your use-case.
+            Get scan algorithm goal.
         '''
         return self.scanMethodAlgorithm
     
@@ -341,15 +341,13 @@ class ScanProperties:
 
     def get_custom_metadata(self):
         '''
-            Add custom properties that will be attached to your document in a Copyleaks repository.
-
-            If this document is found as a repository result, your custom properties will be added to the result.
+            Get custom metadata
         '''
         return self.customMetadata
     
     def set_custom_metadata(self, value):
         '''
-            Add custom properties that will be attached to your document in a Copyleaks repository.
+            Set custom properties that will be attached to your document in a Copyleaks repository.
 
             If this document is found as a repository result, your custom properties will be added to the result.
 

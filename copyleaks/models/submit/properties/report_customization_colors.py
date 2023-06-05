@@ -25,7 +25,7 @@
 class ReportCustomizationColors:
     def get_main_strip(self):
         '''
-            The color of the main strip in the header
+            Get the color of the main strip in the header
         '''
         return self.mainStrip
 
@@ -42,7 +42,7 @@ class ReportCustomizationColors:
 
     def get_titles(self):
         '''
-            The color for titles in copyleaks result report
+            Get the color for titles in copyleaks result report
         '''
         return self.titles
 
@@ -59,7 +59,7 @@ class ReportCustomizationColors:
 
     def get_identical(self):
         '''
-            The highlight color for identical matches
+            Get the highlight color for identical matches
         '''
         return self.identical
 
@@ -77,7 +77,7 @@ class ReportCustomizationColors:
 
     def get_minor_changes(self):
         '''
-            The highlight color for minor changes matches
+            Get the highlight color for minor changes matches
         '''
         return self.minorChanges
 
@@ -93,7 +93,7 @@ class ReportCustomizationColors:
 
     def get_related_meaning(self):
         '''
-            The highlight color for related meaning matches
+            Get the highlight color for related meaning matches
         '''
         return self.relatedMeaning
 

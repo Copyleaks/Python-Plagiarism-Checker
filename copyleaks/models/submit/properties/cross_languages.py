@@ -25,25 +25,20 @@
 
 class CrossLanguages:
     def get_languages(self):
-
+        '''
+        Get which languages would be svanned against the content.
+        '''
         return self.languages
 
     def set_languages(self, value):
+        '''
+            Choose which languages to scan your content against. 
+            For each additional language chosen, your pages will be deducted per page submitted. 
+            The language of the original document submitted is always scanned, 
+            therefore should not be included in the additional languages chosen.
 
+            value: `Language` array
+        '''
         assert value
 
         self.languages = value
-
-
-class Language:
-    def get_code(self):
-
-        return self.code
-
-    def set_code(self, value):
-
-        assert value
-
-        self.code = value
-
-
