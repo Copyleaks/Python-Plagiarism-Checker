@@ -108,3 +108,34 @@ class Scanning:
         assert value
 
         self.exclude = value
+
+
+    def get_cross_languages(self):
+
+        return self.cross_languages
+
+    def set_cross_languages(self, value):
+        '''
+            Cross language plagiarism detection. Choose which languages to scan your content against. 
+            For each additional language chosen, your pages will be deducted per page submitted. 
+            The language of the original document submitted is always scanned, 
+            therefore should not be included in the additional languages chosen.
+
+            value: Language array
+        '''
+        assert value
+
+        self.cross_languages = value
+
+
+    def get_copylekas_db(self):
+
+        return self.copyleaksDb
+
+    def set_copylekas_db(self, value):
+
+        assert value
+
+        self.copyleaksDb = value
+
+

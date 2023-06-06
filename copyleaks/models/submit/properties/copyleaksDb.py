@@ -23,35 +23,16 @@
 '''
 
 
-class Repository:
-    def get_id(self):
-        '''
-            Id of a repository to scan the submitted document against.
-        '''
-        return self.id
-
-    def set_id(self, value):
-        '''
-            Id of a repository to scan the submitted document against.
-
-            Parameters:
-                value: String.
-        '''
-        assert value
-
-        self.id = value
-
-
-class SearchRepository(Repository):
+class CopyleaksDb:
     def get_include_my_submissions(self):
         '''
-            Compare the scanned document against MY submittions in the repository.
+            Get whether the document will be scanned against MY submittions in the copyleaks internal database.
         '''
         return self.includeMySubmissions
 
     def set_include_my_submissions(self, value):
         '''
-            Compare the scanned document against MY submittions in the repository.
+            Compare the scanned document against MY submittions in the copyleaks internal database.
 
             Parameters: 
                 value: Boolean.
@@ -62,13 +43,13 @@ class SearchRepository(Repository):
 
     def get_include_others_submissions(self):
         '''
-            Compare the scanned document against OTHER users submittions in the repository.
+            Get whether the document will be scanned against OTHER users submittions in the copyleaks internal database.
         '''
         return self.includeOthersSubmissions
 
     def set_include_others_submissions(self, value):
         '''
-            Compare the scanned document against OTHER users submittions in the repository.
+            Compare the scanned document against OTHER users submittions in the copyleaks internal database.
 
             Parameters: 
                 value: Boolean.
@@ -76,23 +57,3 @@ class SearchRepository(Repository):
         assert value
 
         self.includeOthersSubmissions = value
-
-class IndexingRepository(Repository):
-    def get_masking_policy(self):
-        '''
-            Get the masking policy
-        '''
-        return self.maskingPolicy
-
-    def set_masking_policy(self, value):
-
-        '''
-            allows to specify a document masking policy on the document level.
-
-            If the repo has it's own masking policy, the stricter policy will be applied to results from this document.
-
-            value: `MaskingPolicy` enum
-        '''
-        assert value
-
-        self.maskingPolicy = value

@@ -104,3 +104,8 @@ print("You will notify, using your webhook, once the scan was completed.")
 # repo.set_include_others_submissions(True)
 # repo.set_id("ID_FETCHED_DASHBOARD")
 # scan_properties.set_scanning(Scanning().set_repositories(repo))
+
+# # generate a pdf report:
+#pdf = Pdf() # Creating instance of Pdf.
+#pdf.set_create(True) # Setting the create pdf to True to generate PDF report.
+#scan_properties.set_pdf(pdf) # Will generate PDF report.

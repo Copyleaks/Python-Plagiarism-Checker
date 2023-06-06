@@ -24,6 +24,24 @@
 
 
 class Pdf:
+
+    def get_create(self):
+        '''
+            Returns whether to create PDF report or not.
+        '''
+        return self.create
+
+    def set_create(self, value):
+        '''
+            Set whether to create PDF report or not.
+
+            Parameters: 
+                value: Boolean.
+        '''
+        assert value
+
+        self.create = value
+
     def get_title(self):
         '''
             Customize the title for the PDF report.
@@ -57,6 +75,7 @@ class Pdf:
         assert value
 
         self.largeLogo = value
+    
 
     def get_rtl(self):
         '''
@@ -74,3 +93,37 @@ class Pdf:
         assert value
 
         self.rtl = value
+
+
+    def get_version(self):
+        '''
+            Get PDF version to generate
+        '''
+        return self.version
+
+    def set_version(self, value):
+        '''
+            Set PDF version to generate
+
+            value: `PdfVersion` enum
+        '''
+        assert value
+
+        self.version = value
+
+
+    def get_report_customization_colors(self):
+        '''
+            Customizable colors
+        '''
+        return self.report_customization_colors
+
+    def set_report_customization_colors(self, value):
+        '''
+            Set customizable colors
+
+            value: `ReportCustomizationColors`
+        '''
+        assert value
+
+        self.report_customization_colors = value
