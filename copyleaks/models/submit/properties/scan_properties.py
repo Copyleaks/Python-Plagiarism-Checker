@@ -89,23 +89,6 @@ class ScanProperties:
 
         self.developerPayload = value
 
-    def get_priority(self):
-        '''
-            Getting the scan priority.
-        '''
-        return self.priority
-
-    def set_priority(self, value):
-        '''
-            Set scan priority.
-
-            Parameters:
-                value: ScanPriority enum.
-        '''
-
-        assert value
-
-        self.priority = value
 
     def get_sandbox(self):
         '''
