@@ -64,7 +64,7 @@ class _AIDetectionClient:
         url = f"{Consts.API_SERVER_URI}/v2/writer-detector/{scan_id}/check"
         return _AIDetectionClient.__submit(url, auth_token, scan_id, submission)
     
-    
+
     @staticmethod
     def submit_source_code(auth_token, scan_id, submission):
         '''
