@@ -33,10 +33,15 @@ from copyleaks.exceptions.under_maintenance_error import UnderMaintenanceError
 from copyleaks.exceptions.rate_limit_error import RateLimitError
 from copyleaks.exceptions.auth_expired_error import AuthExipredError
 from enum import Enum
+from copyleaks.clients.ai_detection_client import _AIDetectionClient
+from copyleaks.clients.writing_assistant_client import _WritingAssistantClient
 
 
 class Copyleaks(object):
 
+    WritingAssistantClient = _WritingAssistantClient
+    AiDetectionClient = _AIDetectionClient
+    
     @staticmethod
     def set_identity_uri(uri):
         '''
