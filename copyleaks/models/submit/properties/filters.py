@@ -146,3 +146,20 @@ class Filters:
         assert value in DomainsMode
 
         self.domainsMode = value
+
+    def get_allow_same_domain(self):
+        '''
+            when set to true it will allow results from the same domain as the submitted url.
+        '''
+        return self.identicalEnabled
+
+    def set_allow_same_domain(self, value):
+        '''
+            when set to true it will allow results from the same domain as the submitted url.
+
+            Parameters: 
+                value: Boolean.
+        '''
+        assert value is not None
+
+        self.allowSameDomain = value
