@@ -24,7 +24,7 @@
 
 
 class ScanningCopyleaksDb:
-   def get_include_my_submissions(self):
+    def get_include_my_submissions(self):
         '''
             When set to true: Copyleaks will also compare against content which was uploaded by YOU to the Copyleaks internal database.
             If true, it will also index the scan in the Copyleaks internal database.
