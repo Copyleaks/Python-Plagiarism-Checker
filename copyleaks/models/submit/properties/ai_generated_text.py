@@ -38,6 +38,6 @@ class AIGeneratedText:
             Parameters: 
                 value: Boolean.
         '''
-        assert value
+        assert isinstance(value, bool)
 
         self.detect = value

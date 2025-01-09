@@ -38,7 +38,7 @@ class Pdf:
             Parameters: 
                 value: Boolean.
         '''
-        assert value
+        assert isinstance(value, bool)
 
         self.create = value
 
@@ -90,7 +90,7 @@ class Pdf:
             Parameters: 
                 value: Boolean.
         '''
-        assert value
+        assert isinstance(value, bool)
 
         self.rtl = value
 

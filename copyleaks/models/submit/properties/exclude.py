@@ -37,7 +37,7 @@ class Exclude:
             Parameters: 
                 value: Boolean.
         '''
-        assert value
+        assert isinstance(value, bool)
 
         self.quotes = value
 
@@ -54,7 +54,7 @@ class Exclude:
             Parameters: 
                 value: Boolean.
         '''
-        assert value
+        assert isinstance(value, bool)
 
         self.references = value
 
@@ -71,7 +71,7 @@ class Exclude:
             Parameters: 
                 value: Boolean.
         '''
-        assert value
+        assert isinstance(value, bool)
 
         self.tableOfContents = value
 
@@ -88,7 +88,7 @@ class Exclude:
             Parameters: 
                 value: Boolean.
         '''
-        assert value
+        assert isinstance(value, bool)
 
         self.titles = value
 
@@ -105,7 +105,7 @@ class Exclude:
             Parameters: 
                 value: Boolean.
         '''
-        assert value
+        assert isinstance(value, bool)
 
         self.htmlTemplate = value
 
@@ -121,7 +121,7 @@ class Exclude:
 
             value: Boolean
         '''
-        assert value
+        assert isinstance(value, bool)
 
         self.citations = value
 
