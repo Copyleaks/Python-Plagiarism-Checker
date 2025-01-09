@@ -56,7 +56,7 @@ class SearchRepository(Repository):
             Parameters: 
                 value: Boolean.
         '''
-        assert value
+        assert isinstance(value, bool)
 
         self.includeMySubmissions = value
 
@@ -73,7 +73,7 @@ class SearchRepository(Repository):
             Parameters: 
                 value: Boolean.
         '''
-        assert value
+        assert isinstance(value, bool)
 
         self.includeOthersSubmissions = value
 

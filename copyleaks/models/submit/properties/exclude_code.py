@@ -36,6 +36,6 @@ class ExcludeCode:
 
             value: Boolean
         '''
-        assert value
+        assert isinstance(value, bool)
 
         self.comments = value

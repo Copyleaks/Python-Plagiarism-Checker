@@ -109,7 +109,7 @@ class Filters:
             Parameters: 
                 value: Boolean.
         '''
-        assert value
+        assert isinstance(value, bool)
 
         self.safeSearch = value
 

@@ -37,7 +37,7 @@ class CopyleaksDb:
             Parameters: 
                 value: Boolean.
         '''
-        assert value
+        assert isinstance(value, bool)
 
         self.includeMySubmissions = value
 
@@ -54,6 +54,6 @@ class CopyleaksDb:
             Parameters: 
                 value: Boolean.
         '''
-        assert value
+        assert isinstance(value, bool)
 
         self.includeOthersSubmissions = value

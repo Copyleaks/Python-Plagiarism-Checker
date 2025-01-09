@@ -37,7 +37,7 @@ class Scanning:
             Parameters: 
                 value: Boolean.
         '''
-        assert value
+        assert isinstance(value, bool)
 
         self.internet = value
 

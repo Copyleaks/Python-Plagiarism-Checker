@@ -70,7 +70,7 @@ class ScanProperties:
                 value: Boolean.
         '''
 
-        assert value
+        assert isinstance(value, bool)
 
         self.includeHtml = value
 
@@ -284,7 +284,7 @@ class ScanProperties:
                 value: Boolean
         '''
 
-        assert value
+        assert isinstance(value, bool)
 
         self.cheatDetection = value
 

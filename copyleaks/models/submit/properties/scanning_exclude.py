@@ -37,6 +37,6 @@ class ScanningExclude:
             Parameters: 
                 value: Boolean.
         '''
-        assert value
+        assert isinstance(value, bool)
 
         self.idPattern = value
