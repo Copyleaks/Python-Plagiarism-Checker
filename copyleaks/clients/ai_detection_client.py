@@ -23,9 +23,10 @@
  SOFTWARE.
 '''
 
-from aifc import Error
 import requests
 from copyleaks.consts import Consts
+from copyleaks.exceptions.command_error import CommandError
+from copyleaks.exceptions.under_maintenance_error import UnderMaintenanceError
 from copyleaks.helpers.copyleaks_client_helper import CopyleaksClientHelper
 
 class _AIDetectionClient:
@@ -45,9 +46,9 @@ class _AIDetectionClient:
         if response.ok:
             return response.json()
         elif response.status_code == 503:
-            raise Error()
+            raise UnderMaintenanceError()
         else:
-            raise Error(response)
+            raise CommandError(response)
         
     @staticmethod
     def submit_natural_language(auth_token, scan_id, submission):

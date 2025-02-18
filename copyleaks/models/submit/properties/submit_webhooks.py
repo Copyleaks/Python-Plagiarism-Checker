@@ -58,3 +58,39 @@ class SubmitWebhooks:
         assert value
 
         self.status = value
+
+    def get_status_headers(self):
+        '''
+            Get the headers for the status webhook.
+        '''
+        return self.statusHeaders
+
+    def set_status_headers(self, value):
+        '''
+            Parameters: 
+                value: List of list of strings.
+
+            Example:
+                [["header-key1", "header-value1"], ["header-key2", "header-value2"]]
+        '''
+        assert isinstance(value, list)
+        self.statusHeaders = value
+
+    def get_new_result_headers(self):
+        '''
+            Get the headers for the new result webhook.
+        '''
+        return self.newResultHeaders
+
+    def set_new_result_headers(self, value):
+        '''
+            Set the headers for the new result webhook.
+
+            Parameters: 
+                value: List of list of strings.
+
+            Example:
+                [["header-key1", "header-value1"], ["header-key2", "header-value2"]]
+        '''
+        assert isinstance(value, list)
+        self.newResultHeaders = value
