@@ -26,6 +26,7 @@ import base64
 import random
 from copyleaks.copyleaks import Copyleaks
 from copyleaks.exceptions.command_error import CommandError
+from copyleaks.models.TextModeration.Requests import CopyleaksTextModerationRequestModel
 from copyleaks.models.submit.ai_detection_document import NaturalLanguageDocument, SourceCodeDocument
 from copyleaks.models.submit.document import FileDocument, UrlDocument, OcrFileDocument
 from copyleaks.models.submit.properties.scan_properties import ScanProperties
@@ -158,3 +159,17 @@ submission.set_score(score_weight)
 submission.set_sandbox(True)
 response = Copyleaks.WritingAssistantClient.submit_text(auth_token, scan_id, submission)
 print(response)
+## example for using the text moderation client
+# Initialize the model
+model = CopyleaksTextModerationRequestModel(
+    text="hello world",
+    sandbox=True,
+    language="en",
+    labels=[
+        {"id": "toxic-v1"},
+        {"id": "violent-v1"},
+    ]
+)
+textModerationResponse = Copyleaks.TextModerationClient.submit_text(auth_token, scan_id, model)
+print("Text Moderation"+ "\n")
+print(textModerationResponse.model_dump_json())
