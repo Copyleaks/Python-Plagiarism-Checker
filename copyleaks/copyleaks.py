@@ -35,13 +35,14 @@ from copyleaks.exceptions.auth_expired_error import AuthExipredError
 from enum import Enum
 from copyleaks.clients.ai_detection_client import _AIDetectionClient
 from copyleaks.clients.writing_assistant_client import _WritingAssistantClient
-
+from copyleaks.clients.TextModerationClient import _TextModerationClient
 
 class Copyleaks(object):
 
     WritingAssistantClient = _WritingAssistantClient
     AiDetectionClient = _AIDetectionClient
-    
+    TextModerationClient=_TextModerationClient
+
     @staticmethod
     def set_identity_uri(uri):
         '''
