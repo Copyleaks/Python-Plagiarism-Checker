@@ -28,7 +28,7 @@ from pydantic import BaseModel
 class AlertsModel(BaseModel):
 
     """Scan alert category."""
-    _category: Optional[str] = None
+    _category: Optional[int] = None
     
     """Scan alert code. The code is unique for each scan alert."""
     _code: Optional[str] = None
@@ -43,18 +43,18 @@ class AlertsModel(BaseModel):
     _help_link: Optional[str] = None
 
     """Specifies the importance of the scan alert."""
-    _severity: Optional[str] = None
+    _severity: Optional[int] = None
 
     """Additional data about the scan alert. Supplied as a json string."""
     _additional_data: Optional[str] = None
 
     def __init__(self,
-                 category: Optional[str] = None,
+                 category: Optional[int] = None,
                  code: Optional[str] = None,
                  title: Optional[str] = None,
                  message: Optional[str] = None,
                  help_link: Optional[str] = None,
-                 severity: Optional[str] = None,
+                 severity: Optional[int] = None,
                  additional_data: Optional[str] = None):
         """
         Initializes an Alerts object, storing values in internal attributes.

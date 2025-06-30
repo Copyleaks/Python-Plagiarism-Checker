@@ -40,8 +40,6 @@ class NewResultsInternetModel(BaseModel):
     """Total matched words between this result and the scanned document."""
     _matched_words: Optional[int] = None,  
 
-    _scan_id: Optional[str] = None,
-
     """Metadata object"""
     _metadata: Optional[MetadataModel] = None, 
 
@@ -54,17 +52,15 @@ class NewResultsInternetModel(BaseModel):
                  title: Optional[str] = None,
                  introduction: Optional[str] = None,
                  matched_words: Optional[int] = None, 
-                 scan_id: Optional[str] = None,     
                  metadata: Optional[MetadataModel] = None, 
                  url: Optional[str] = None):
         """
         Initializes a NewResultsInternet object, storing values in internal attributes..
         """
-        super().__init__(id=id,title=title,introduction=introduction,matched_words=matched_words,scan_id=scan_id,metadata=metadata,url=url)
+        super().__init__(id=id,title=title,introduction=introduction,matched_words=matched_words,metadata=metadata,url=url)
         self._id: Optional[str] = id
         self._title: Optional[str] = title
         self._introduction: Optional[str] = introduction
         self._matched_words: Optional[int] = matched_words
-        self._scan_id: Optional[str] = scan_id
         self._metadata: Optional[MetadataModel] = metadata 
         self._url: Optional[str] = url
