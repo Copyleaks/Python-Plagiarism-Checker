@@ -28,7 +28,7 @@ from ..BaseModels.MetadataModel import MetadataModel
 from .TagsModel import TagsModel
 class InternetModel(NewResultsInternetModel):
    
-    """Tags object"""
+    """Tags object array """
     _tags: List['TagsModel'] = []
 
     def __init__(self,

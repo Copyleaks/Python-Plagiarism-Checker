@@ -29,10 +29,7 @@ from .HelperModels.BaseModels.StatusWebhookModel import StatusWebhookModel
 class IndexedWebhookModel(StatusWebhookModel):
     """
     Represents a webhook payload indicating a document has been indexed.
-    Inherits from StatusWebhook and adds no additional fields specific to indexing.
-    Its primary purpose might be type differentiation based on the event.
-    Corresponds to the Java class:
-    models.submissions.Webhooks.IndexedWebhook
+    Inherits from StatusWebhook.
     """
     def __init__(self,
                  status: Optional[int] = None,

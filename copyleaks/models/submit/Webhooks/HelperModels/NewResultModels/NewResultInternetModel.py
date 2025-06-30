@@ -40,6 +40,8 @@ class NewResultsInternetModel(BaseModel):
     """Total matched words between this result and the scanned document."""
     _matched_words: Optional[int] = None,  
 
+    _scan_id: Optional[str] = None,
+
     """Metadata object"""
     _metadata: Optional[MetadataModel] = None, 
 
@@ -62,6 +64,7 @@ class NewResultsInternetModel(BaseModel):
         self._id: Optional[str] = id
         self._title: Optional[str] = title
         self._introduction: Optional[str] = introduction
-        self._matched_words: Optional[int] = matched_words 
+        self._matched_words: Optional[int] = matched_words
+        self._scan_id: Optional[str] = scan_id
         self._metadata: Optional[MetadataModel] = metadata 
         self._url: Optional[str] = url

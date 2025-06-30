@@ -28,10 +28,7 @@ from .HelperModels.CompletedModels.ScannedDocumentModel import ScannedDocumentMo
 
 class CreditsCheckedWebhookModel(StatusWebhookModel):
     """
-    Represents a webhook payload indicating credits have been checked/charged
-    for a scan. Inherits from StatusWebhook.
-    Corresponds to the Java class:
-    models.submissions.Webhooks.CreditsCheckedWebhook
+    Represents a webhook payload indicating credits have been checked for a scan. Inherits from StatusWebhook.
     """
     credits: Optional[int] = None
     scanned_document: Optional[ScannedDocumentModel] = None

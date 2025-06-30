@@ -32,7 +32,7 @@ class RepositoriesModel(SharedResultsModel):
     """The repository Id that has the result."""
     _repository_id: Optional[str] = None
 
-    """Tags object"""
+    """Tags object array"""
     _tags: List['TagsModel'] = []
 
     def __init__(self,
