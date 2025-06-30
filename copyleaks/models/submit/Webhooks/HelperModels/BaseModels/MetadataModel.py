@@ -26,14 +26,26 @@ from typing import Optional
 from pydantic import BaseModel
 
 class MetadataModel(BaseModel):
-    """
-    Represents metadata using Pydantic.
-    """
     final_url: Optional[str] = None
+    """The submitted URL after all HTTP redirects."""
+    
     canonical_url: Optional[str] = None
+    """Extracted canonical URL from the scanned document."""
+    
     publish_date: Optional[str] = None
+    """Publication date of the scanned document."""
+    
     creation_date: Optional[str] = None
+    """Creation date of the scanned document."""
+    
     last_modification_date: Optional[str] = None
+    """Last modification date of the scanned document."""
+    
     author: Optional[str] = None
+    """Scanned document author."""
+    
     organization: Optional[str] = None
+    """Scanned document organization."""
+    
     filename: Optional[str] = None
+    """Scanned document filename."""

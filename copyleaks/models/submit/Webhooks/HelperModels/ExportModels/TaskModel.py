@@ -26,11 +26,14 @@ from typing import Optional
 from pydantic import BaseModel
 
 class TaskModel(BaseModel):
-    """
-    Represents a task, potentially related to an export or endpoint check.
-    """
+
+    """The endpoint address of the export task."""
     _endpont: Optional[str] = None
+
+    """ This flag gives an indication whether the scan was completed without internal errors on the Copyleaks side."""
     _is_healthy: bool = False
+
+    """The status code reported by the customer servers. If the tasks.isHealthy is equal to false - this field will be null."""
     _http_status_code: Optional[int] = None
 
     def __init__(self,

@@ -27,8 +27,13 @@ from pydantic import BaseModel
 
 class TagsModel(BaseModel):
 
+    """Unique ID that signifies the type of result tag."""
     _code: Optional[str] = None
+
+    """A simple name for this tag."""
     _title: Optional[str] = None
+
+    """Short text describing this tag."""
     _description: Optional[str] = None
 
     def __init__(self,

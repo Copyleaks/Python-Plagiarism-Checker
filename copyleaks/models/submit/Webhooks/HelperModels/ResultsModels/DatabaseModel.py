@@ -27,10 +27,8 @@ from .SharedResultsModel import SharedResultsModel
 from ..BaseModels.MetadataModel import MetadataModel
 from .TagsModel import TagsModel
 class DatabaseModel(SharedResultsModel):
-    """
-    Represents a result found in a database source, inheriting general details
-    from SharedResultsModel and adding specific tags.
-    """
+    
+    """Tags object"""
     _tags: List['TagsModel'] = []
 
     def __init__(self,

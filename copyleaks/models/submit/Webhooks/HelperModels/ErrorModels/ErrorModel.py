@@ -26,10 +26,11 @@ from typing import Optional
 from pydantic import BaseModel
 
 class ErrorModel(BaseModel):
-    """
-    Represents an error structure, often used in API responses or webhook payloads.
-    """
+
+    """Error code that represents the reason for failure. See below the full error table."""
     _code: Optional[int] = None
+
+    """Error message that represents the reason for failure."""
     _message: Optional[str] = None
 
     def __init__(self,

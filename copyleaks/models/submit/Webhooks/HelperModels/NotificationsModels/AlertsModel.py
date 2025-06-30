@@ -26,15 +26,26 @@ from typing import Optional
 from pydantic import BaseModel
 
 class AlertsModel(BaseModel):
-    """
-    Represents a single alert notification detail.
-    """
+
+    """Scan alert category."""
     _category: Optional[str] = None
+    
+    """Scan alert code. The code is unique for each scan alert."""
     _code: Optional[str] = None
+
+    """Scan alert human-readable title."""
     _title: Optional[str] = None
+    
+    """Provides human-readable information about the scan alert."""
     _message: Optional[str] = None
+
+    """Url to a resource describing the specific scan alert."""
     _help_link: Optional[str] = None
+
+    """Specifies the importance of the scan alert."""
     _severity: Optional[str] = None
+
+    """Additional data about the scan alert. Supplied as a json string."""
     _additional_data: Optional[str] = None
 
     def __init__(self,

@@ -27,6 +27,7 @@ from typing import Optional, List
 from pydantic import BaseModel
 
 class NotificationsModel(BaseModel):
+    """A list of scan alerts that were detected in the scan."""
     _alerts: List[AlertsModel] = []
 
     def __init__(self, alerts: Optional[List[AlertsModel]] = None):

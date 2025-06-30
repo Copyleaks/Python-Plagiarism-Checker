@@ -27,10 +27,8 @@ from ..ResultsModels.SharedResultsModel import SharedResultsModel
 from ..ResultsModels.RepositoryMetadataModel import RepositoryMetadataModel
 
 class NewResultsRepositoriesModel(SharedResultsModel):
-    """
-    Represents results specifically found in repositories. Inherits from SharedResultsModel
-    and expects RepositoryMetadata for its metadata field.
-    """
+
+    """The repository Id that has the result."""
     _repository_id: Optional[str] = None
 
     def __init__(self,

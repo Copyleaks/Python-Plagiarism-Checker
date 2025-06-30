@@ -26,5 +26,5 @@ from typing import Optional, Any
 from pydantic import BaseModel
 
 class WebhookModel(BaseModel):
-
+    """The developer payload that was provided in the submit method."""
     developer_payload: Optional[str] = None

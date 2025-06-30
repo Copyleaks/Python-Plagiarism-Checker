@@ -26,9 +26,8 @@ from typing import Any, Optional
 from ..BaseModels.MetadataModel import MetadataModel
 
 class RepositoryMetadataModel(MetadataModel):
-    """
-    Metadata specific to repository results. Inherits from Metadata.
-    """
+
+    """Email of the user which added this document to the repository."""
     _submitted_by: Optional[str] = None
 
     def __init__(self,

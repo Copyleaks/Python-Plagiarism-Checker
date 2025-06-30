@@ -30,14 +30,23 @@ from typing import Optional
 from pydantic import BaseModel
 
 class ScannedDocumentModel(BaseModel):
-    """
-    Represents information about a document that has been scanned.
-    """
+    
+    """The unique scan id provided by you."""
     _scan_id: Optional[str] = None
+
+    """Total number of words found in the scanned text."""
     _total_words: Optional[int] = None
+
+    """Number of excluded words in the submitted content."""
     _total_excluded: Optional[int] = None
+
+    """Overall credits used for the scan."""
     _credits: Optional[int] = None
+
+    """The creation time of the scan."""
     _creation_time: Optional[str] = None
+
+    """Metadata object"""
     _metadata: Optional['MetadataModel'] = None
 
     def __init__(self,

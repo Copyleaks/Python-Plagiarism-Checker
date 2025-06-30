@@ -26,9 +26,8 @@ from typing import Optional
 from pydantic import BaseModel
 
 class NewResultScoreModel(BaseModel):
-    """
-    Represents the scoring information for a new result.
-    """
+    
+    """The percentage of similar words from all results. The calculation does not include excluded references, quotations, etc... """
     _aggregated_score: Optional[float] = None
 
     def __init__(self,

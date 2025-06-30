@@ -28,11 +28,11 @@ from .RepositoryMetadataModel import RepositoryMetadataModel
 from .TagsModel import TagsModel
 
 class RepositoriesModel(SharedResultsModel):
-    """
-    Represents results specifically found in repositories, inheriting
-    from SharedResultsModel and adding repositoryId and tags.
-    """
+
+    """The repository Id that has the result."""
     _repository_id: Optional[str] = None
+
+    """Tags object"""
     _tags: List['TagsModel'] = []
 
     def __init__(self,

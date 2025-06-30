@@ -26,12 +26,17 @@ from typing import Optional
 from pydantic import BaseModel
 
 class ScoreModel(BaseModel):
-    """
-    Represents scoring details, including word counts and an aggregated score.
-    """
+    
+    """ Number of words which matched exactly"""
     _identical_words: Optional[int] = None
+
+    """Number of nearly identical words with small differences like 'slow' and 'slowly'."""
     _minor_changed_words: Optional[int] = None
+
+    """Number of paraphrased words showing similar ideas with different words."""
     _related_meaning_words: Optional[int] = None
+
+    """The percentage of similar words from all results. The calculation does not include excluded references, quotations, etc..."""
     _aggregated_score: Optional[float] = None
 
     def __init__(self,

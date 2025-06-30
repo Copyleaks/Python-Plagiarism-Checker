@@ -27,14 +27,23 @@ from pydantic import BaseModel
 from ..BaseModels.MetadataModel import MetadataModel
 
 class SharedResultsModel(BaseModel):
-    """
-    Represents shared details about a result found during a scan.
-    """
+
+    """Unique result ID to identify this result."""
     _id_val: Optional[str] = None
+
+    """ Document title. Mostly extracted from the document content."""
     _title: Optional[str] = None
+
+    """Document brief introduction. Mostly extracted from the document content."""
     _introduction: Optional[str] = None
+
+    """Total matched words between this result and the scanned document."""
     _matched_words: Optional[int] = None
+
+    """In case a result was found in the Copyleaks internal database, and was submitted by you, this will show the scan id of the specific result. Otherwise, this field will remain empty."""
     _scan_id: Optional[str] = None
+
+    """Metdata object"""
     _metadata: Optional[MetadataModel] = None
 
     def __init__(self,

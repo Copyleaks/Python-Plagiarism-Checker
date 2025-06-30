@@ -27,17 +27,26 @@ from ..BaseModels.MetadataModel import MetadataModel
 from pydantic import BaseModel
 
 class NewResultsInternetModel(BaseModel):
+
+    """Unique result ID to identify the result."""
     _id: Optional[str] = None, 
+    
+    """Document title. Mostly extracted from the document content."""
     _title: Optional[str] = None,
+
+    """Document brief introduction. Mostly extracted from the document content."""
     _introduction: Optional[str] = None,
-    _matched_words: Optional[int] = None, # 
-    _scan_id: Optional[str] = None,      
+
+    """Total matched words between this result and the scanned document."""
+    _matched_words: Optional[int] = None,  
+
+    """Metadata object"""
     _metadata: Optional[MetadataModel] = None, 
+
+    """Public URL of the resource."""
     _url: Optional[str] = None
     
-    """
-    Represents details about a new result found on the internet.
-    """
+
     def __init__(self,
                  id: Optional[str] = None, 
                  title: Optional[str] = None,
@@ -54,6 +63,5 @@ class NewResultsInternetModel(BaseModel):
         self._title: Optional[str] = title
         self._introduction: Optional[str] = introduction
         self._matched_words: Optional[int] = matched_words 
-        self._scan_id: Optional[str] = scan_id          
         self._metadata: Optional[MetadataModel] = metadata 
         self._url: Optional[str] = url

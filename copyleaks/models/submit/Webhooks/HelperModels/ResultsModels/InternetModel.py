@@ -27,10 +27,8 @@ from ..NewResultModels.NewResultInternetModel import NewResultsInternetModel
 from ..BaseModels.MetadataModel import MetadataModel
 from .TagsModel import TagsModel
 class InternetModel(NewResultsInternetModel):
-    """
-    Represents an internet result, inheriting general details from
-    NewResultsInternet and adding specific tags.
-    """
+   
+    """Tags object"""
     _tags: List['TagsModel'] = []
 
     def __init__(self,
