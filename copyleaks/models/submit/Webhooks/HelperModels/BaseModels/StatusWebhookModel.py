@@ -25,7 +25,7 @@
 from typing import Optional, Any
 from pydantic import BaseModel
 
-from copyleaks.models.submit.Webhooks.HelperModels.BaseModels import WebhookModel
+from copyleaks.models.submit.Webhooks.HelperModels.BaseModels.WebhookModel import WebhookModel
 
 class StatusWebhookModel(WebhookModel):
     """The current status of the scan."""

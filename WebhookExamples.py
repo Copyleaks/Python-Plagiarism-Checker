@@ -99,7 +99,7 @@ def webhook_completed():
     completed_data = CompletedWebhookModel(**request.json)
 
     # Additional processing can be done here
-    return jsonify({'message': 'Completed received'}), 200
+    return jsonify({'message': f'Completed received:{completed_data}'}), 200
 
 # === Webhook: Scan Error ===
 @app.route('/webhook/error', methods=['POST'])
@@ -112,7 +112,7 @@ def webhook_error():
     error_data = ErrorWebhookModel(**request.json)
 
     # Additional processing can be done here
-    return jsonify({'message': 'Error received'}), 200
+    return jsonify({'message': f'Error received - {error_data}'}), 200
 
 # === Webhook: Scan Indexed ===
 @app.route('/webhook/indexed', methods=['POST'])
@@ -125,7 +125,7 @@ def webhook_indexed():
     indexed_data = IndexedWebhookModel(**request.json)
 
     # Additional processing can be done here
-    return jsonify({'message': 'Indexed received'}), 200
+    return jsonify({'message': f'Indexed received - {indexed_data}'}), 200
 
 # === Webhook: Credits Checked ===
 @app.route('/webhook/creditsChecked', methods=['POST'])
@@ -138,7 +138,7 @@ def webhook_credits_checked():
     credits_checked_data = CreditsCheckedWebhookModel(**request.json)
 
     # Additional processing can be done here
-    return jsonify({'message': 'CreditsChecked received'}), 200
+    return jsonify({'message': f'CreditsChecked received - {credits_checked_data}'}), 200
 
 
 # === Webhook: Credits Checked ===
@@ -152,7 +152,7 @@ def webhook_new_results():
     new_results_data = NewResultWebhookModel(**request.json)
 
     # Additional processing can be done here
-    return jsonify({'message': 'new-results received'}), 200
+    return jsonify({'message': f'new-results received - {new_results_data}'}), 200
 
 
 def start_flask_server():
