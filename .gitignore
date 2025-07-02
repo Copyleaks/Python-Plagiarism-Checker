@@ -8,3 +8,4 @@ MANIFEST
 build/*
 copyleaks.egg-info/*
 pypirc
+MANIFEST.in

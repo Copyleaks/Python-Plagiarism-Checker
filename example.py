@@ -21,7 +21,7 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
 '''
-
+import time
 import base64
 import random
 from copyleaks.copyleaks import Copyleaks
@@ -30,11 +30,37 @@ from copyleaks.models.submit.ai_detection_document import NaturalLanguageDocumen
 from copyleaks.models.submit.document import FileDocument, UrlDocument, OcrFileDocument
 from copyleaks.models.submit.properties.scan_properties import ScanProperties
 from copyleaks.models.export import *
+from copyleaks.models.submit.properties.submit_webhooks import SubmitWebhooks
 from copyleaks.models.submit.score_weights import ScoreWeights
 from copyleaks.models.submit.writing_assistant_document import WritingAssistantDocument
+import threading
+from WebhookExamples import start_flask_server
+import signal
+import sys
 # Register on https://api.copyleaks.com and grab your secret key (from the dashboard page).
 EMAIL_ADDRESS = 'your@email.addresss'
 KEY = '00000000-0000-0000-0000-000000000000'
+
+#  Create a shutdown event before doing anything else for shutting down the flask server using Ctrl+C
+exit_event = threading.Event()
+
+#  Define signal handler 
+def signal_handler(sig, frame):
+    print("\n🛑 Ctrl+C detected. Shutting down server.")
+    server_thread.shutdown()
+    exit_event.set()
+    sys.exit(0)  # Forcefully exit even if main is still executing
+
+#  Register the signal handler signal.signal(signal.SIGINT, signal_handler)
+
+# Start the Flask webhook server in the background
+# if you are using ngrok run it on port 5000
+# Start the Flask server
+server_thread = start_flask_server()
+server_thread.start()
+
+print("🚀 Flask server is running and listening for webhooks.")
+print("🔴 Press Ctrl+C to shut down the server.")
 
 try:
     auth_token = Copyleaks.login(EMAIL_ADDRESS, KEY)
@@ -59,7 +85,13 @@ file_submission = FileDocument(BASE64_FILE_CONTENT, FILENAME)
 # Once the scan completed on Copyleaks servers, we will trigger a webhook that notify you.
 # Write your public endpoint server address. If you testing it locally, make sure that this endpoint
 # is publicly available.
-scan_properties = ScanProperties('https://your.server/webhook?event={{STATUS}}')
+webhooks = SubmitWebhooks()
+webhooks.set_status('https://your.server/webhook/{STATUS}')
+webhooks.set_new_result('https://your.server/webhook/new-results')
+
+# Pass the webhooks to ScanProperties
+scan_properties = ScanProperties(status_webhook='https://your.server/webhook/{STATUS}')
+scan_properties.set_webhooks(webhooks)
 scan_properties.set_sandbox(True)  # Turn on sandbox mode. Turn off on production.
 file_submission.set_properties(scan_properties)
 Copyleaks.submit_file(auth_token, scan_id, file_submission)  # sending the submission to scanning
@@ -114,47 +146,49 @@ print("You will notify, using your webhook, once the scan was completed.")
 #scan_properties.set_pdf(pdf) # Will generate PDF report.
 
 
-# This example is going to use the AI detector client to detect ai in text
-sample_text = "Lions are social animals, living in groups called prides, typically consisting of several females, their offspring, and a few males. Female lions are the primary hunters, working together to catch prey. Lions are known for their strength, teamwork, and complex social structures."
-natural_language_submission = NaturalLanguageDocument(sample_text)
-natural_language_submission.set_sandbox(True)
-response = Copyleaks.AiDetectionClient.submit_natural_language(auth_token, scan_id, natural_language_submission)
-print(response)
+# # This example is going to use the AI detector client to detect ai in text
+# sample_text = "Lions are social animals, living in groups called prides, typically consisting of several females, their offspring, and a few males. Female lions are the primary hunters, working together to catch prey. Lions are known for their strength, teamwork, and complex social structures."
+# natural_language_submission = NaturalLanguageDocument(sample_text)
+# natural_language_submission.set_sandbox(True)
+# response = Copyleaks.AiDetectionClient.submit_natural_language(auth_token, scan_id, natural_language_submission)
+# print(response)
 
 
-# This example is going to use the AI detector client to detect ai in source code
-sample_code = (
-    "def add(a, b):\n"
-    "    return a + b\n"
-    "\n"
-    "def multiply(a, b):\n"
-    "    return a * b\n"
-    "\n"
-    "def main():\n"
-    "    x = 5\n"
-    "    y = 10\n"
-    "    sum_result = add(x, y)\n"
-    "    product_result = multiply(x, y)\n"
-    "    print(f'Sum: {sum_result}')\n"
-    "    print(f'Product: {product_result}')\n"
-    "\n"
-    "if __name__ == '__main__':\n"
-    "    main()"
-)
-source_code_submission = SourceCodeDocument(sample_text, "example.py")
-source_code_submission.set_sandbox(True)
-response = Copyleaks.AiDetectionClient.submit_natural_language(auth_token, scan_id, source_code_submission)
-print(response)
+# # This example is going to use the AI detector client to detect ai in source code
+# sample_code = (
+#     "def add(a, b):\n"
+#     "    return a + b\n"
+#     "\n"
+#     "def multiply(a, b):\n"
+#     "    return a * b\n"
+#     "\n"
+#     "def main():\n"
+#     "    x = 5\n"
+#     "    y = 10\n"
+#     "    sum_result = add(x, y)\n"
+#     "    product_result = multiply(x, y)\n"
+#     "    print(f'Sum: {sum_result}')\n"
+#     "    print(f'Product: {product_result}')\n"
+#     "\n"
+#     "if __name__ == '__main__':\n"
+#     "    main()"
+# )
+# source_code_submission = SourceCodeDocument(sample_text, "example.py")
+# source_code_submission.set_sandbox(True)
+# response = Copyleaks.AiDetectionClient.submit_natural_language(auth_token, scan_id, source_code_submission)
+# print(response)
 
 
-# This example is going to use the WritingAssistant client to get feedback on text
-score_weight = ScoreWeights()
-score_weight.set_grammar_score_weight(0.2)
-score_weight.set_mechanics_score_weight(0.3)
-score_weight.set_sentence_structure_score_weight(0.5)
-score_weight.set_word_choice_score_weight(0.4)
-submission = WritingAssistantDocument(sample_text)
-submission.set_score(score_weight)
-submission.set_sandbox(True)
-response = Copyleaks.WritingAssistantClient.submit_text(auth_token, scan_id, submission)
-print(response)
+# # This example is going to use the WritingAssistant client to get feedback on text
+# score_weight = ScoreWeights()
+# score_weight.set_grammar_score_weight(0.2)
+# score_weight.set_mechanics_score_weight(0.3)
+# score_weight.set_sentence_structure_score_weight(0.5)
+# score_weight.set_word_choice_score_weight(0.4)
+# submission = WritingAssistantDocument(sample_text)
+# submission.set_score(score_weight)
+# submission.set_sandbox(True)
+# response = Copyleaks.WritingAssistantClient.submit_text(auth_token, scan_id, submission)
+# print(response)
+
+exit_event.wait()
