@@ -22,13 +22,25 @@
  SOFTWARE.
 '''
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from datetime import datetime
 
 class TextModerationScannedDocument(BaseModel):
-    scanId: str 
-    totalWords: int 
+
+    """The scan id given by the user."""
+    scanId: str
+
+    """Total number of words found in the scanned text."""
+    totalWords: int
+
+    """Total excluded words from the text."""
     totalExcluded: int
-    actualCredits: int 
-    expectedCredits: int 
-    creationTime: datetime 
+
+    """The cost of credits for this scan."""
+    actualCredits: int
+
+    """The amount of credits that was expected to be spent on the scan."""
+    expectedCredits: int
+
+    """Creation time of the scan."""
+    creationTime: datetime

@@ -27,7 +27,15 @@ from typing import List, Optional, Any
 from pydantic import BaseModel, Field
 
 class CopyleaksTextModerationRequestModel(BaseModel):
-    text: str = Field(..., description="Text to produce Text Moderation report for.")
-    sandbox: bool = Field(default=False, description="Default value is set to False.")
-    language: Optional[str] = Field(None, description="If not provided, the system will automatically detect the language.")
-    labels: List[Any] = Field(..., min_items=1, description="Labels array must have at least 1 element")
+
+    """The input text to be moderated."""
+    text: str 
+
+    """Whether to run the moderation in sandbox (test) mode."""
+    sandbox: bool = False  
+
+    """The language code of the input text (e.g., "en" for English). If None, auto-detect."""
+    language: Optional[str] = None  
+
+    """A list of label objects specifying which moderation categories to check."""
+    labels: Optional[List[Any]] = None  

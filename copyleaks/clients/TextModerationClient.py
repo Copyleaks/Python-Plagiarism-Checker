@@ -27,7 +27,7 @@ from copyleaks.consts import Consts
 from copyleaks.exceptions.command_error import CommandError
 from copyleaks.exceptions.under_maintenance_error import UnderMaintenanceError
 from copyleaks.helpers.copyleaks_client_helper import CopyleaksClientHelper
-from copyleaks.models.TextModeration.Responses.CopyleaksTextModerationResponseModel import TextModerationResponseModel
+from copyleaks.models.TextModeration.Responses.CopyleaksTextModerationResponseModel import CopyleaksTextModerationResponseModel
 
 
 class _TextModerationClient:
@@ -43,11 +43,11 @@ class _TextModerationClient:
             'Authorization': f"Bearer {auth_token['access_token']}"
         }
 
-        json = requestModel.toJSON()
+        json = requestModel.json()
         response = requests.post(url, headers=headers, data=json)
 
         if response.ok:
-           return TextModerationResponseModel(**response.json())
+           return CopyleaksTextModerationResponseModel(**response.json())
         elif response.status_code == 503:
             raise UnderMaintenanceError()
         else:

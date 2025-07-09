@@ -22,10 +22,12 @@
  SOFTWARE.
 '''
 
-from typing import List, Optional, Any
-from pydantic import BaseModel, Field
+from typing import Optional
+from pydantic import BaseModel
 from copyleaks.models.TextModeration.Responses.Submodules.Text import Text
 
 class ModerationsModel(BaseModel):
+    
+    """Moderated text segments corresponding to the submitted text. Each position in the inner arrays corresponds to a single segment in the textual version"""
     text: Optional['Text']
 

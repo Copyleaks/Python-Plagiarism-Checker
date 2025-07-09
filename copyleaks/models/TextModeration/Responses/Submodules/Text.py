@@ -22,10 +22,11 @@
  SOFTWARE.
 '''
 
-from typing import List, Optional, Any
-from pydantic import BaseModel, Field
+from typing import  Optional
+from pydantic import BaseModel
 
 from copyleaks.models.TextModeration.Responses.Submodules.TextModerationChars import TextModerationChars
 
 class Text(BaseModel):
+    """ An object that groups together several arrays detailing the properties of labelled segments. """
     chars: Optional['TextModerationChars'] 

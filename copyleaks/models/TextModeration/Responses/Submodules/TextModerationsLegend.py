@@ -22,8 +22,12 @@
  SOFTWARE.
 '''
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 class TextModerationsLegend(BaseModel):
-    index: int 
-    id: str 
+    
+    """The numerical index of the label."""
+    index: object
+
+    """A unique string identifier for the label. This ID serves as a machine-readable way to identify the label type."""
+    id: object

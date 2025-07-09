@@ -22,10 +22,16 @@
  SOFTWARE.
 '''
 
-from typing import List, Optional, Any
-from pydantic import BaseModel, Field
+from typing import List
+from pydantic import BaseModel
 
 class TextModerationChars(BaseModel):
+
+    """Start character position of the labelled segment."""
     labels: List[int]
+    
+    """Predicted label index for the corresponding segment. The index can be resolved to its ID using the supplied legend."""
     starts: List[int] 
+    
+    """Labelled segment character length."""
     lengths: List[int] 
