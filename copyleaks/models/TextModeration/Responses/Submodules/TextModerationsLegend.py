@@ -25,9 +25,9 @@
 from pydantic import BaseModel
 
 class TextModerationsLegend(BaseModel):
-    
+
     """The numerical index of the label."""
-    index: object
+    index: int
 
     """A unique string identifier for the label. This ID serves as a machine-readable way to identify the label type."""
-    id: object
+    id: str
