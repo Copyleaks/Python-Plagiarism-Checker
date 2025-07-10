@@ -24,7 +24,7 @@
 
 import json
 from typing import List, Optional, Any
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 class CopyleaksTextModerationRequestModel(BaseModel):
 
@@ -39,3 +39,19 @@ class CopyleaksTextModerationRequestModel(BaseModel):
 
     """A list of label objects specifying which moderation categories to check."""
     labels: Optional[List[Any]] = None  
+     
+    @field_validator('text')
+    @classmethod
+    def text_must_not_be_empty(cls, v):
+        if not isinstance(v, str) or not v.strip():
+            raise ValueError('text is required and must be a non-empty string')
+        return v
+
+    @field_validator('labels')
+    @classmethod
+    def labels_length(cls, v):
+        if not isinstance(v, list) or not v:
+            raise ValueError('labels must be a non-empty list')
+        if not (1 <= len(v) <= 32):
+            raise ValueError('labels must contain at least 1 and no more than 32 elements')
+        return v
