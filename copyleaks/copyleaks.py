@@ -156,7 +156,10 @@ class Copyleaks(object):
                 `UnderMaintenanceError`: Copyleaks servers are unavailable for maintenance. We recommend to implement exponential backoff algorithm as described here: https://api.copyleaks.com/documentation/v3/exponential-backoff
         '''
         file_extension = os.path.splitext(submission.filename)[1].lstrip('.').lower()
-
+        
+        if not file_extension:
+            raise ValueError(f"File extension could not be determined for filename: {submission.filename}")
+        
         if file_extension in SupportedFilesTypes.SUPPORTED_CODE_EXTENSIONS:
             deprecationService.show_deprecation_message()
 
