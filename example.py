@@ -176,7 +176,7 @@ sample_code = (
 )
 source_code_submission = SourceCodeDocument(sample_text, "example.py")
 source_code_submission.set_sandbox(True)
-response = Copyleaks.AiDetectionClient.submit_natural_language(auth_token, scan_id, source_code_submission)
+response = Copyleaks.AiDetectionClient.submit_source_code(auth_token, scan_id, source_code_submission)
 print(response)
 
 # This example is going to use the WritingAssistant client to get feedback on text

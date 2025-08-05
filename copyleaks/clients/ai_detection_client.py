@@ -28,7 +28,7 @@ from copyleaks.consts import Consts
 from copyleaks.exceptions.command_error import CommandError
 from copyleaks.exceptions.under_maintenance_error import UnderMaintenanceError
 from copyleaks.helpers.copyleaks_client_helper import CopyleaksClientHelper
-
+from copyleaks.deprecationService import deprecationService
 class _AIDetectionClient:
     @staticmethod
     def __submit(url, auth_token, scan_id, submission):
@@ -79,4 +79,5 @@ class _AIDetectionClient:
                 `UnderMaintenanceError`: Copyleaks servers are unavailable for maintenance. We recommend to implement exponential backoff algorithm as described here: https://api.copyleaks.com/documentation/v3/exponential-backoff
         '''
         url = f"{Consts.API_SERVER_URI}/v2/writer-detector/source-code/{scan_id}/check"
+        deprecationService.show_deprecation_message()
         return _AIDetectionClient.__submit(url, auth_token, scan_id, submission)
