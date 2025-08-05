@@ -26,14 +26,14 @@ import logging
 class deprecationService:
     @staticmethod
     def show_deprecation_message():
-        # Trace equivalent - using logging
+        
         logging.warning("DEPRECATION NOTICE: AI Code Detection will be discontinued on August 29, 2025. Please remove AI code detection integrations before the sunset date.")
         
-        # Red colored console output using ANSI escape codes
-        print("\033[31m", end="")  # Red color
+        
+        print("\033[31m", end="") 
         print("════════════════════════════════════════════════════════════════════")
         print("DEPRECATION NOTICE !!!")
         print("AI Code Detection will be discontinued on August 29, 2025.")
         print("Please remove AI code detection integrations before the sunset date.")
         print("════════════════════════════════════════════════════════════════════")
-        print("\033[0m", end="")  # Reset color
+        print("\033[0m", end="")  
