@@ -36,6 +36,9 @@ from enum import Enum
 from copyleaks.clients.ai_detection_client import _AIDetectionClient
 from copyleaks.clients.writing_assistant_client import _WritingAssistantClient
 from copyleaks.clients.TextModerationClient import _TextModerationClient
+from copyleaks.models.constants.SupportedFilesTypes import SupportedFilesTypes
+from copyleaks.deprecationService import deprecationService
+import os
 
 class Copyleaks(object):
 
@@ -152,6 +155,14 @@ class Copyleaks(object):
                 `CommandError`: Server reject the request. See response status code, headers and content for more info.
                 `UnderMaintenanceError`: Copyleaks servers are unavailable for maintenance. We recommend to implement exponential backoff algorithm as described here: https://api.copyleaks.com/documentation/v3/exponential-backoff
         '''
+        file_extension = os.path.splitext(submission.filename)[1].lstrip('.').lower()
+        
+        if not file_extension:
+            raise ValueError(f"File extension could not be determined for filename: {submission.filename}")
+        
+        if file_extension in SupportedFilesTypes.SUPPORTED_CODE_EXTENSIONS:
+            deprecationService.show_deprecation_message()
+
         url = f"{Consts.API_SERVER_URI}/v3/scans/submit/file/{scan_id}"
         Copyleaks.__submit(url, auth_token, scan_id, submission)
 
