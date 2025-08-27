@@ -28,7 +28,6 @@ from copyleaks.consts import Consts
 from copyleaks.exceptions.command_error import CommandError
 from copyleaks.exceptions.under_maintenance_error import UnderMaintenanceError
 from copyleaks.helpers.copyleaks_client_helper import CopyleaksClientHelper
-from copyleaks.deprecationService import deprecationService
 class _AIDetectionClient:
     @staticmethod
     def __submit(url, auth_token, scan_id, submission):
@@ -65,19 +64,3 @@ class _AIDetectionClient:
         url = f"{Consts.API_SERVER_URI}/v2/writer-detector/{scan_id}/check"
         return _AIDetectionClient.__submit(url, auth_token, scan_id, submission)
     
-
-    @staticmethod
-    def submit_source_code(auth_token, scan_id, submission):
-        '''
-            Use Copyleaks AI Content Detection to differentiate between human source code and AI written source code.
-            This endpoint will receive submitted source code to be checked. 
-            At the end of the processing stage, the result will be shown as classifications. 
-            Source code classification is divided into sections. Each section may have a different classification.
-
-            Raises:
-                `CommandError`: Server reject the request. See response status code, headers and content for more info.
-                `UnderMaintenanceError`: Copyleaks servers are unavailable for maintenance. We recommend to implement exponential backoff algorithm as described here: https://api.copyleaks.com/documentation/v3/exponential-backoff
-        '''
-        url = f"{Consts.API_SERVER_URI}/v2/writer-detector/source-code/{scan_id}/check"
-        deprecationService.show_deprecation_message()
-        return _AIDetectionClient.__submit(url, auth_token, scan_id, submission)

@@ -27,7 +27,7 @@ import random
 from copyleaks.copyleaks import Copyleaks
 from copyleaks.exceptions.command_error import CommandError
 from copyleaks.models.TextModeration.Requests.CopyleaksTextModerationRequestModel import CopyleaksTextModerationRequestModel
-from copyleaks.models.submit.ai_detection_document import NaturalLanguageDocument, SourceCodeDocument
+from copyleaks.models.submit.ai_detection_document import NaturalLanguageDocument
 from copyleaks.models.submit.document import FileDocument, UrlDocument, OcrFileDocument
 from copyleaks.models.submit.properties.scan_properties import ScanProperties
 from copyleaks.models.export import *
@@ -152,31 +152,6 @@ sample_text = "Lions are social animals, living in groups called prides, typical
 natural_language_submission = NaturalLanguageDocument(sample_text)
 natural_language_submission.set_sandbox(True)
 response = Copyleaks.AiDetectionClient.submit_natural_language(auth_token, scan_id, natural_language_submission)
-print(response)
-
-
-# This example is going to use the AI detector client to detect ai in source code
-sample_code = (
-    "def add(a, b):\n"
-    "    return a + b\n"
-    "\n"
-    "def multiply(a, b):\n"
-    "    return a * b\n"
-    "\n"
-    "def main():\n"
-    "    x = 5\n"
-    "    y = 10\n"
-    "    sum_result = add(x, y)\n"
-    "    product_result = multiply(x, y)\n"
-    "    print(f'Sum: {sum_result}')\n"
-    "    print(f'Product: {product_result}')\n"
-    "\n"
-    "if __name__ == '__main__':\n"
-    "    main()"
-)
-source_code_submission = SourceCodeDocument(sample_text, "example.py")
-source_code_submission.set_sandbox(True)
-response = Copyleaks.AiDetectionClient.submit_source_code(auth_token, scan_id, source_code_submission)
 print(response)
 
 # This example is going to use the WritingAssistant client to get feedback on text

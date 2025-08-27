@@ -58,15 +58,3 @@ class NaturalLanguageDocument(AiDetectionDocument):
     def set_language(self, value):
         self.language = value
 
-
-class SourceCodeDocument(AiDetectionDocument):
-    def __init__(self, text, filename):
-        super().__init__(text)
-        self.filename = filename
-
-    def get_filename(self):
-        return self.filename
-
-    def set_filename(self, value):
-        assert value
-        self.filename = value
