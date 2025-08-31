@@ -26,8 +26,11 @@ import base64
 import random
 from copyleaks.copyleaks import Copyleaks
 from copyleaks.exceptions.command_error import CommandError
+from copyleaks.models.TextModeration.Requests.CopyleaksTextModerationLabel import CopyleaksTextModerationLabel
 from copyleaks.models.TextModeration.Requests.CopyleaksTextModerationRequestModel import CopyleaksTextModerationRequestModel
-from copyleaks.models.submit.ai_detection_document import NaturalLanguageDocument, SourceCodeDocument
+from copyleaks.models.constants.CopyleaksTextModerationConstants import CopyleaksTextModerationConstants
+from copyleaks.models.constants.CopyleaksTextModerationLanguages import CopyleaksTextModerationLanguages
+from copyleaks.models.submit.ai_detection_document import NaturalLanguageDocument
 from copyleaks.models.submit.document import FileDocument, UrlDocument, OcrFileDocument
 from copyleaks.models.submit.properties.scan_properties import ScanProperties
 from copyleaks.models.export import *
@@ -154,31 +157,6 @@ natural_language_submission.set_sandbox(True)
 response = Copyleaks.AiDetectionClient.submit_natural_language(auth_token, scan_id, natural_language_submission)
 print(response)
 
-
-# This example is going to use the AI detector client to detect ai in source code
-sample_code = (
-    "def add(a, b):\n"
-    "    return a + b\n"
-    "\n"
-    "def multiply(a, b):\n"
-    "    return a * b\n"
-    "\n"
-    "def main():\n"
-    "    x = 5\n"
-    "    y = 10\n"
-    "    sum_result = add(x, y)\n"
-    "    product_result = multiply(x, y)\n"
-    "    print(f'Sum: {sum_result}')\n"
-    "    print(f'Product: {product_result}')\n"
-    "\n"
-    "if __name__ == '__main__':\n"
-    "    main()"
-)
-source_code_submission = SourceCodeDocument(sample_text, "example.py")
-source_code_submission.set_sandbox(True)
-response = Copyleaks.AiDetectionClient.submit_source_code(auth_token, scan_id, source_code_submission)
-print(response)
-
 # This example is going to use the WritingAssistant client to get feedback on text
 score_weight = ScoreWeights()
 score_weight.set_grammar_score_weight(0.2)
@@ -205,23 +183,24 @@ print(response)
 
 ## example for using the text moderation client
 # Initialize the model
+labelsArray=[
+        CopyleaksTextModerationLabel(id=CopyleaksTextModerationConstants.ADULT_V1),
+        CopyleaksTextModerationLabel(id=CopyleaksTextModerationConstants.TOXIC_V1),
+        CopyleaksTextModerationLabel(id=CopyleaksTextModerationConstants.VIOLENT_V1),
+        CopyleaksTextModerationLabel(id=CopyleaksTextModerationConstants.PROFANITY_V1),
+        CopyleaksTextModerationLabel(id=CopyleaksTextModerationConstants.SELF_HARM_V1),
+        CopyleaksTextModerationLabel(id=CopyleaksTextModerationConstants.HARASSMENT_V1),
+        CopyleaksTextModerationLabel(id=CopyleaksTextModerationConstants.HATE_SPEECH_V1),
+        CopyleaksTextModerationLabel(id=CopyleaksTextModerationConstants.DRUGS_V1),
+        CopyleaksTextModerationLabel(id=CopyleaksTextModerationConstants.FIREARMS_V1),
+        CopyleaksTextModerationLabel(id=CopyleaksTextModerationConstants.CYBERSECURITY_V1),
+    ]
+
 model = CopyleaksTextModerationRequestModel(
     text="This is some text to scan.",
     sandbox=True,
-    language="en",
-    labels=[
-        {"id": "other-v1"},
-        {"id": "adult-v1"},
-        {"id": "toxic-v1"},
-        {"id": "violent-v1"},
-        {"id": "profanity-v1"},
-        {"id": "self-harm-v1"},
-        {"id": "harassment-v1"},
-        {"id": "hate-speech-v1"},
-        {"id": "drugs-v1"},
-        {"id": "firearms-v1"},
-        {"id": "cybersecurity-v1"},
-    ]
+    language=CopyleaksTextModerationLanguages.ENGLISH,
+    labels=labelsArray
 )
 
 textModerationResponse = Copyleaks.TextModerationClient.submit_text(auth_token, scan_id, model)

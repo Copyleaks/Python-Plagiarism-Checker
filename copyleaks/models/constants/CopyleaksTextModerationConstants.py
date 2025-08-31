@@ -22,39 +22,18 @@
  SOFTWARE.
 '''
 
-from abc import ABC
-import json
-
-class AiDetectionDocument(ABC):
-    def __init__(self, text):
-        assert text
-        self.text = text
-
-    def get_text(self):
-        return self.text
-
-    def set_text(self, value):
-        assert value
-        self.text = value
-
-    def get_sandbox(self):
-        return self.sandbox
-
-    def set_sandbox(self, value):
-        self.sandbox = value
-
-    def toJSON(self):
-        return json.dumps(self, default=lambda o: o.__dict__,
-                          sort_keys=True, indent=4)
-
-
-class NaturalLanguageDocument(AiDetectionDocument):
-    def __init__(self, text):
-        super().__init__(text)
-
-    def get_language(self):
-        return self.language
-
-    def set_language(self, value):
-        self.language = value
-
+class CopyleaksTextModerationConstants:
+    """
+    Provides a collection of constants representing different text moderation categories
+    supported by the Copyleaks Text Moderation API.
+    """
+    ADULT_V1 = "adult-v1"
+    TOXIC_V1 = "toxic-v1"
+    VIOLENT_V1 = "violent-v1"
+    PROFANITY_V1 = "profanity-v1"
+    SELF_HARM_V1 = "self-harm-v1"
+    HARASSMENT_V1 = "harassment-v1"
+    HATE_SPEECH_V1 = "hate-speech-v1"
+    DRUGS_V1 = "drugs-v1"
+    FIREARMS_V1 = "firearms-v1"
+    CYBERSECURITY_V1 = "cybersecurity-v1"

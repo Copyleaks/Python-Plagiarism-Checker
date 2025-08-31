@@ -21,19 +21,9 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
 '''
-import logging
 
-class deprecationService:
-    @staticmethod
-    def show_deprecation_message():
-        
-        logging.warning("DEPRECATION NOTICE: AI Code Detection will be discontinued on August 29, 2025. Please remove AI code detection integrations before the sunset date.")
-        
-        
-        print("\033[31m", end="") 
-        print("════════════════════════════════════════════════════════════════════")
-        print("DEPRECATION NOTICE !!!")
-        print("AI Code Detection will be discontinued on August 29, 2025.")
-        print("Please remove AI code detection integrations before the sunset date.")
-        print("════════════════════════════════════════════════════════════════════")
-        print("\033[0m", end="")  
+class CopyleaksTextModerationLanguages:
+    """
+    Supported languages for text moderation.
+    """
+    ENGLISH = "en"

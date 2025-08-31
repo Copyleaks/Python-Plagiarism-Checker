@@ -1,57 +1,180 @@
-## Copyleaks Python SDK
+# Copyleaks SDK
+The official [Copyleaks](https://copyleaks.com/) Python library, supporting Python versions: Python 3.6.+
 
-Copyleaks SDK is a simple framework that allows you to scan textual content for plagiarism and trace content distribution online, using the [Copyleaks plagiarism checker cloud](https://api.copyleaks.com).
+## 🚀 Getting Started
+Before you start, ensure you have the following:
 
-Detect plagiarism using Copyleaks SDK in:
+*   An active Copyleaks account. If you don’t have one, [Sign up for free](https://copyleaks.com/signup).
+*   You can find your API key on the [API Dashboard](https://api.copyleaks.com/dashboard).
 
-*   Online content and webpages
-*   Local and cloud files ([see supported files](https://api.copyleaks.com/GeneralDocumentation/TechnicalSpecifications#supportedfiletypes"))
-*   Free text
-*   OCR (Optical Character Recognition) - scanning pictures with textual content ([see supported files](https://api.copyleaks.com/GeneralDocumentation/TechnicalSpecifications#supportedfiletypes))
+Once you have your account and API key:
 
-### Installation
+**Install the SDK**: 
 
-Supported Python version: 3.
+Use the Python Package Manager - PiPy. When integrating this way, you will automatically be able to update the SDK to its latest version:   
+```bash
+pip install copyleaks
+```
 
-You have two ways to integrate with the Copyleaks SDK:
+## 📚 Documentation
+To learn more about how to use Copyleaks API please check out our [Documentation](https://docs.copyleaks.com/resources/sdks/python/). 
 
-* **Recommended** - Use the Python Package Manager - [PiPy](https://pypi.python.org/pypi/copyleaks).  
-    When integrating this way you will automatically be able to update the SDK to its latest version:
+## 💡 Usage Examples
+Here are some common usage examples for the Copyleaks SDK. You can also see a comprehensive code example in the `example.py` file on our GitHub repository: [example.py](https://github.com/Copyleaks/Python-Plagiarism-Checker/blob/master/example.py).
 
-    <pre>pip3 install copyleaks
-    </pre>
+### Get Authentication Token
+This example demonstrates how to log in to the Copyleaks API and obtain an authentication token.
 
-*   Download the code from this repository and add it to your project.
+```python
+import base64
+from copyleaks.copyleaks import Copyleaks
+from copyleaks.exceptions.command_error import CommandError
 
-### Register and Get Your API Key
+# --- Your Credentials ---
+EMAIL_ADDRESS = 'YOUR_EMAIL_ADDRESS' # Replace with your Copyleaks registered email
+KEY = 'YOUR_API_KEY'               # Replace with your Copyleaks API Key
+# --------------------
 
-To use the Copyleaks SDK you need to have a Copyleaks account. The registration to Copyleaks is free of charge and quick. [Sign up](https://api.copyleaks.com/?register=true) and confirm your account to finalize your registration.
+# Log in to the Copyleaks API
+auth_token = Copyleaks.login(EMAIL_ADDRESS, KEY)
+print("✅ Logged in successfully!")
+```
+For a detailed understanding of the authentication process, refer to the Copyleaks Login Endpoint [Documentation](https://docs.copyleaks.com/reference/actions/account/login).
+##
+### Submit Text for Plagiarism Scan
+This example shows how to prepare and submit raw text content for a plagiarism scan.
 
-Now, generate your personal API key on your [dashboard](https://api.copyleaks.com/dashboard) under 'API Access Credentials'.
+```python
+import base64
+from copyleaks.copyleaks import Copyleaks
+from copyleaks.models.submit.document import FileDocument
+from copyleaks.models.submit.properties.scan_properties import ScanProperties
 
-For more information check out our [API guide](https://api.copyleaks.com/documentation/v3).
+# Prepare your content for scanning
+# You can scan a URL, a local file, or raw text.
+# This example scans a simple string of text.
+print("Submitting text for scanning...")
+text_to_scan = "Hello world, this is a test."
+base64_content = base64.b64encode(text_to_scan.encode()).decode()
 
-### Examples
+# Configure the scan
+scan_id = "my-first-scan" 
+scan_properties = ScanProperties("https://your-server.com/webhook/{STATUS}") # IMPORTANT: Replace with your actual webhook URL to receive scan results
+scan_properties.set_sandbox(True) # Turn on sandbox mode for testing without consuming credits
+file_submission = FileDocument(base64_content, "test.txt")
+file_submission.set_properties(scan_properties)
 
-See the [example.py](https://github.com/Copyleaks/Python-Plagiarism-Checker/blob/master/example.py) file.
+# Submit the scan to Copyleaks
+Copyleaks.submit_file(auth_token, scan_id, file_submission)
+print(f"🚀 Scan submitted successfully! Scan ID: {scan_id}")
+print("You will be notified via your webhook when the scan is complete.")
+```
+For a full guide please refer to our step by step [Guide](https://docs.copyleaks.com/guides/authenticity/detect-plagiarism-text)
 
-* To change the Identity server URI (default:"https://id.copyleaks.com"):
+For a detailed understanding of the plagiarism detection process, refer to the Copyleaks Submit Endpoint [Documentation](https://docs.copyleaks.com/reference/actions/scans/submit-file)
+##
+### AI-Generated Text Detection
+Use the AI detection client to determine if content was generated by artificial intelligence.
 
-<pre>Copyleaks.set_identity_uri("your identity server uri");
-</pre>
+```python
+import base64
+from copyleaks.copyleaks import Copyleaks
+from copyleaks.models.submit.document import NaturalLanguageDocument 
 
-* To change the API server URI (default:"https://api.copyleaks.com"):
+scan_id = "your-scan-id"
 
-<pre>Copyleaks.set_api_uri("your api server uri");
-</pre>
+sample_text = "Lions are social animals, living in groups called prides, typically consisting of several females, their offspring, and a few males. Female lions are the primary hunters, working together to catch prey. Lions are known for their strength, teamwork, and complex social structures."
+natural_language_submission = NaturalLanguageDocument(sample_text)
+natural_language_submission.set_sandbox(True) # Use sandbox for testing
+response = Copyleaks.AiDetectionClient.submit_natural_language(auth_token, scan_id, natural_language_submission)
+print("\nAI Detection (Natural Language):")
+print(response)
+```
+For a full guide please refer to our step by step [Guide](https://docs.copyleaks.com/guides/ai-detector/ai-text-detection/)
 
-### Dependencies
+For a detailed understanding of the Ai detection process, refer to the Copyleaks detect natural language Endpoint [Documentation](https://docs.copyleaks.com/reference/actions/writer-detector/check/)
+##
+### Writing Assistant 
+Get intelligent suggestions for improving grammar, spelling, style, and overall writing quality.
 
-<pre>pip3 install requests pytz python-dateutil
-</pre>
+```python
+import base64
+from copyleaks.copyleaks import Copyleaks
+from copyleaks.exceptions.command_error import CommandError
+from copyleaks.models.submit.document import WritingAssistantDocument
+from copyleaks.models.submit.properties.score_weights import ScoreWeights
 
-### Read More
+scan_id = "your-scan-id"
 
-*   [API Homepage](https://api.copyleaks.com)
-*   [API Documentation](https://api.copyleaks.com/documentation)
-*   [Plagiarism Report](https://github.com/Copyleaks/plagiarism-report)
+# Define the text to be assessed
+sample_text = "This text have some grammer mistake and it is not good written."
+
+# Configure score weights for different aspects of writing quality
+score_weight = ScoreWeights()
+score_weight.set_grammar_score_weight(0.2)
+score_weight.set_mechanics_score_weight(0.3)
+score_weight.set_sentence_structure_score_weight(0.5)
+score_weight.set_word_choice_score_weight(0.4)
+
+submission = WritingAssistantDocument(sample_text)
+submission.set_score(score_weight)
+submission.set_sandbox(True) # Use sandbox for testing
+
+response = Copyleaks.WritingAssistantClient.submit_text(auth_token, scan_id, submission)
+print("\nWriting Assistant Feedback:")
+print(response)
+```
+For a full guide please refer to our step by step [Guide](https://docs.copyleaks.com/guides/writing/check-grammar/)
+
+For a detailed understanding of the Writing assistant process, refer to the Copyleaks writing feedback Endpoint [Documentation](https://docs.copyleaks.com/reference/actions/writing-assistant/check/)
+##
+### Text Moderation
+Scan and moderate text content for unsafe, inappropriate, or policy-violating material across various categories.
+
+```python
+import base64
+from copyleaks.copyleaks import Copyleaks
+from copyleaks.models.submit.request_model import CopyleaksTextModerationRequestModel
+from copyleaks.models.TextModeration.Requests.CopyleaksTextModerationLabel import CopyleaksTextModerationLabel
+from copyleaks.models.constants.CopyleaksTextModerationConstants import CopyleaksTextModerationConstants
+from copyleaks.models.constants.CopyleaksTextModerationLanguages import CopyleaksTextModerationLanguages
+
+scan_id = "your-scan-id"
+
+labelsArray=[
+        CopyleaksTextModerationLabel(id=CopyleaksTextModerationConstants.ADULT_V1),
+        CopyleaksTextModerationLabel(id=CopyleaksTextModerationConstants.TOXIC_V1),
+        CopyleaksTextModerationLabel(id=CopyleaksTextModerationConstants.VIOLENT_V1),
+        CopyleaksTextModerationLabel(id=CopyleaksTextModerationConstants.PROFANITY_V1),
+        CopyleaksTextModerationLabel(id=CopyleaksTextModerationConstants.SELF_HARM_V1),
+        CopyleaksTextModerationLabel(id=CopyleaksTextModerationConstants.HARASSMENT_V1),
+        CopyleaksTextModerationLabel(id=CopyleaksTextModerationConstants.HATE_SPEECH_V1),
+        CopyleaksTextModerationLabel(id=CopyleaksTextModerationConstants.DRUGS_V1),
+        CopyleaksTextModerationLabel(id=CopyleaksTextModerationConstants.FIREARMS_V1),
+        CopyleaksTextModerationLabel(id=CopyleaksTextModerationConstants.CYBERSECURITY_V1),
+    ]
+
+model = CopyleaksTextModerationRequestModel(
+    text="This is some text to scan.",
+    sandbox=True,
+    language=CopyleaksTextModerationLanguages.ENGLISH,
+    labels=labelsArray
+)
+
+textModerationResponse = Copyleaks.TextModerationClient.submit_text(auth_token, scan_id, model)
+print("\nText Moderation:")
+print(textModerationResponse.model_dump_json())
+```
+For a full guide please refer to our step by step [Guide](https://docs.copyleaks.com/guides/moderation/moderate-text/)
+
+For a detailed understanding of the Text moderation process, refer to the Copyleaks text moderation Endpoint [Documentation](https://docs.copyleaks.com/reference/actions/text-moderation/check/)
+##
+## Further Resources
+
+*   **Copyleaks API Dashboard:** Manage your API keys, monitor usage, and view analytics from your personalized dashboard. [Access Dashboard](https://api.copyleaks.com/dashboard)
+*   **Copyleaks SDK Documentation:** Explore comprehensive guides, API references, and code examples for seamless integration. [Read Documentation](https://docs.copyleaks.com/resources/sdks/overview/)
+
+
+## Support
+* If you need assistance, please contact Copyleaks Support via our support portal: Contact Copyleaks [Support](https://help.copyleaks.com/s/contactsupport).
+* To arrange a product demonstration, book a demo here: [Booking Link](https://copyleaks.com/book-a-demo).

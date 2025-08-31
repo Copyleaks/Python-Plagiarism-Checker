@@ -21,31 +21,12 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
 '''
-class SupportedFilesTypes:
-    SUPPORTED_CODE_EXTENSIONS = [
-        "ts",
-        "py",
-        "go",
-        "cs",
-        "c",
-        "h",
-        "idc",
-        "cpp",
-        "hpp",
-        "c++",
-        "h++",
-        "cc",
-        "hh",
-        "java",
-        "js",
-        "swift",
-        "rb",
-        "pl",
-        "php",
-        "sh",
-        "m",
-        "scala",
-        "rs",
-        "vbs",
-        "css"
-    ]
+from pydantic import BaseModel, Field
+"""
+    Represents a Copyleaks Text Moderation Label.
+"""
+
+class CopyleaksTextModerationLabel(BaseModel):
+
+    """The input text to be moderated."""
+    id: str 
