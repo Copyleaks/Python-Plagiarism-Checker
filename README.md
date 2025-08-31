@@ -1,5 +1,5 @@
 # Copyleaks SDK
-The official [Copyleaks](https://copyleaks.com/) Python library, supporting Python versions: Python 3.6+
+The official [Copyleaks](https://copyleaks.com/) Python library, supporting Python versions: Python 3.6.+
 
 ## 🚀 Getting Started
 Before you start, ensure you have the following:
