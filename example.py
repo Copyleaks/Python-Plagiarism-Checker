@@ -183,11 +183,7 @@ print(response)
 
 ## example for using the text moderation client
 # Initialize the model
-model = CopyleaksTextModerationRequestModel(
-    text="This is some text to scan.",
-    sandbox=True,
-    language=CopyleaksTextModerationLanguages.ENGLISH,
-    labels = [
+labelsArray=[
         CopyleaksTextModerationLabel(id=CopyleaksTextModerationConstants.ADULT_V1),
         CopyleaksTextModerationLabel(id=CopyleaksTextModerationConstants.TOXIC_V1),
         CopyleaksTextModerationLabel(id=CopyleaksTextModerationConstants.VIOLENT_V1),
@@ -199,6 +195,12 @@ model = CopyleaksTextModerationRequestModel(
         CopyleaksTextModerationLabel(id=CopyleaksTextModerationConstants.FIREARMS_V1),
         CopyleaksTextModerationLabel(id=CopyleaksTextModerationConstants.CYBERSECURITY_V1),
     ]
+
+model = CopyleaksTextModerationRequestModel(
+    text="This is some text to scan.",
+    sandbox=True,
+    language=CopyleaksTextModerationLanguages.ENGLISH,
+    labels=labelsArray
 )
 
 textModerationResponse = Copyleaks.TextModerationClient.submit_text(auth_token, scan_id, model)
