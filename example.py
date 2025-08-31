@@ -26,6 +26,7 @@ import base64
 import random
 from copyleaks.copyleaks import Copyleaks
 from copyleaks.exceptions.command_error import CommandError
+from copyleaks.models.TextModeration.Requests.CopyleaksTextModerationLabel import CopyleaksTextModerationLabel
 from copyleaks.models.TextModeration.Requests.CopyleaksTextModerationRequestModel import CopyleaksTextModerationRequestModel
 from copyleaks.models.constants.CopyleaksTextModerationConstants import CopyleaksTextModerationConstants
 from copyleaks.models.constants.CopyleaksTextModerationLanguages import CopyleaksTextModerationLanguages
@@ -186,17 +187,17 @@ model = CopyleaksTextModerationRequestModel(
     text="This is some text to scan.",
     sandbox=True,
     language=CopyleaksTextModerationLanguages.ENGLISH,
-    labels=[
-    {"id": CopyleaksTextModerationConstants.ADULT_V1},
-    {"id": CopyleaksTextModerationConstants.TOXIC_V1},
-    {"id": CopyleaksTextModerationConstants.VIOLENT_V1},
-    {"id": CopyleaksTextModerationConstants.PROFANITY_V1},
-    {"id": CopyleaksTextModerationConstants.SELF_HARM_V1},
-    {"id": CopyleaksTextModerationConstants.HARASSMENT_V1},
-    {"id": CopyleaksTextModerationConstants.HATE_SPEECH_V1},
-    {"id": CopyleaksTextModerationConstants.DRUGS_V1},
-    {"id": CopyleaksTextModerationConstants.FIREARMS_V1},
-    {"id": CopyleaksTextModerationConstants.CYBERSECURITY_V1},
+    labels = [
+        CopyleaksTextModerationLabel(id=CopyleaksTextModerationConstants.ADULT_V1),
+        CopyleaksTextModerationLabel(id=CopyleaksTextModerationConstants.TOXIC_V1),
+        CopyleaksTextModerationLabel(id=CopyleaksTextModerationConstants.VIOLENT_V1),
+        CopyleaksTextModerationLabel(id=CopyleaksTextModerationConstants.PROFANITY_V1),
+        CopyleaksTextModerationLabel(id=CopyleaksTextModerationConstants.SELF_HARM_V1),
+        CopyleaksTextModerationLabel(id=CopyleaksTextModerationConstants.HARASSMENT_V1),
+        CopyleaksTextModerationLabel(id=CopyleaksTextModerationConstants.HATE_SPEECH_V1),
+        CopyleaksTextModerationLabel(id=CopyleaksTextModerationConstants.DRUGS_V1),
+        CopyleaksTextModerationLabel(id=CopyleaksTextModerationConstants.FIREARMS_V1),
+        CopyleaksTextModerationLabel(id=CopyleaksTextModerationConstants.CYBERSECURITY_V1),
     ]
 )
 
