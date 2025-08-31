@@ -134,28 +134,31 @@ Scan and moderate text content for unsafe, inappropriate, or policy-violating ma
 ```python
 import base64
 from copyleaks.copyleaks import Copyleaks
-# Specific import for Text Moderation
 from copyleaks.models.submit.request_model import CopyleaksTextModerationRequestModel
+from copyleaks.models.TextModeration.Requests.CopyleaksTextModerationLabel import CopyleaksTextModerationLabel
+from copyleaks.models.constants.CopyleaksTextModerationConstants import CopyleaksTextModerationConstants
+from copyleaks.models.constants.CopyleaksTextModerationLanguages import CopyleaksTextModerationLanguages
 
 scan_id = "your-scan-id"
 
-# Initialize the text moderation request model
+labelsArray=[
+        CopyleaksTextModerationLabel(id=CopyleaksTextModerationConstants.ADULT_V1),
+        CopyleaksTextModerationLabel(id=CopyleaksTextModerationConstants.TOXIC_V1),
+        CopyleaksTextModerationLabel(id=CopyleaksTextModerationConstants.VIOLENT_V1),
+        CopyleaksTextModerationLabel(id=CopyleaksTextModerationConstants.PROFANITY_V1),
+        CopyleaksTextModerationLabel(id=CopyleaksTextModerationConstants.SELF_HARM_V1),
+        CopyleaksTextModerationLabel(id=CopyleaksTextModerationConstants.HARASSMENT_V1),
+        CopyleaksTextModerationLabel(id=CopyleaksTextModerationConstants.HATE_SPEECH_V1),
+        CopyleaksTextModerationLabel(id=CopyleaksTextModerationConstants.DRUGS_V1),
+        CopyleaksTextModerationLabel(id=CopyleaksTextModerationConstants.FIREARMS_V1),
+        CopyleaksTextModerationLabel(id=CopyleaksTextModerationConstants.CYBERSECURITY_V1),
+    ]
+
 model = CopyleaksTextModerationRequestModel(
     text="This is some text to scan.",
-    sandbox=True, # Use sandbox for testing
-    language="en",
-    labels=[
-        {"id": "adult-v1"},
-        {"id": "toxic-v1"},
-        {"id": "violent-v1"},
-        {"id": "profanity-v1"},
-        {"id": "self-harm-v1"},
-        {"id": "harassment-v1"},
-        {"id": "hate-speech-v1"},
-        {"id": "drugs-v1"},
-        {"id": "firearms-v1"},
-        {"id": "cybersecurity-v1"},
-    ]
+    sandbox=True,
+    language=CopyleaksTextModerationLanguages.ENGLISH,
+    labels=labelsArray
 )
 
 textModerationResponse = Copyleaks.TextModerationClient.submit_text(auth_token, scan_id, model)
