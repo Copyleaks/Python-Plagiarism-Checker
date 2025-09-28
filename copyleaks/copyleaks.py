@@ -36,13 +36,14 @@ from enum import Enum
 from copyleaks.clients.ai_detection_client import _AIDetectionClient
 from copyleaks.clients.writing_assistant_client import _WritingAssistantClient
 from copyleaks.clients.TextModerationClient import _TextModerationClient
-import os
+from copyleaks.clients.AiImageDetectionClient import _AiImageDetectionClient
 
 class Copyleaks(object):
 
     WritingAssistantClient = _WritingAssistantClient
     AiDetectionClient = _AIDetectionClient
-    TextModerationClient=_TextModerationClient
+    TextModerationClient= _TextModerationClient
+    ImageDetectionClient= _AiImageDetectionClient
 
     @staticmethod
     def set_identity_uri(uri):
