@@ -3,6 +3,7 @@ from copyleaks.models.TextModeration.Requests.CopyleaksTextModerationRequestMode
 from copyleaks.models.constants.CopyleaksTextModerationConstants import CopyleaksTextModerationConstants
 from copyleaks.models.constants.CopyleaksTextModerationLanguages import CopyleaksTextModerationLanguages
 from copyleaks.copyleaks import Copyleaks
+
 def run(auth_token, scan_id):
     
     print("Submitting a new text for Text Moderation...")
