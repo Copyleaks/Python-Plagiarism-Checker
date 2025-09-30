@@ -1,6 +1,7 @@
 import base64
 from copyleaks.models.ImageDetection.Requests.CopyleaksAiImageDetectionRequestModel import CopyleaksAiImageDetectionRequestModel
 from copyleaks.copyleaks import Copyleaks
+from copyleaks.models.constants.CopyleaksAiImageDetectionModels import CopyleaksAiImageDetectionModels
 
 def run(auth_token, scan_id):
 
@@ -12,9 +13,9 @@ def run(auth_token, scan_id):
     
     payload = CopyleaksAiImageDetectionRequestModel(
         base64=base64_image,
-        file_name='image2.jpg',
+        file_name='my-image.png',
         sandbox=True,
-        model='ai-image-1-ultra-01-09-2025'
+        model=CopyleaksAiImageDetectionModels.AI_IMAGE_1_ULTRA
     )
     
     response = Copyleaks.ImageDetectionClient.submit(auth_token, scan_id, payload)

@@ -49,7 +49,7 @@ class CopyleaksAiImageDetectionRequestModel(BaseModel):
     model: str = Field(
         ...,
         description="The AI detection model to use for analysis. You can use either the full model name or its alias.",
-        example="ai-image-1-ultra-01-09-2025",
+        example="ai-image-1-ultra",
         alias="model"
     )
     
