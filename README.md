@@ -107,7 +107,7 @@ from copyleaks.models.submit.properties.score_weights import ScoreWeights
 scan_id = "your-scan-id"
 
 # Define the text to be assessed
-sample_text = """Copyleaks is a comprehensive plagiarism detection platform that performs extensive searches across 60 trillion websites, 15,000+ academic journals, 20+ code data repositories, and 1M+ internal documents. Using AI-powered text analysis, easily scan documents, raw text, code, and URLs and instantly receive detailed reporting on the findings."""
+sample_text = "Copyleaks is a comprehensive plagiarism detection platform that performs extensive searches across 60 trillion websites, 15,000+ academic journals, 20+ code data repositories, and 1M+ internal documents. Using AI-powered text analysis, easily scan documents, raw text, code, and URLs and instantly receive detailed reporting on the findings."
 
 # Configure score weights for different aspects of writing quality
 score_weight = ScoreWeights()
