@@ -322,6 +322,24 @@ class ScanProperties:
         assert value
         self.aiGeneratedText = value
 
+    def get_ai_source_match(self):
+        '''Ai source match settings.'''
+        return self.aiSourceMatch
+
+    def set_ai_source_match(self, value):
+        '''Identify online sources suspected of containing AI generated text. Parameters: value: `AISourceMatch`.'''
+        assert value
+        self.aiSourceMatch = value
+
+    def get_display_language(self):
+        '''Get the language the PDF report is generated in.'''
+        return self.displayLanguage
+
+    def set_display_language(self, value):
+        '''Set the language the PDF report is generated in. Parameters: value: String. One of "en", "es", "de", "fr", "it", "pt".'''
+        assert value
+        self.displayLanguage = value
+
     def get_custom_metadata(self):
         '''
             Get custom metadata
