@@ -25,11 +25,20 @@
 
 class AISourceMatch:
     def get_enable(self):
-        '''Whether to identify online sources suspected of containing AI generated text.'''
+        '''
+            Whether to identify online sources suspected of containing AI generated text.
+        '''
         return self.enable
 
     def set_enable(self, value):
-        '''Set whether to identify online sources suspected of containing AI generated text. Parameters: value: Boolean.'''
+        '''
+            Set whether to identify online sources suspected of containing AI generated text.
+            Currently only applies to documents detected as English.
+            Leave it unset to get the server default (False).
+
+            Parameters:
+                value: Boolean.
+        '''
         assert isinstance(value, bool)
 
         self.enable = value
