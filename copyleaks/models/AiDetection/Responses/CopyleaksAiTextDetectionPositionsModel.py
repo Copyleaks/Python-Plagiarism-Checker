@@ -23,13 +23,14 @@
 '''
 
 from typing import List, Optional
-from pydantic import AliasChoices, BaseModel, Field
+from pydantic import AliasChoices, BaseModel, Field, field_validator
 
 
-class CopyleaksAiDetectionPositionsModel(BaseModel):
+class CopyleaksAiTextDetectionPositionsModel(BaseModel):
     """
     Positions of matched segments, as parallel arrays of start positions and lengths.
     Accepts the camelCase keys and the PascalCase `Starts`/`Lengths` keys sent by sandbox scans.
+    A missing or null `starts`/`lengths` is an empty list.
     """
 
     starts: List[int] = Field(
@@ -49,5 +50,12 @@ class CopyleaksAiDetectionPositionsModel(BaseModel):
     group_ids: Optional[List[int]] = Field(
         default=None,
         description="HTML group ids of the matched segments. Present only for HTML positions.",
-        alias="groupIds"
+        alias="groupIds",
+        serialization_alias="groupIds"
     )
+
+    @field_validator('starts', 'lengths', mode='before')
+    @classmethod
+    def positions_none_to_empty(cls, v):
+        """Treat a null `starts`/`lengths` as an empty list."""
+        return [] if v is None else v

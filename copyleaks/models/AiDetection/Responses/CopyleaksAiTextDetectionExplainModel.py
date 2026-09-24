@@ -22,31 +22,19 @@
  SOFTWARE.
 '''
 
-from typing import List, Optional
+from typing import Optional
 from pydantic import BaseModel, Field
 
-from copyleaks.models.AiDetection.Responses.CopyleaksAiDetectionMatchModel import CopyleaksAiDetectionMatchModel
+from copyleaks.models.AiDetection.Responses.CopyleaksAiTextDetectionPatternsModel import CopyleaksAiTextDetectionPatternsModel
 
 
-class CopyleaksAiDetectionResultModel(BaseModel):
+class CopyleaksAiTextDetectionExplainModel(BaseModel):
     """
-    A classified section of the scanned text.
+    Explanation of the AI detection (AI Logic). Present only when explain was enabled for the scan.
     """
 
-    classification: int = Field(
-        ...,
-        description="Classification of the section: 1 = human-written text, 2 = AI-generated text.",
-        alias="classification"
-    )
-
-    probability: Optional[float] = Field(
+    patterns: Optional[CopyleaksAiTextDetectionPatternsModel] = Field(
         default=None,
-        description="Confidence of the classification. Deprecated by the server and may be missing.",
-        alias="probability"
-    )
-
-    matches: List[CopyleaksAiDetectionMatchModel] = Field(
-        default_factory=list,
-        description="Locations of the section in the scanned document.",
-        alias="matches"
+        description="AI patterns found in the text.",
+        alias="patterns"
     )

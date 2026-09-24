@@ -25,16 +25,22 @@
 from typing import Optional
 from pydantic import BaseModel, Field
 
-from copyleaks.models.AiDetection.Responses.CopyleaksAiDetectionPatternsModel import CopyleaksAiDetectionPatternsModel
+from copyleaks.models.AiDetection.Responses.CopyleaksAiTextDetectionPositionsModel import CopyleaksAiTextDetectionPositionsModel
 
 
-class CopyleaksAiDetectionExplainModel(BaseModel):
+class CopyleaksAiTextDetectionPatternMatchModel(BaseModel):
     """
-    Explanation of the AI detection (AI Logic). Present only when explain was enabled for the scan.
+    Positions of the AI patterns found in the text.
     """
 
-    patterns: Optional[CopyleaksAiDetectionPatternsModel] = Field(
+    chars: Optional[CopyleaksAiTextDetectionPositionsModel] = Field(
         default=None,
-        description="AI patterns found in the text.",
-        alias="patterns"
+        description="Character positions of the patterns.",
+        alias="chars"
+    )
+
+    words: Optional[CopyleaksAiTextDetectionPositionsModel] = Field(
+        default=None,
+        description="Word positions of the patterns.",
+        alias="words"
     )

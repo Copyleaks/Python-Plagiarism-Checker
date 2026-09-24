@@ -74,29 +74,39 @@ For a full guide please refer to our step by step [Guide](https://docs.copyleaks
 For a detailed understanding of the plagiarism detection process, refer to the Copyleaks Submit Endpoint [Documentation](https://docs.copyleaks.com/reference/actions/scans/submit-file)
 ##
 ### Reading the AI alert from the completed webhook
-When AI detection is enabled for a scan (`aiGeneratedText.detect`), the completed webhook reports AI-generated text as a `suspected-ai-text` alert in `notifications.alerts`. The alert's `additionalData` is a JSON string, which the SDK decodes into a typed `CopyleaksAiDetectionResponseModel`.
+When AI detection is enabled for a scan (`aiGeneratedText.detect`), the completed webhook reports AI-generated text as a `suspected-ai-text` alert in `notifications.alerts`. The alert's `additionalData` is a JSON string, which the SDK decodes into a typed `CopyleaksAiTextDetectionResponseModel`.
 
 ```python
+import logging
+from flask import Flask, request
 from pydantic import ValidationError
 from copyleaks.models.submit.Webhooks.CompletedWebhookModel import CompletedWebhookModel
 
-# webhook_json is the body of the completed webhook, for example Flask's request.json
-completed = CompletedWebhookModel(**webhook_json)
+app = Flask(__name__)
 
-ai_alert = completed.get_ai_detection_alert()
-if ai_alert is None:
-    print("The scan produced no AI alert.")
-else:
-    try:
-        ai_result = ai_alert.get_ai_detection_result()  # None when the alert carries no data
-    except ValidationError:
-        ai_result = None  # additionalData is not valid JSON; the raw string is in ai_alert.additional_data
-    if ai_result is not None and ai_result.summary is not None:
-        print(f"AI: {ai_result.summary.ai}, human: {ai_result.summary.human}, model: {ai_result.model_version}")
-        for section in ai_result.results:
-            print(section.classification)  # 1 = human, 2 = AI
+@app.route('/webhook/completed', methods=['POST'])
+def webhook_completed():
+    completed = CompletedWebhookModel(**request.json)
+
+    # None when the scan produced no AI alert
+    ai_alert = completed.get_ai_detection_alert()
+    if ai_alert is not None:
+        try:
+            # None when the alert carries no AI result
+            ai_result = ai_alert.get_ai_detection_result()
+        except ValidationError:
+            # additionalData is not valid JSON; the raw string is in ai_alert.additional_data
+            logging.exception("Could not parse the AI alert additional data")
+            ai_result = None
+        if ai_result is not None and ai_result.summary is not None:
+            logging.info(f"AI: {ai_result.summary.ai}, human: {ai_result.summary.human}, model: {ai_result.model_version}")
+            for section in ai_result.results:
+                logging.info(f"Section classification: {section.classification}")  # 1 = human, 2 = AI
+
+    # Acknowledge the webhook even when the AI alert could not be parsed.
+    return '', 200
 ```
-A missing alert does not by itself prove that AI detection ran: check the scan's `aiGeneratedText.detect` setting and the category 2 alert codes in `CopyleaksAlertCodes` (`copyleaks.models.constants.CopyleaksAlertCodes`). Sandbox scans send a mock AI alert, which the SDK parses the same way.
+No AI alert does not by itself prove that AI detection ran. Check the scan's `aiGeneratedText.detect` setting and the other AI alert codes in `CopyleaksAlertCodes` (`copyleaks.models.constants.CopyleaksAlertCodes`, for example `AI_DETECTION_FAILED`, `AI_DETECTION_LANG_NOT_SUPPORTED` or `AI_DETECTION_TEXT_TOO_SHORT`). Sandbox scans send a mock AI alert, which the SDK parses the same way.
 
 For the alert format, refer to the Copyleaks scan completed webhook [Documentation](https://docs.copyleaks.com/reference/data-types/authenticity/webhooks/scan-completed)
 ##

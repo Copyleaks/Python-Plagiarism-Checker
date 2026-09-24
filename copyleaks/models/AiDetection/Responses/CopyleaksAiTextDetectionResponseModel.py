@@ -23,18 +23,19 @@
 '''
 
 from typing import List, Optional
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
-from copyleaks.models.AiDetection.Responses.CopyleaksAiDetectionExplainModel import CopyleaksAiDetectionExplainModel
-from copyleaks.models.AiDetection.Responses.CopyleaksAiDetectionResultModel import CopyleaksAiDetectionResultModel
-from copyleaks.models.AiDetection.Responses.CopyleaksAiDetectionSummaryModel import CopyleaksAiDetectionSummaryModel
+from copyleaks.models.AiDetection.Responses.CopyleaksAiTextDetectionExplainModel import CopyleaksAiTextDetectionExplainModel
+from copyleaks.models.AiDetection.Responses.CopyleaksAiTextDetectionResultModel import CopyleaksAiTextDetectionResultModel
+from copyleaks.models.AiDetection.Responses.CopyleaksAiTextDetectionSummaryModel import CopyleaksAiTextDetectionSummaryModel
 
 
-class CopyleaksAiDetectionResponseModel(BaseModel):
+class CopyleaksAiTextDetectionResponseModel(BaseModel):
     """
     Result of Copyleaks AI text detection.
     This is the decoded `additionalData` of the `suspected-ai-text` alert in the completed webhook.
-    Unknown fields are ignored.
+    Unknown fields are ignored, missing fields are None, and a missing or null list is empty.
+    Serialize with `model_dump(by_alias=True)` to get the camelCase webhook keys back.
     """
 
     # Lets pydantic versions older than 2.10 accept the `model_version` field name without a warning.
@@ -43,16 +44,17 @@ class CopyleaksAiDetectionResponseModel(BaseModel):
     model_version: Optional[str] = Field(
         default=None,
         description="The version of the AI detection model used for the analysis.",
-        alias="modelVersion"
+        alias="modelVersion",
+        serialization_alias="modelVersion"
     )
 
-    results: List[CopyleaksAiDetectionResultModel] = Field(
+    results: List[CopyleaksAiTextDetectionResultModel] = Field(
         default_factory=list,
         description="Classified sections of the scanned text.",
         alias="results"
     )
 
-    summary: Optional[CopyleaksAiDetectionSummaryModel] = Field(
+    summary: Optional[CopyleaksAiTextDetectionSummaryModel] = Field(
         default=None,
         description="Human and AI portions of the scanned text.",
         alias="summary"
@@ -61,7 +63,8 @@ class CopyleaksAiDetectionResponseModel(BaseModel):
     translation_provider: Optional[int] = Field(
         default=None,
         description="Machine translation provider used before the detection. 0 = the text was not translated.",
-        alias="translationProvider"
+        alias="translationProvider",
+        serialization_alias="translationProvider"
     )
 
     translation: Optional[str] = Field(
@@ -70,8 +73,22 @@ class CopyleaksAiDetectionResponseModel(BaseModel):
         alias="translation"
     )
 
-    explain: Optional[CopyleaksAiDetectionExplainModel] = Field(
+    explain: Optional[CopyleaksAiTextDetectionExplainModel] = Field(
         default=None,
         description="Explanation of the detection. Present only when explain was enabled for the scan.",
         alias="explain"
     )
+
+    @field_validator('model_version', mode='before')
+    @classmethod
+    def model_version_number_to_str(cls, v):
+        """Accept a numeric model version, as the other Copyleaks SDKs do."""
+        if isinstance(v, (int, float)) and not isinstance(v, bool):
+            return str(v)
+        return v
+
+    @field_validator('results', mode='before')
+    @classmethod
+    def results_none_to_empty(cls, v):
+        """Treat a null `results` as an empty list."""
+        return [] if v is None else v

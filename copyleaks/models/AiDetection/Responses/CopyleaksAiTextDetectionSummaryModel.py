@@ -22,25 +22,26 @@
  SOFTWARE.
 '''
 
+from typing import Optional
 from pydantic import AliasChoices, BaseModel, Field
 
 
-class CopyleaksAiDetectionSummaryModel(BaseModel):
+class CopyleaksAiTextDetectionSummaryModel(BaseModel):
     """
     Summary of the AI text detection.
     Accepts the camelCase keys and the PascalCase `Human`/`Ai` keys sent by sandbox scans.
     """
 
-    human: float = Field(
-        ...,
-        description="Portion of the scanned text classified as human-written, from 0 to 1.",
+    human: Optional[float] = Field(
+        default=None,
+        description="Portion of the scanned text classified as human-written, from 0 to 1. None when missing.",
         alias="human",
         validation_alias=AliasChoices("human", "Human")
     )
 
-    ai: float = Field(
-        ...,
-        description="Portion of the scanned text classified as AI-generated, from 0 to 1.",
+    ai: Optional[float] = Field(
+        default=None,
+        description="Portion of the scanned text classified as AI-generated, from 0 to 1. None when missing.",
         alias="ai",
         validation_alias=AliasChoices("ai", "Ai")
     )

@@ -22,35 +22,25 @@
  SOFTWARE.
 '''
 
-from typing import List
+from typing import Optional
 from pydantic import BaseModel, Field
 
+from copyleaks.models.AiDetection.Responses.CopyleaksAiTextDetectionPositionsModel import CopyleaksAiTextDetectionPositionsModel
 
-class CopyleaksAiDetectionPatternStatisticsModel(BaseModel):
+
+class CopyleaksAiTextDetectionMatchTextModel(BaseModel):
     """
-    Statistics of the AI patterns found in the text. The arrays are parallel, one entry per pattern.
+    Character and word positions of a classified section.
     """
 
-    ai_count: List[float] = Field(
-        default_factory=list,
-        description="How often each pattern appears in AI-generated text.",
-        alias="aiCount"
+    chars: Optional[CopyleaksAiTextDetectionPositionsModel] = Field(
+        default=None,
+        description="Character positions of the section.",
+        alias="chars"
     )
 
-    human_count: List[float] = Field(
-        default_factory=list,
-        description="How often each pattern appears in human-written text.",
-        alias="humanCount"
-    )
-
-    proportion: List[float] = Field(
-        default_factory=list,
-        description="Ratio between the AI and the human frequency of each pattern.",
-        alias="proportion"
-    )
-
-    source: List[int] = Field(
-        default_factory=list,
-        description="Source of each pattern: 1 = AI, 2 = humanizer.",
-        alias="source"
+    words: Optional[CopyleaksAiTextDetectionPositionsModel] = Field(
+        default=None,
+        description="Word positions of the section.",
+        alias="words"
     )

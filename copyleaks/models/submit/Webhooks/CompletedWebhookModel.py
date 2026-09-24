@@ -23,7 +23,7 @@
 '''
 
 from typing import Any, Optional
-from copyleaks.models.AiDetection.Responses.CopyleaksAiDetectionResponseModel import CopyleaksAiDetectionResponseModel
+from copyleaks.models.AiDetection.Responses.CopyleaksAiTextDetectionResponseModel import CopyleaksAiTextDetectionResponseModel
 from copyleaks.models.constants.CopyleaksAlertCodes import CopyleaksAlertCodes
 from .HelperModels.BaseModels.StatusWebhookModel import StatusWebhookModel
 from .HelperModels.CompletedModels.NotificationsModel import NotificationsModel
@@ -63,7 +63,7 @@ class CompletedWebhookModel(StatusWebhookModel):
         Returns:
             `AlertsModel`, or None when the webhook has no notifications or no `suspected-ai-text` alert.
             A None alert means the scan produced no AI alert. It does not by itself prove that AI detection ran:
-            check the scan's `aiGeneratedText.detect` setting and the category 2 failure codes in `CopyleaksAlertCodes`.
+            check the scan's `aiGeneratedText.detect` setting and the other AI alert codes in `CopyleaksAlertCodes`.
         """
         notifications = self.notifications
         alerts = notifications.alerts if isinstance(notifications, NotificationsModel) else []
@@ -72,17 +72,19 @@ class CompletedWebhookModel(StatusWebhookModel):
                 return alert
         return None
 
-    def get_ai_detection_result(self) -> Optional[CopyleaksAiDetectionResponseModel]:
+    def get_ai_detection_result(self) -> Optional[CopyleaksAiTextDetectionResponseModel]:
         """
         Returns the decoded AI text detection result of the `suspected-ai-text` alert,
         the same as `get_ai_detection_alert().get_ai_detection_result()`.
 
         Returns:
-            `CopyleaksAiDetectionResponseModel`, or None when there is no `suspected-ai-text` alert
-            or its additional data is empty. Use `get_ai_detection_alert()` to tell these cases apart.
+            `CopyleaksAiTextDetectionResponseModel`, or None when there is no `suspected-ai-text` alert,
+            or its additional data is empty or is valid JSON that is not an object.
+            Use `get_ai_detection_alert()` to tell these cases apart.
 
         Raises:
-            `pydantic.ValidationError`: the alert's additional data is not valid JSON or does not match the model.
+            `pydantic.ValidationError`: the alert's additional data is not valid JSON, or a field has a type
+            the model cannot accept.
         """
         alert = self.get_ai_detection_alert()
         return alert.get_ai_detection_result() if alert is not None else None

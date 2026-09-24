@@ -25,22 +25,22 @@
 from typing import Optional
 from pydantic import BaseModel, Field
 
-from copyleaks.models.AiDetection.Responses.CopyleaksAiDetectionPositionsModel import CopyleaksAiDetectionPositionsModel
+from copyleaks.models.AiDetection.Responses.CopyleaksAiTextDetectionMatchTextModel import CopyleaksAiTextDetectionMatchTextModel
 
 
-class CopyleaksAiDetectionMatchTextModel(BaseModel):
+class CopyleaksAiTextDetectionMatchModel(BaseModel):
     """
-    Character and word positions of a classified section.
+    Location of a classified section in the scanned document.
     """
 
-    chars: Optional[CopyleaksAiDetectionPositionsModel] = Field(
+    text: Optional[CopyleaksAiTextDetectionMatchTextModel] = Field(
         default=None,
-        description="Character positions of the section.",
-        alias="chars"
+        description="Positions of the section in the plain text.",
+        alias="text"
     )
 
-    words: Optional[CopyleaksAiDetectionPositionsModel] = Field(
+    html: Optional[CopyleaksAiTextDetectionMatchTextModel] = Field(
         default=None,
-        description="Word positions of the section.",
-        alias="words"
+        description="Positions of the section in the HTML source. Present only for HTML submissions.",
+        alias="html"
     )

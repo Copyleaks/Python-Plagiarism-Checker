@@ -23,10 +23,18 @@
 '''
 
 from typing import Any, Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field, TypeAdapter
 
-from copyleaks.models.AiDetection.Responses.CopyleaksAiDetectionResponseModel import CopyleaksAiDetectionResponseModel
+from copyleaks.models.AiDetection.Responses.CopyleaksAiTextDetectionResponseModel import CopyleaksAiTextDetectionResponseModel
 from copyleaks.models.constants.CopyleaksAlertCodes import CopyleaksAlertCodes
+
+# Characters removed from the end of `additionalData` before it is parsed: NUL and the ASCII
+# whitespace tab, line feed, vertical tab, form feed, carriage return and space.
+_TRAILING_PADDING = frozenset("\x00\t\n\x0b\x0c\r ")
+
+# Parses `additionalData` into plain Python values first, so that valid JSON that is not an object
+# gives None. Malformed JSON raises pydantic.ValidationError, titled like the result model.
+_JSON_ADAPTER = TypeAdapter(Any, config=ConfigDict(title=CopyleaksAiTextDetectionResponseModel.__name__))
 
 class AlertsModel(BaseModel):
     """
@@ -60,7 +68,8 @@ class AlertsModel(BaseModel):
     help_link: Optional[str] = Field(
         default=None,
         description="Url to a resource describing the specific scan alert. Not sent for every alert.",
-        alias="helpLink"
+        alias="helpLink",
+        serialization_alias="helpLink"
     )
 
     severity: Optional[int] = Field(
@@ -72,7 +81,8 @@ class AlertsModel(BaseModel):
     additional_data: Optional[str] = Field(
         default=None,
         description="Additional data about the scan alert. Supplied as a json string.",
-        alias="additionalData"
+        alias="additionalData",
+        serialization_alias="additionalData"
     )
 
     def __init__(self,
@@ -94,24 +104,30 @@ class AlertsModel(BaseModel):
         super().__init__(category=category, code=code, title=title, message=message,
                          severity=severity, **kwargs)
 
-    def get_ai_detection_result(self) -> Optional[CopyleaksAiDetectionResponseModel]:
+    def get_ai_detection_result(self) -> Optional[CopyleaksAiTextDetectionResponseModel]:
         """
         Decodes the `additional_data` of a `suspected-ai-text` alert into the AI text detection result.
-        Trailing NUL characters and whitespace are removed before parsing; `additional_data` itself is not changed.
+        Trailing NUL characters and ASCII whitespace (tab, line feed, vertical tab, form feed, carriage return, space)
+        are removed before parsing; `additional_data` itself is not changed.
 
         Returns:
-            `CopyleaksAiDetectionResponseModel`, or None when the alert code is not
-            `CopyleaksAlertCodes.SUSPECTED_AI_TEXT` or `additional_data` is empty or missing.
+            `CopyleaksAiTextDetectionResponseModel`, or None when the alert code is not
+            `CopyleaksAlertCodes.SUSPECTED_AI_TEXT`, `additional_data` is empty or missing,
+            or `additional_data` is valid JSON that is not an object (for example `null` or an array).
 
         Raises:
-            `pydantic.ValidationError`: `additional_data` is not valid JSON or does not match the model.
+            `pydantic.ValidationError`: `additional_data` is not valid JSON, or a field has a type
+            the model cannot accept (for example `"summary": 5`).
         """
         if self.code != CopyleaksAlertCodes.SUSPECTED_AI_TEXT:
             return None
         data = self.additional_data or ""
         end = len(data)
-        while end > 0 and (data[end - 1] == "\x00" or data[end - 1].isspace()):
+        while end > 0 and data[end - 1] in _TRAILING_PADDING:
             end -= 1
         if end == 0:
             return None
-        return CopyleaksAiDetectionResponseModel.model_validate_json(data[:end])
+        decoded = _JSON_ADAPTER.validate_json(data[:end])
+        if not isinstance(decoded, dict):
+            return None
+        return CopyleaksAiTextDetectionResponseModel.model_validate(decoded)

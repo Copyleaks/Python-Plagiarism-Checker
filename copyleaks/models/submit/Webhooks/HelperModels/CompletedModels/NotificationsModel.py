@@ -24,7 +24,7 @@
 
 from ..NotificationsModels.AlertsModel import AlertsModel
 from typing import Any, Optional, List
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 class NotificationsModel(BaseModel):
     """A list of scan alerts that were detected in the scan."""
@@ -40,3 +40,13 @@ class NotificationsModel(BaseModel):
         `alerts` items can be `AlertsModel` objects or alert dictionaries with the camelCase webhook keys.
         """
         super().__init__(alerts=list(alerts) if alerts else [], **kwargs)
+
+    @field_validator('alerts', mode='before')
+    @classmethod
+    def alerts_drop_none(cls, v):
+        """Skip null alert entries, so one null entry does not fail the whole webhook."""
+        if v is None:
+            return []
+        if isinstance(v, (list, tuple)):
+            return [alert for alert in v if alert is not None]
+        return v
