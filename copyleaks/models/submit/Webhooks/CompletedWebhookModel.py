@@ -61,9 +61,7 @@ class CompletedWebhookModel(StatusWebhookModel):
         Returns the first `suspected-ai-text` alert of the scan.
 
         Returns:
-            `AlertsModel`, or None when the webhook has no notifications or no `suspected-ai-text` alert.
-            A None alert means the scan produced no AI alert. It does not by itself prove that AI detection ran:
-            check the scan's `aiGeneratedText.detect` setting and the other AI alert codes in `CopyleaksAlertCodes`.
+            `AlertsModel`. Returns None when the completed webhook contains no suspected-ai-text alert.
         """
         notifications = self.notifications
         alerts = notifications.alerts if isinstance(notifications, NotificationsModel) else []

@@ -106,7 +106,7 @@ def webhook_completed():
     # Acknowledge the webhook even when the AI alert could not be parsed.
     return '', 200
 ```
-No AI alert does not by itself prove that AI detection ran. Check the scan's `aiGeneratedText.detect` setting and the other AI alert codes in `CopyleaksAlertCodes` (`copyleaks.models.constants.CopyleaksAlertCodes`, for example `AI_DETECTION_FAILED`, `AI_DETECTION_LANG_NOT_SUPPORTED` or `AI_DETECTION_TEXT_TOO_SHORT`). Sandbox scans send a mock AI alert, which the SDK parses the same way.
+`get_ai_detection_alert()` returns None when the completed webhook contains no suspected-ai-text alert. Sandbox scans send a mock AI alert, which the SDK parses the same way.
 
 For the alert format, refer to the Copyleaks scan completed webhook [Documentation](https://docs.copyleaks.com/reference/data-types/authenticity/webhooks/scan-completed)
 ##

@@ -26,10 +26,5 @@
 class CopyleaksAlertCodes:
     """
     Scan alert codes found in `notifications.alerts[].code` of the completed webhook.
-    All of these alerts belong to category 2 (AI content detection).
     """
     SUSPECTED_AI_TEXT = "suspected-ai-text"
-    AI_DETECTION_FAILED = "ai-detection-failed"
-    AI_DETECTION_LANG_NOT_SUPPORTED = "ai-detection-lang-not-supported"
-    AI_DETECTION_TEXT_TOO_SHORT = "ai-detection-text-too-short"
-    FILE_TYPE_NOT_SUPPORTED = "file-type-not-supported"
