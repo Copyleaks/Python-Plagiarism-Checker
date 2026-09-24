@@ -35,6 +35,7 @@ from copyleaks.models.submit.Webhooks.IndexedWebhookModel import IndexedWebhookM
 from copyleaks.models.submit.Webhooks.NewResultWebhookModel import NewResultWebhookModel
 from flask import Flask, request, jsonify 
 from pydantic import *
+from pydantic import ValidationError
 from flask import Flask, request, jsonify
 import logging
 from werkzeug.serving import make_server
@@ -97,6 +98,17 @@ def webhook_completed():
 
     # Deserialize JSON into CompletedWebhook object
     completed_data = CompletedWebhookModel(**request.json)
+
+    # Read the AI alert. No "suspected-ai-text" alert means the scan produced no AI alert.
+    ai_alert = completed_data.get_ai_detection_alert()
+    if ai_alert is not None:
+        try:
+            ai_result = ai_alert.get_ai_detection_result()
+        except ValidationError:
+            logging.exception("Could not parse the AI alert additional data")
+            ai_result = None
+        if ai_result is not None and ai_result.summary is not None:
+            logging.info(f"AI text detected: ai={ai_result.summary.ai}, human={ai_result.summary.human}, model={ai_result.model_version}")
 
     # Additional processing can be done here
     return jsonify({'message': f'Completed received:{completed_data}'}), 200

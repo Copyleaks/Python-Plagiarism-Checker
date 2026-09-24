@@ -22,31 +22,58 @@
  SOFTWARE.
 '''
 
-from typing import Optional
-from pydantic import BaseModel
+from typing import Any, Optional
+from pydantic import BaseModel, Field
+
+from copyleaks.models.AiDetection.Responses.CopyleaksAiDetectionResponseModel import CopyleaksAiDetectionResponseModel
+from copyleaks.models.constants.CopyleaksAlertCodes import CopyleaksAlertCodes
 
 class AlertsModel(BaseModel):
+    """
+    A scan alert from `notifications.alerts` of the completed webhook.
+    """
 
-    """Scan alert category."""
-    _category: Optional[int] = None
-    
-    """Scan alert code. The code is unique for each scan alert."""
-    _code: Optional[str] = None
+    category: Optional[int] = Field(
+        default=None,
+        description="Scan alert category. 2 = AI content detection.",
+        alias="category"
+    )
 
-    """Scan alert human-readable title."""
-    _title: Optional[str] = None
-    
-    """Provides human-readable information about the scan alert."""
-    _message: Optional[str] = None
+    code: Optional[str] = Field(
+        default=None,
+        description="Scan alert code. The code is unique for each scan alert. See `CopyleaksAlertCodes`.",
+        alias="code"
+    )
 
-    """Url to a resource describing the specific scan alert."""
-    _help_link: Optional[str] = None
+    title: Optional[str] = Field(
+        default=None,
+        description="Scan alert human-readable title.",
+        alias="title"
+    )
 
-    """Specifies the importance of the scan alert."""
-    _severity: Optional[int] = None
+    message: Optional[str] = Field(
+        default=None,
+        description="Provides human-readable information about the scan alert.",
+        alias="message"
+    )
 
-    """Additional data about the scan alert. Supplied as a json string."""
-    _additional_data: Optional[str] = None
+    help_link: Optional[str] = Field(
+        default=None,
+        description="Url to a resource describing the specific scan alert. Not sent for every alert.",
+        alias="helpLink"
+    )
+
+    severity: Optional[int] = Field(
+        default=None,
+        description="Specifies the importance of the scan alert, from 0 (lowest) to 4 (highest).",
+        alias="severity"
+    )
+
+    additional_data: Optional[str] = Field(
+        default=None,
+        description="Additional data about the scan alert. Supplied as a json string.",
+        alias="additionalData"
+    )
 
     def __init__(self,
                  category: Optional[int] = None,
@@ -55,16 +82,36 @@ class AlertsModel(BaseModel):
                  message: Optional[str] = None,
                  help_link: Optional[str] = None,
                  severity: Optional[int] = None,
-                 additional_data: Optional[str] = None):
+                 additional_data: Optional[str] = None,
+                 **kwargs: Any):
         """
-        Initializes an Alerts object, storing values in internal attributes.
+        Initializes an Alerts object.
+        Accepts the snake_case arguments (positional or keyword) and the camelCase
+        webhook keys `helpLink` and `additionalData`, so `AlertsModel(**alert_json)` works.
         """
+        kwargs.setdefault("helpLink", help_link)
+        kwargs.setdefault("additionalData", additional_data)
         super().__init__(category=category, code=code, title=title, message=message,
-                         help_link=help_link, severity=severity, additional_data=additional_data)
-        self._category = category
-        self._code = code
-        self._title = title
-        self._message = message
-        self._help_link = help_link
-        self._severity = severity
-        self._additional_data = additional_data
+                         severity=severity, **kwargs)
+
+    def get_ai_detection_result(self) -> Optional[CopyleaksAiDetectionResponseModel]:
+        """
+        Decodes the `additional_data` of a `suspected-ai-text` alert into the AI text detection result.
+        Trailing NUL characters and whitespace are removed before parsing; `additional_data` itself is not changed.
+
+        Returns:
+            `CopyleaksAiDetectionResponseModel`, or None when the alert code is not
+            `CopyleaksAlertCodes.SUSPECTED_AI_TEXT` or `additional_data` is empty or missing.
+
+        Raises:
+            `pydantic.ValidationError`: `additional_data` is not valid JSON or does not match the model.
+        """
+        if self.code != CopyleaksAlertCodes.SUSPECTED_AI_TEXT:
+            return None
+        data = self.additional_data or ""
+        end = len(data)
+        while end > 0 and (data[end - 1] == "\x00" or data[end - 1].isspace()):
+            end -= 1
+        if end == 0:
+            return None
+        return CopyleaksAiDetectionResponseModel.model_validate_json(data[:end])
