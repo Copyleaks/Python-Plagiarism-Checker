@@ -31,7 +31,7 @@ from copyleaks.helpers.copyleaks_client_helper import CopyleaksClientHelper
 
 class _WritingAssistantClient:
     @staticmethod
-    def __submit(url, auth_token, scan_id, submission):
+    def __submit(url, auth_token, scan_id, submission, x_tenant=None):
         assert url and scan_id and submission
 
         CopyleaksClientHelper.verify_auth_token(auth_token)
@@ -41,6 +41,7 @@ class _WritingAssistantClient:
             'User-Agent': Consts.USER_AGENT,
             'Authorization': f"Bearer {auth_token['access_token']}"
         }
+        CopyleaksClientHelper.add_tenant_header(headers, x_tenant)
         json = submission.toJSON()
         response = requests.post(url, headers=headers, data=json)
         if response.ok:
@@ -51,7 +52,7 @@ class _WritingAssistantClient:
             raise CommandError(response)
         
     @staticmethod
-    def submit_text(auth_token, scan_id, submission):
+    def submit_text(auth_token, scan_id, submission, x_tenant=None):
         '''
             Use Copyleaks Writing Assistant to generate grammar, spelling and sentence corrections for a given text.
             This endpoint will receive submitted text to be checked. The response will show the suggested corrections to the input text.
@@ -61,10 +62,10 @@ class _WritingAssistantClient:
                 `UnderMaintenanceError`: Copyleaks servers are unavailable for maintenance. We recommend to implement exponential backoff algorithm as described here: https://api.copyleaks.com/documentation/v3/exponential-backoff
         '''
         url = f"{Consts.API_SERVER_URI}/v1/writing-feedback/{scan_id}/check"
-        return _WritingAssistantClient.__submit(url, auth_token, scan_id, submission)
+        return _WritingAssistantClient.__submit(url, auth_token, scan_id, submission, x_tenant)
     
     @staticmethod
-    def get_correction_types(language_code):
+    def get_correction_types(language_code, x_tenant=None):
         '''
             Get a list of correction types supported within the Writing Assistant API. 
             Correction types apply to all supported languages. 
@@ -82,6 +83,7 @@ class _WritingAssistantClient:
         headers = {
             'User-Agent': Consts.USER_AGENT
         }
+        CopyleaksClientHelper.add_tenant_header(headers, x_tenant)
 
         response = requests.get(url, headers=headers)
         if response.ok:

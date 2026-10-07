@@ -1,9 +1,25 @@
 from datetime import datetime, timedelta
 import dateutil.parser
 import pytz
+from copyleaks.consts import Consts
 from copyleaks.exceptions.auth_expired_error import AuthExipredError
 
 class CopyleaksClientHelper:
+    @staticmethod
+    def add_tenant_header(headers, x_tenant=None):
+        '''
+            Add the `x-tenant` header to the request headers, if a tenant is set.
+            When no tenant is set, the header is not added.
+            Passing `x_tenant=""` skips the header for that call, even when a process-wide tenant is set.
+
+            Parameters:
+                headers: dict. The request headers. Updated in place.
+                x_tenant: string. Optional per-call tenant. Overrides the process-wide tenant set with `Copyleaks.set_tenant`.
+        '''
+        tenant = x_tenant if x_tenant is not None else Consts.TENANT
+        if tenant:
+            headers['x-tenant'] = tenant
+
     @staticmethod
     def verify_auth_token(auth_token):
         '''

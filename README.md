@@ -204,6 +204,27 @@ For a full guide please refer to our step by step [Guide](https://docs.copyleaks
 
 For a detailed understanding of the Image detection process, refer to the Copyleaks image detection Endpoint [Documentation](https://docs.copyleaks.com/reference/actions/ai-image-detector/check/)
 ##
+### Tenant Header (`x-tenant`)
+Send requests to a specific tenant by adding the `x-tenant` header. Set it once for the whole process, or per call with the optional `x_tenant` argument that every endpoint method accepts. A per-call value overrides the process-wide one. When no tenant is set, the header is not sent.
+
+The header is only for environment routing that Copyleaks directs. It does not grant access or separate data, so leave it unset unless Copyleaks tells you otherwise.
+
+```python
+from copyleaks.copyleaks import Copyleaks
+
+# Process-wide: sent as `x-tenant` on every request, including login
+Copyleaks.set_tenant("my-tenant")
+auth_token = Copyleaks.login(EMAIL_ADDRESS, KEY)
+Copyleaks.submit_file(auth_token, scan_id, file_submission)
+
+# Per call: overrides the process-wide tenant for this request only
+Copyleaks.AiDetectionClient.submit_natural_language(auth_token, scan_id, natural_language_submission, x_tenant="other-tenant")
+
+# Stop sending the header
+Copyleaks.set_tenant(None)
+```
+Note: `set_tenant` is a process-wide setting (like `set_api_uri`) shared by all threads. To use different tenants concurrently in one process, pass `x_tenant` on each call. Passing `x_tenant=""` on a call skips the header for that call, even when a process-wide tenant is set.
+##
 ### Further Resources
 
 *   **Copyleaks API Dashboard:** Manage your API keys, monitor usage, and view analytics from your personalized dashboard. [Access Dashboard](https://api.copyleaks.com/dashboard)
