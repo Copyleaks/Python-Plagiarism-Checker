@@ -125,8 +125,12 @@ natural_language_submission = NaturalLanguageDocument(sample_text)
 natural_language_submission.set_sandbox(True) # Use sandbox for testing
 response = Copyleaks.AiDetectionClient.submit_natural_language(auth_token, scan_id, natural_language_submission)
 print("\nAI Detection (Natural Language):")
-print(response)
+print(f"AI: {response.summary.ai}, human: {response.summary.human}, model: {response.model_version}")
+for section in response.results:
+    print(f"Section classification: {section.classification}")  # 1 = human, 2 = AI
 ```
+`submit_natural_language` returns a `CopyleaksAiTextDetectionResponseModel`; earlier versions returned a dict. Dict-style reads such as `response['summary']['ai']` still work for backward compatibility, but prefer attributes such as `response.summary.ai`. For a plain dict with the JSON keys, use `response.model_dump(by_alias=True, exclude_unset=True)`.
+
 For a full guide please refer to our step by step [Guide](https://docs.copyleaks.com/guides/ai-detector/ai-text-detection/)
 
 For a detailed understanding of the Ai detection process, refer to the Copyleaks detect natural language Endpoint [Documentation](https://docs.copyleaks.com/reference/actions/writer-detector/check/)
@@ -159,8 +163,14 @@ submission.set_sandbox(True) # Use sandbox for testing
 
 response = Copyleaks.WritingAssistantClient.submit_text(auth_token, scan_id, submission)
 print("\nWriting Assistant Feedback:")
-print(response)
+print(f"Overall score: {response.score.corrections.overall_score}")
+print(f"Readability: {response.score.readability.readability_level_text}")
+chars = response.corrections.text.chars
+for correction_type, start, length, replacement in zip(chars.types, chars.starts, chars.lengths, chars.operation_texts):
+    print(f"Type {correction_type}: replace text[{start}:{start + length}] with '{replacement}'")
 ```
+`submit_text` returns a `CopyleaksWritingAssistantResponseModel`; earlier versions returned a dict. Dict-style reads such as `response['score']['corrections']['overallScore']` still work for backward compatibility, but prefer attributes such as `response.score.corrections.overall_score`. For a plain dict with the JSON keys, use `response.model_dump(by_alias=True, exclude_unset=True)`.
+
 For a full guide please refer to our step by step [Guide](https://docs.copyleaks.com/guides/writing/check-grammar/)
 
 For a detailed understanding of the Writing assistant process, refer to the Copyleaks writing feedback Endpoint [Documentation](https://docs.copyleaks.com/reference/actions/writing-assistant/check/)

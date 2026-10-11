@@ -28,6 +28,7 @@ from copyleaks.consts import Consts
 from copyleaks.exceptions.command_error import CommandError
 from copyleaks.exceptions.under_maintenance_error import UnderMaintenanceError
 from copyleaks.helpers.copyleaks_client_helper import CopyleaksClientHelper
+from copyleaks.models.WritingAssistant.Responses.CopyleaksWritingAssistantResponseModel import CopyleaksWritingAssistantResponseModel
 
 class _WritingAssistantClient:
     @staticmethod
@@ -44,7 +45,7 @@ class _WritingAssistantClient:
         json = submission.toJSON()
         response = requests.post(url, headers=headers, data=json)
         if response.ok:
-            return response.json()
+            return CopyleaksWritingAssistantResponseModel(**response.json())
         elif response.status_code == 503:
             raise UnderMaintenanceError()
         else:
@@ -59,6 +60,10 @@ class _WritingAssistantClient:
             Raises:
                 `CommandError`: Server reject the request. See response status code, headers and content for more info.
                 `UnderMaintenanceError`: Copyleaks servers are unavailable for maintenance. We recommend to implement exponential backoff algorithm as described here: https://api.copyleaks.com/documentation/v3/exponential-backoff
+                `pydantic.ValidationError`: The server returned a success response whose body does not match the response model.
+
+            Returns:
+                `CopyleaksWritingAssistantResponseModel`. Dict-style access (`response['score']['corrections']['overallScore']`) still works for backward compatibility.
         '''
         url = f"{Consts.API_SERVER_URI}/v1/writing-feedback/{scan_id}/check"
         return _WritingAssistantClient.__submit(url, auth_token, scan_id, submission)
