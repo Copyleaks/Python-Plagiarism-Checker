@@ -24,6 +24,7 @@
 
 import abc
 from xmlrpc.client import Boolean
+from copyleaks.models.submit.properties.ai_source_match import AISourceMatch
 from copyleaks.models.submit.properties.submit_action import SubmitAction
 from copyleaks.models.submit.properties.submit_webhooks import SubmitWebhooks
 
@@ -321,6 +322,43 @@ class ScanProperties:
         '''
         assert value
         self.aiGeneratedText = value
+
+    def get_ai_source_match(self):
+        '''
+            Ai source match settings.
+        '''
+        return self.aiSourceMatch
+
+    def set_ai_source_match(self, value):
+        '''
+            Identify online sources suspected of containing AI generated text.
+            Currently only applies to documents detected as English.
+            Leave it unset to get the server default (disabled).
+
+            Parameters:
+                value: `AISourceMatch`
+        '''
+        assert isinstance(value, AISourceMatch)
+        self.aiSourceMatch = value
+
+    def get_display_language(self):
+        '''
+            Get the language the PDF report is generated in.
+        '''
+        return self.displayLanguage
+
+    def set_display_language(self, value):
+        '''
+            Set the language the PDF report is generated in.
+            Only takes effect when `pdf.create` is True.
+            Leave it unset to get the server default ("en").
+
+            Parameters:
+                value: String. One of "en", "es", "pt", "fr", "de", "it".
+                    Values are lowercase and case-sensitive.
+        '''
+        assert value
+        self.displayLanguage = value
 
     def get_custom_metadata(self):
         '''

@@ -112,6 +112,28 @@ class Pdf:
         self.version = value
 
 
+    def get_report_version(self):
+        '''
+            Get which version of the PDF report to generate.
+        '''
+        return self.reportVersion
+
+    def set_report_version(self, value):
+        '''
+            Set which version of the PDF report to generate.
+            Overrides `version` when both are supplied.
+            Only takes effect when `create` is True.
+            Leave it unset to get the server default.
+
+            Parameters:
+                value: String. One of "v1", "v2", "v3", "latest".
+                    Values are lowercase and case-sensitive. Do not pass the `PdfVersion` enum.
+        '''
+        assert isinstance(value, str) and value
+
+        self.reportVersion = value
+
+
     def get_report_customization_colors(self):
         '''
             Customizable colors
