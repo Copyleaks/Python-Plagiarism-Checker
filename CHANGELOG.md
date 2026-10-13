@@ -28,6 +28,10 @@ This is a major release. The AI Text Detection and Grammar Checker clients now r
 - **Completed webhook notifications are typed (BAC-5392).** When you build `CompletedWebhookModel(**request.json)`, `notifications` is now a `NotificationsModel` with an `alerts` list of `AlertsModel` objects. In 5.x it stayed the raw dict. `AlertsModel` fields are now public: `category`, `code`, `title`, `message`, `help_link`, `severity` and `additional_data`. `AlertsModel(**alert_json)` accepts the camelCase webhook keys `helpLink` and `additionalData`. Null entries in `alerts` are skipped.
 - **README (BAC-5374).** The README now describes the SDK as the Copyleaks platform SDK and lists the products it covers: AI Text Detection, AI Image Detection, Plagiarism Checker, Grammar Checker and Text Moderation. Headings such as "AI Text Detection" now use the product names. There are no code changes in this item.
 
+### Fixed
+
+- **OCR submit (BAC-6742).** `Copyleaks.submit_file_ocr` now calls `PUT /v3/scans/submit/ocr/{scanId}`. Earlier versions called `/v3/scans/submit/file/ocr/{scanId}`, which does not exist, so every OCR submit failed with HTTP 404.
+
 ### Upgrade notes
 
 - **Install:** `pip install --upgrade copyleaks`. If you pin versions, change the pin to `copyleaks>=6,<7`. The package name and import paths are unchanged.
