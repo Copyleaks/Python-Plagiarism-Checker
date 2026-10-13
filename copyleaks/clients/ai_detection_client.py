@@ -28,6 +28,7 @@ from copyleaks.consts import Consts
 from copyleaks.exceptions.command_error import CommandError
 from copyleaks.exceptions.under_maintenance_error import UnderMaintenanceError
 from copyleaks.helpers.copyleaks_client_helper import CopyleaksClientHelper
+from copyleaks.models.AiDetection.Responses.CopyleaksAiTextDetectionResponseModel import CopyleaksAiTextDetectionResponseModel
 class _AIDetectionClient:
     @staticmethod
     def __submit(url, auth_token, scan_id, submission):
@@ -43,7 +44,7 @@ class _AIDetectionClient:
         json = submission.toJSON()
         response = requests.post(url, headers=headers, data=json)
         if response.ok:
-            return response.json()
+            return CopyleaksAiTextDetectionResponseModel(**response.json())
         elif response.status_code == 503:
             raise UnderMaintenanceError()
         else:
@@ -60,6 +61,10 @@ class _AIDetectionClient:
             Raises:
                 `CommandError`: Server reject the request. See response status code, headers and content for more info.
                 `UnderMaintenanceError`: Copyleaks servers are unavailable for maintenance. We recommend to implement exponential backoff algorithm as described here: https://api.copyleaks.com/documentation/v3/exponential-backoff
+                `pydantic.ValidationError`: The server returned a success response whose body does not match the response model.
+
+            Returns:
+                `CopyleaksAiTextDetectionResponseModel`. Dict-style access (`response['summary']['ai']`) still works for backward compatibility.
         '''
         url = f"{Consts.API_SERVER_URI}/v2/writer-detector/{scan_id}/check"
         return _AIDetectionClient.__submit(url, auth_token, scan_id, submission)

@@ -25,15 +25,18 @@
 from typing import List, Optional
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
+from copyleaks.helpers.copyleaks_dict_access_mixin import CopyleaksDictAccessMixin
 from copyleaks.models.AiDetection.Responses.CopyleaksAiTextDetectionExplainModel import CopyleaksAiTextDetectionExplainModel
 from copyleaks.models.AiDetection.Responses.CopyleaksAiTextDetectionResultModel import CopyleaksAiTextDetectionResultModel
+from copyleaks.models.AiDetection.Responses.CopyleaksAiTextDetectionScannedDocumentModel import CopyleaksAiTextDetectionScannedDocumentModel
 from copyleaks.models.AiDetection.Responses.CopyleaksAiTextDetectionSummaryModel import CopyleaksAiTextDetectionSummaryModel
 
 
-class CopyleaksAiTextDetectionResponseModel(BaseModel):
+class CopyleaksAiTextDetectionResponseModel(CopyleaksDictAccessMixin, BaseModel):
     """
     Result of Copyleaks AI text detection.
-    This is the decoded `additionalData` of the `suspected-ai-text` alert in the completed webhook.
+    This is the response of `AiDetectionClient.submit_natural_language`,
+    and the decoded `additionalData` of the `suspected-ai-text` alert in the completed webhook.
     Unknown fields are ignored, missing fields are None, and a missing or null list is empty.
     Serialize with `model_dump(by_alias=True)` to get the camelCase webhook keys back.
     """
@@ -77,6 +80,20 @@ class CopyleaksAiTextDetectionResponseModel(BaseModel):
         default=None,
         description="Explanation of the detection. Present only when explain was enabled for the scan.",
         alias="explain"
+    )
+
+    scanned_document: Optional[CopyleaksAiTextDetectionScannedDocumentModel] = Field(
+        default=None,
+        description="General information about the scanned document.",
+        alias="scannedDocument",
+        serialization_alias="scannedDocument"
+    )
+
+    scan_type: Optional[str] = Field(
+        default=None,
+        description="\"sandbox\" for sandbox scans. Not sent for regular scans.",
+        alias="scanType",
+        serialization_alias="scanType"
     )
 
     @field_validator('model_version', mode='before')
