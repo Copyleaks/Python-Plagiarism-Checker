@@ -169,7 +169,7 @@ class Copyleaks(object):
                 `CommandError`: Server reject the request. See response status code, headers and content for more info.
                 `UnderMaintenanceError`: Copyleaks servers are unavailable for maintenance. We recommend to implement exponential backoff algorithm as described here: https://api.copyleaks.com/documentation/v3/exponential-backoff
         '''
-        url = f"{Consts.API_SERVER_URI}/v3/scans/submit/file/ocr/{scan_id}"
+        url = f"{Consts.API_SERVER_URI}/v3/scans/submit/ocr/{scan_id}"
         Copyleaks.__submit(url, auth_token, scan_id, submission)
 
     @staticmethod
