@@ -1,5 +1,5 @@
 '''
-Unit tests for the typed responses of the AI text detection and Writing Assistant endpoints (BAC-5370).
+Unit tests for the typed responses of the AI text detection and Writing Assistant endpoints.
 The HTTP layer (`requests`) is mocked, so no network calls are made.
 
 Run from the repository root:
