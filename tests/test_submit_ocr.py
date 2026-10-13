@@ -1,5 +1,5 @@
 '''
-Unit tests for Copyleaks.submit_file_ocr (BAC-6742).
+Unit tests for Copyleaks.submit_file_ocr.
 The HTTP layer (`requests`) is mocked, so no network calls are made.
 
 Run from the repository root:
