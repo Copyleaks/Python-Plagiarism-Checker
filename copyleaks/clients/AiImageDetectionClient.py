@@ -32,7 +32,7 @@ from copyleaks.models.ImageDetection.Responses.CopyleaksAiImageDetectionResponse
 
 class _AiImageDetectionClient:
     @staticmethod
-    def __submit(url, auth_token, scan_id, requestModel):
+    def __submit(url, auth_token, scan_id, requestModel, x_tenant=None):
         assert url and scan_id and requestModel
 
         CopyleaksClientHelper.verify_auth_token(auth_token)
@@ -42,6 +42,7 @@ class _AiImageDetectionClient:
             'User-Agent': Consts.USER_AGENT,
             'Authorization': f"Bearer {auth_token['access_token']}"
         }
+        CopyleaksClientHelper.add_tenant_header(headers, x_tenant)
 
         json_data = requestModel.model_dump_json(by_alias=True)
         
@@ -59,7 +60,7 @@ class _AiImageDetectionClient:
             raise CommandError(response)
         
     @staticmethod
-    def submit(auth_token, scan_id, submission):
+    def submit(auth_token, scan_id, submission, x_tenant=None):
 
         url = f"{Consts.API_SERVER_URI}/v1/ai-image-detector/{scan_id}/check"
-        return _AiImageDetectionClient.__submit(url, auth_token, scan_id, submission)
+        return _AiImageDetectionClient.__submit(url, auth_token, scan_id, submission, x_tenant)

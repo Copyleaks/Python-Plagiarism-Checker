@@ -32,7 +32,7 @@ from copyleaks.models.TextModeration.Responses.CopyleaksTextModerationResponseMo
 
 class _TextModerationClient:
     @staticmethod
-    def __submit_text(url, auth_token, scan_id, requestModel):
+    def __submit_text(url, auth_token, scan_id, requestModel, x_tenant=None):
         assert url and scan_id and requestModel
 
         CopyleaksClientHelper.verify_auth_token(auth_token)
@@ -42,6 +42,7 @@ class _TextModerationClient:
             'User-Agent': Consts.USER_AGENT,
             'Authorization': f"Bearer {auth_token['access_token']}"
         }
+        CopyleaksClientHelper.add_tenant_header(headers, x_tenant)
 
         json = requestModel.json()
         response = requests.post(url, headers=headers, data=json)
@@ -54,7 +55,7 @@ class _TextModerationClient:
             raise CommandError(response)
         
     @staticmethod
-    def submit_text(auth_token, scan_id, submission):
+    def submit_text(auth_token, scan_id, submission, x_tenant=None):
 
         url = f"{Consts.API_SERVER_URI}/v1/text-moderation/{scan_id}/check"
-        return _TextModerationClient.__submit_text(url, auth_token, scan_id, submission)
+        return _TextModerationClient.__submit_text(url, auth_token, scan_id, submission, x_tenant)

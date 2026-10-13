@@ -37,6 +37,7 @@ from copyleaks.clients.ai_detection_client import _AIDetectionClient
 from copyleaks.clients.writing_assistant_client import _WritingAssistantClient
 from copyleaks.clients.TextModerationClient import _TextModerationClient
 from copyleaks.clients.AiImageDetectionClient import _AiImageDetectionClient
+from copyleaks.helpers.copyleaks_client_helper import CopyleaksClientHelper
 
 class Copyleaks(object):
 
@@ -66,7 +67,19 @@ class Copyleaks(object):
         Consts.API_SERVER_URI = uri
 
     @staticmethod
-    def login(email, key):
+    def set_tenant(tenant):
+        '''
+            Set a process-wide tenant. When set, it is sent as the `x-tenant` header on every request.
+            Every endpoint method also accepts an optional `x_tenant` argument that overrides it for that call.
+            Like `set_api_uri`, this is a process-wide setting shared by all threads.
+
+            Parameters:
+                tenant: string. Pass `None` to stop sending the header.
+        '''
+        Consts.TENANT = tenant
+
+    @staticmethod
+    def login(email, key, x_tenant=None):
         '''
             Login to Copyleaks authentication server.
             For more info: https://api.copyleaks.com/documentation/v3/account/login
@@ -74,6 +87,7 @@ class Copyleaks(object):
             Parameters:
                 email: string. Copyleaks account email address.
                 key: string. Copyleaks account secret key.
+                x_tenant: string. Optional. Overrides the process-wide tenant for this call.
 
             Raises:
                 `CommandError`: Server reject the request. See response status code, headers and content for more info.
@@ -95,6 +109,7 @@ class Copyleaks(object):
             'Content-Type': 'application/json',
             'User-Agent': Consts.USER_AGENT
         }
+        CopyleaksClientHelper.add_tenant_header(headers, x_tenant)
 
         response = requests.post(url, headers=headers, data=json.dumps(payload))
         if response.ok:
@@ -124,7 +139,7 @@ class Copyleaks(object):
             raise AuthExipredError()  # expired
 
     @staticmethod
-    def __submit(url, auth_token, scan_id, submission):
+    def __submit(url, auth_token, scan_id, submission, x_tenant=None):
         assert url and scan_id and submission
 
         Copyleaks.verify_auth_token(auth_token)
@@ -134,6 +149,7 @@ class Copyleaks(object):
             'User-Agent': Consts.USER_AGENT,
             'Authorization': f"Bearer {auth_token['access_token']}"
         }
+        CopyleaksClientHelper.add_tenant_header(headers, x_tenant)
 
         response = requests.put(url, headers=headers, data=submission.toJSON())
         if response.ok:
@@ -144,7 +160,7 @@ class Copyleaks(object):
             raise CommandError(response)
 
     @staticmethod
-    def submit_file(auth_token, scan_id, submission):
+    def submit_file(auth_token, scan_id, submission, x_tenant=None):
         '''
             Starting a new process by providing a file to scan.
             For more info: 
@@ -156,10 +172,10 @@ class Copyleaks(object):
         '''
         
         url = f"{Consts.API_SERVER_URI}/v3/scans/submit/file/{scan_id}"
-        Copyleaks.__submit(url, auth_token, scan_id, submission)
+        Copyleaks.__submit(url, auth_token, scan_id, submission, x_tenant)
 
     @staticmethod
-    def submit_file_ocr(auth_token, scan_id, submission):
+    def submit_file_ocr(auth_token, scan_id, submission, x_tenant=None):
         '''
             Starting a new process by providing a OCR image file to scan.
             For more info: 
@@ -170,10 +186,10 @@ class Copyleaks(object):
                 `UnderMaintenanceError`: Copyleaks servers are unavailable for maintenance. We recommend to implement exponential backoff algorithm as described here: https://api.copyleaks.com/documentation/v3/exponential-backoff
         '''
         url = f"{Consts.API_SERVER_URI}/v3/scans/submit/file/ocr/{scan_id}"
-        Copyleaks.__submit(url, auth_token, scan_id, submission)
+        Copyleaks.__submit(url, auth_token, scan_id, submission, x_tenant)
 
     @staticmethod
-    def submit_url(auth_token, scan_id, submission):
+    def submit_url(auth_token, scan_id, submission, x_tenant=None):
         '''
             Starting a new process by providing a URL to scan.
             For more info: 
@@ -184,10 +200,10 @@ class Copyleaks(object):
                 `UnderMaintenanceError`: Copyleaks servers are unavailable for maintenance. We recommend to implement exponential backoff algorithm as described here: https://api.copyleaks.com/documentation/v3/exponential-backoff
         '''
         url = f"{Consts.API_SERVER_URI}/v3/scans/submit/url/{scan_id}"
-        Copyleaks.__submit(url, auth_token, scan_id, submission)
+        Copyleaks.__submit(url, auth_token, scan_id, submission, x_tenant)
 
     @staticmethod
-    def export(auth_token, scan_id, export_id, model):
+    def export(auth_token, scan_id, export_id, model, x_tenant=None):
         '''
             Exporting scans artifact into your server. 
             For more info: 
@@ -198,6 +214,7 @@ class Copyleaks(object):
                 scan_id: String. The scan ID of the specific scan to export.
                 export_id: String. A new Id for the export process.
                 model: `Export`. Request of which artifact should be exported.
+                x_tenant: string. Optional. Overrides the process-wide tenant for this call.
 
             Raises:
                 `CommandError`: Server reject the request. See response status code, headers and content for more info.
@@ -214,6 +231,7 @@ class Copyleaks(object):
             'User-Agent': Consts.USER_AGENT,
             'Authorization': f"Bearer {auth_token['access_token']}"
         }
+        CopyleaksClientHelper.add_tenant_header(headers, x_tenant)
 
         response = requests.post(url, headers=headers, data=model.toJSON())
         if response.ok:
@@ -224,7 +242,7 @@ class Copyleaks(object):
             raise CommandError(response)
 
     @staticmethod
-    def start(auth_token, model):
+    def start(auth_token, model, x_tenant=None):
         '''
             Start scanning all the files you submitted for a price-check.
             For more info: 
@@ -233,6 +251,7 @@ class Copyleaks(object):
             Parameters: 
                 auth_token: Your login token to Copyleaks server.
                 model: `Start` object. Include information about which scans should be started.
+                x_tenant: string. Optional. Overrides the process-wide tenant for this call.
 
             Raises:
                 `CommandError`: Server reject the request. See response status code, headers and content for more info.
@@ -252,6 +271,7 @@ class Copyleaks(object):
             'User-Agent': Consts.USER_AGENT,
             'Authorization': f"Bearer {auth_token['access_token']}"
         }
+        CopyleaksClientHelper.add_tenant_header(headers, x_tenant)
 
         response = requests.patch(url, headers=headers, data=model.toJSON())
         if response.ok:
@@ -262,7 +282,7 @@ class Copyleaks(object):
             raise CommandError(response)
 
     @staticmethod
-    def delete(auth_token, delete_model):
+    def delete(auth_token, delete_model, x_tenant=None):
         '''
             Delete the specific process from the server.
             For more info: 
@@ -283,6 +303,7 @@ class Copyleaks(object):
             'User-Agent': Consts.USER_AGENT,
             'Authorization': f"Bearer {auth_token['access_token']}"
         }
+        CopyleaksClientHelper.add_tenant_header(headers, x_tenant)
 
         response = requests.patch(url, headers=headers, data=delete_model.toJSON())
         if response.ok:
@@ -293,7 +314,7 @@ class Copyleaks(object):
             raise CommandError(response)
 
     @staticmethod
-    def resend_webhook(auth_token, scan_id):
+    def resend_webhook(auth_token, scan_id, x_tenant=None):
         '''
             Resend status webhooks for existing scans.
             For more info: 
@@ -314,6 +335,7 @@ class Copyleaks(object):
             'User-Agent': Consts.USER_AGENT,
             'Authorization': f"Bearer {auth_token['access_token']}"
         }
+        CopyleaksClientHelper.add_tenant_header(headers, x_tenant)
 
         response = requests.post(url, headers=headers)
         if response.ok:
@@ -324,7 +346,7 @@ class Copyleaks(object):
             raise CommandError(response)
 
     @staticmethod
-    def credits_balance(auth_token):
+    def credits_balance(auth_token, x_tenant=None):
         '''
             Get current credits balance for the Copyleaks account
             For more info: 
@@ -345,6 +367,7 @@ class Copyleaks(object):
             'User-Agent': Consts.USER_AGENT,
             'Authorization': f"Bearer {auth_token['access_token']}"
         }
+        CopyleaksClientHelper.add_tenant_header(headers, x_tenant)
 
         response = requests.get(url, headers=headers)
         if response.ok:
@@ -357,7 +380,7 @@ class Copyleaks(object):
             raise CommandError(response)
 
     @staticmethod
-    def usages_history_csv(auth_token, start_date, end_date):
+    def usages_history_csv(auth_token, start_date, end_date, x_tenant=None):
         '''
             This endpoint allows you to export your usage history between two dates.
             The output results will be exported to a csv file and it will be attached to the response.
@@ -368,6 +391,7 @@ class Copyleaks(object):
                 auth_token: Your login token to Copyleaks server.
                 start_date: String. The start date to collect usage history from. Date Format: `dd-MM-yyyy`
                 end_date: String. The end date to collect usage history from. Date Format: `dd-MM-yyyy`
+                x_tenant: string. Optional. Overrides the process-wide tenant for this call.
 
             Raises:
                 `CommandError`: Server reject the request. See response status code, headers and content for more info.
@@ -388,6 +412,7 @@ class Copyleaks(object):
             'User-Agent': Consts.USER_AGENT,
             'Authorization': f"Bearer {auth_token['access_token']}"
         }
+        CopyleaksClientHelper.add_tenant_header(headers, x_tenant)
 
         response = requests.get(url, headers=headers)
         if response.ok:
@@ -400,7 +425,7 @@ class Copyleaks(object):
             raise CommandError(response)
 
     @staticmethod
-    def release_notes():
+    def release_notes(x_tenant=None):
         '''
             Get updates about copyleaks api release notes
             For more info: https://api.copyleaks.com/documentation/v3/release-notes
@@ -417,6 +442,7 @@ class Copyleaks(object):
         headers = {
             'User-Agent': Consts.USER_AGENT
         }
+        CopyleaksClientHelper.add_tenant_header(headers, x_tenant)
 
         response = requests.get(url, headers=headers)
         if response.ok:
@@ -427,7 +453,7 @@ class Copyleaks(object):
             raise CommandError(response)
 
     @staticmethod
-    def supported_file_types():
+    def supported_file_types(x_tenant=None):
         '''
             Get a list of the supported file types.
             For more info: https://api.copyleaks.com/documentation/v3/specifications/supported-file-types
@@ -444,6 +470,7 @@ class Copyleaks(object):
         headers = {
             'User-Agent': Consts.USER_AGENT
         }
+        CopyleaksClientHelper.add_tenant_header(headers, x_tenant)
 
         response = requests.get(url, headers=headers)
         if response.ok:
@@ -454,7 +481,7 @@ class Copyleaks(object):
             raise CommandError(response)
 
     @staticmethod
-    def ocr_supported_langauges():
+    def ocr_supported_langauges(x_tenant=None):
         '''
         Get a list of the supported languages for OCR (this is not a list of supported languages for the api, but only for the OCR files scan).
         For more info: https://api.copyleaks.com/documentation/v3/specifications/ocr-languages/list
@@ -471,6 +498,7 @@ class Copyleaks(object):
         headers = {
             'User-Agent': Consts.USER_AGENT
         }
+        CopyleaksClientHelper.add_tenant_header(headers, x_tenant)
 
         response = requests.get(url, headers=headers)
         if response.ok:

@@ -26,5 +26,6 @@
 class Consts:
     API_SERVER_URI = 'https://api.copyleaks.com'
     IDENTITY_SERVER_URI = 'https://id.copyleaks.com'
+    TENANT = None  # Process-wide `x-tenant` header value. Set with `Copyleaks.set_tenant`.
 
     USER_AGENT = 'python-sdk/3.0'

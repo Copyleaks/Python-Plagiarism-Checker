@@ -30,7 +30,7 @@ from copyleaks.exceptions.under_maintenance_error import UnderMaintenanceError
 from copyleaks.helpers.copyleaks_client_helper import CopyleaksClientHelper
 class _AIDetectionClient:
     @staticmethod
-    def __submit(url, auth_token, scan_id, submission):
+    def __submit(url, auth_token, scan_id, submission, x_tenant=None):
         assert url and scan_id and submission
 
         CopyleaksClientHelper.verify_auth_token(auth_token)
@@ -40,6 +40,7 @@ class _AIDetectionClient:
             'User-Agent': Consts.USER_AGENT,
             'Authorization': f"Bearer {auth_token['access_token']}"
         }
+        CopyleaksClientHelper.add_tenant_header(headers, x_tenant)
         json = submission.toJSON()
         response = requests.post(url, headers=headers, data=json)
         if response.ok:
@@ -50,7 +51,7 @@ class _AIDetectionClient:
             raise CommandError(response)
         
     @staticmethod
-    def submit_natural_language(auth_token, scan_id, submission):
+    def submit_natural_language(auth_token, scan_id, submission, x_tenant=None):
         '''
             Use Copyleaks AI Content Detection to differentiate between human texts and AI written texts.
             This endpoint will receive submitted text to be checked. At the end of the processing stage, 
@@ -62,5 +63,5 @@ class _AIDetectionClient:
                 `UnderMaintenanceError`: Copyleaks servers are unavailable for maintenance. We recommend to implement exponential backoff algorithm as described here: https://api.copyleaks.com/documentation/v3/exponential-backoff
         '''
         url = f"{Consts.API_SERVER_URI}/v2/writer-detector/{scan_id}/check"
-        return _AIDetectionClient.__submit(url, auth_token, scan_id, submission)
+        return _AIDetectionClient.__submit(url, auth_token, scan_id, submission, x_tenant)
     
