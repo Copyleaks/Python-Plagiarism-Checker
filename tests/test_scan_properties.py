@@ -241,10 +241,11 @@ class NewScanPropertiesTest(unittest.TestCase):
             with self.assertRaises(TypeError):
                 setter('yes')
 
-    @unittest.skipUnless(__debug__, 'assert statements are stripped by python -O')
     def test_id_pattern_must_be_a_string(self):
-        with self.assertRaises(AssertionError):
+        with self.assertRaises(TypeError):
             ScanningExclude().set_id_pattern(True)
+        with self.assertRaises(ValueError):
+            ScanningExclude().set_id_pattern('')
 
     def test_score_weights_accept_zero_and_reject_out_of_range(self):
         weights = ScoreWeights()

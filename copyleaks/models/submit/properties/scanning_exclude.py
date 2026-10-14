@@ -39,7 +39,10 @@ class ScanningExclude:
             Parameters: 
                 value: String. For example "abc*".
         '''
-        assert isinstance(value, str) and value
+        if not isinstance(value, str):
+            raise TypeError('id_pattern must be a string')
+        if not value:
+            raise ValueError('id_pattern must not be empty')
 
         self.idPattern = value
 
