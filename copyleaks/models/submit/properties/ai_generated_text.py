@@ -23,6 +23,9 @@
 '''
 
 
+from copyleaks.models.submit.properties.ai_generated_text_explain import AIGeneratedTextExplain
+
+
 class AIGeneratedText:
     def get_detect(self):
         '''
@@ -41,3 +44,39 @@ class AIGeneratedText:
         assert isinstance(value, bool)
 
         self.detect = value
+
+    def get_sensitivity(self):
+        '''
+            The AI detection sensitivity.
+        '''
+        return self.sensitivity
+
+    def set_sensitivity(self, value):
+        '''
+            Control the behavior of the AI detection, from 1 to 3:
+            1 detects text copied from an AI tool without edits, 2 (the server default) also detects
+            text with minor changes, and 3 also detects heavily modified text.
+
+            Parameters:
+                value: Integer from 1 to 3.
+        '''
+        assert isinstance(value, int) and not isinstance(value, bool) and 1 <= value <= 3
+
+        self.sensitivity = value
+
+    def get_explain(self):
+        '''
+            AI Logic settings.
+        '''
+        return self.explain
+
+    def set_explain(self, value):
+        '''
+            AI Logic settings: explain the AI detection with the AI patterns found in the text.
+
+            Parameters:
+                value: `AIGeneratedTextExplain`.
+        '''
+        assert isinstance(value, AIGeneratedTextExplain)
+
+        self.explain = value

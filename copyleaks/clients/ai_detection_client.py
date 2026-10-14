@@ -1,4 +1,3 @@
-
 '''
  The MIT License(MIT)
  
@@ -23,43 +22,39 @@
  SOFTWARE.
 '''
 
-import requests
 from copyleaks.consts import Consts
-from copyleaks.exceptions.command_error import CommandError
-from copyleaks.exceptions.under_maintenance_error import UnderMaintenanceError
 from copyleaks.helpers.copyleaks_client_helper import CopyleaksClientHelper
+from copyleaks.helpers.copyleaks_http_client import CopyleaksHttpClient
+from copyleaks.models.AiDetection.Responses.CopyleaksAiTextDetectionCreditsResponseModel import CopyleaksAiTextDetectionCreditsResponseModel
 from copyleaks.models.AiDetection.Responses.CopyleaksAiTextDetectionResponseModel import CopyleaksAiTextDetectionResponseModel
+
+
 class _AIDetectionClient:
     @staticmethod
-    def __submit(url, auth_token, scan_id, submission):
+    def __submit(url, auth_token, scan_id, submission, timeout):
         assert url and scan_id and submission
 
         CopyleaksClientHelper.verify_auth_token(auth_token)
 
-        headers = {
-            'Content-Type': 'application/json',
-            'User-Agent': Consts.USER_AGENT,
-            'Authorization': f"Bearer {auth_token['access_token']}"
-        }
-        json = submission.toJSON()
-        response = requests.post(url, headers=headers, data=json)
-        if response.ok:
-            return CopyleaksAiTextDetectionResponseModel(**response.json())
-        elif response.status_code == 503:
-            raise UnderMaintenanceError()
-        else:
-            raise CommandError(response)
-        
+        response = CopyleaksHttpClient.request('POST', url, headers=CopyleaksClientHelper.headers(auth_token),
+                                               data=CopyleaksClientHelper.to_json_bytes(submission), timeout=timeout)
+        return CopyleaksAiTextDetectionResponseModel(**response.json())
+
     @staticmethod
-    def submit_natural_language(auth_token, scan_id, submission):
+    def submit_natural_language(auth_token, scan_id, submission, timeout=None):
         '''
             Use Copyleaks AI Content Detection to differentiate between human texts and AI written texts.
-            This endpoint will receive submitted text to be checked. At the end of the processing stage, 
-            the result will be shown as classifications. Text classification is divided into sections. 
+            This endpoint will receive submitted text to be checked. At the end of the processing stage,
+            the result will be shown as classifications. Text classification is divided into sections.
             Each section may have a different classification
+            For more info: https://docs.copyleaks.com/reference/actions/writer-detector/check
+
+            Parameters:
+                submission: `NaturalLanguageDocument`. Set `explain` to get AI Logic and `sensitivity` (1-3) to tune the detection.
 
             Raises:
                 `CommandError`: Server reject the request. See response status code, headers and content for more info.
+                `RateLimitError`: Too many requests. Please wait before calling again.
                 `UnderMaintenanceError`: Copyleaks servers are unavailable for maintenance. We recommend to implement exponential backoff algorithm as described here: https://api.copyleaks.com/documentation/v3/exponential-backoff
                 `pydantic.ValidationError`: The server returned a success response whose body does not match the response model.
 
@@ -67,5 +62,25 @@ class _AIDetectionClient:
                 `CopyleaksAiTextDetectionResponseModel`. Dict-style access (`response['summary']['ai']`) still works for backward compatibility.
         '''
         url = f"{Consts.API_SERVER_URI}/v2/writer-detector/{scan_id}/check"
-        return _AIDetectionClient.__submit(url, auth_token, scan_id, submission)
-    
+        return _AIDetectionClient.__submit(url, auth_token, scan_id, submission, timeout)
+
+    @staticmethod
+    def credits_balance(auth_token, timeout=None):
+        '''
+            Get the credit balance of the AI Text Detector wallet. Read-only: it uses no credits.
+            For more info: https://docs.copyleaks.com/reference/actions/writer-detector/credits
+
+            Raises:
+                `CommandError`: Server reject the request. See response status code, headers and content for more info.
+                `RateLimitError`: Too many requests. Please wait before calling again.
+                `UnderMaintenanceError`: Copyleaks servers are unavailable for maintenance. We recommend to implement exponential backoff algorithm as described here: https://api.copyleaks.com/documentation/v3/exponential-backoff
+
+            Returns:
+                `CopyleaksAiTextDetectionCreditsResponseModel`, with the balance in `credits`.
+        '''
+        CopyleaksClientHelper.verify_auth_token(auth_token)
+
+        url = f"{Consts.API_SERVER_URI}/v2/writer-detector/credits"
+        response = CopyleaksHttpClient.request('GET', url, headers=CopyleaksClientHelper.headers(auth_token, None),
+                                               timeout=timeout)
+        return CopyleaksAiTextDetectionCreditsResponseModel.model_validate(response.json())

@@ -22,6 +22,7 @@
  SOFTWARE.
 '''
 
+from typing import Optional
 from pydantic import BaseModel
 from datetime import datetime
 
@@ -31,16 +32,16 @@ class TextModerationScannedDocument(BaseModel):
     scanId: str
 
     """Total number of words found in the scanned text."""
-    totalWords: int
+    totalWords: Optional[int] = None
 
     """Total excluded words from the text."""
-    totalExcluded: int
+    totalExcluded: Optional[int] = None
 
     """The cost of credits for this scan."""
-    actualCredits: int
+    actualCredits: Optional[int] = None
 
     """The amount of credits that was expected to be spent on the scan."""
-    expectedCredits: int
+    expectedCredits: Optional[int] = None
 
     """Creation time of the scan."""
     creationTime: datetime

@@ -1,18 +1,18 @@
 '''
  The MIT License(MIT)
-
+ 
  Copyright(c) 2016 Copyleaks LTD (https://copyleaks.com)
-
+ 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
  in the Software without restriction, including without limitation the rights
  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  copies of the Software, and to permit persons to whom the Software is
  furnished to do so, subject to the following conditions:
-
+ 
  The above copyright notice and this permission notice shall be included in all
  copies or substantial portions of the Software.
-
+ 
  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,27 +23,32 @@
 '''
 
 from typing import Optional
-from pydantic import BaseModel
+from pydantic import AliasChoices, Field
 
-class TaskModel(BaseModel):
+from ..BaseModels.CopyleaksWebhookBaseModel import CopyleaksWebhookBaseModel
 
-    """The endpoint address of the export task."""
-    _endpont: Optional[str] = None
 
-    """ This flag gives an indication whether the scan was completed without internal errors on the Copyleaks side."""
-    _is_healthy: bool = False
+class TaskModel(CopyleaksWebhookBaseModel):
+    """
+    An export task of the export completed webhook.
+    """
+    __positional_fields__ = ('endpoint', 'is_healthy', 'http_status_code')
 
-    """The status code reported by the customer servers. If the tasks.isHealthy is equal to false - this field will be null."""
-    _http_status_code: Optional[int] = None
+    endpoint: Optional[str] = Field(
+        default=None,
+        description="The endpoint address of the export task. `endpont=` is accepted too.",
+        alias="endpoint",
+        validation_alias=AliasChoices("endpoint", "endpont")
+    )
 
-    def __init__(self,
-                 endpont: Optional[str] = None,
-                 is_healthy: bool = False, 
-                 http_status_code: Optional[int] = None):
-        """
-        Initializes a Task object, storing values in internal attributes.
-        """
-        super().__init__(endpont=endpont, is_healthy=is_healthy, http_status_code=http_status_code)
-        self._endpont = endpont
-        self._is_healthy = is_healthy
-        self._http_status_code = http_status_code
+    is_healthy: Optional[bool] = Field(
+        default=None,
+        description="Whether the task was completed without internal errors on the Copyleaks side.",
+        alias="isHealthy"
+    )
+
+    http_status_code: Optional[int] = Field(
+        default=None,
+        description="The status code reported by your server. None when `is_healthy` is False.",
+        alias="httpStatusCode"
+    )

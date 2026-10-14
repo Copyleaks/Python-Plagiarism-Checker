@@ -24,14 +24,18 @@
 
 import json
 from typing import List, Optional, Any
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from copyleaks.models.TextModeration.Responses.Submodules.ModerationsModel import ModerationsModel
 from copyleaks.models.TextModeration.Responses.Submodules.TextModerationScannedDocument import TextModerationScannedDocument
 from copyleaks.models.TextModeration.Responses.Submodules.TextModerationsLegend import TextModerationsLegend
 
 class CopyleaksTextModerationResponseModel(BaseModel):
-    
     """Represents the moderation result."""
+
+    model_config = ConfigDict(extra="ignore", protected_namespaces=())
+
+    """The version of the moderation model used for the scan."""
+    modelVersion: Optional[str] = None
 
     """Moderated text segments detected in the input text."""
     moderations: ModerationsModel
@@ -45,7 +49,4 @@ class CopyleaksTextModerationResponseModel(BaseModel):
 
     """General information about the scanned document."""
     scannedDocument: TextModerationScannedDocument
-    
-    class Config:
-        extra = "ignore"  
 

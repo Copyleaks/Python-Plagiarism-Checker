@@ -22,9 +22,15 @@
  SOFTWARE.
 '''
 
-import abc
 from xmlrpc.client import Boolean
 from copyleaks.models.submit.properties.ai_source_match import AISourceMatch
+from copyleaks.models.submit.properties.assignment import Assignment
+from copyleaks.models.submit.properties.course import Course
+from copyleaks.models.submit.properties.institution import Institution
+from copyleaks.models.submit.properties.overview import Overview
+from copyleaks.models.submit.properties.references import References
+from copyleaks.models.submit.properties.sensitive_data_protection import SensitiveDataProtection
+from copyleaks.models.submit.properties.writing_feedback import WritingFeedback
 from copyleaks.models.submit.properties.submit_action import SubmitAction
 from copyleaks.models.submit.properties.submit_webhooks import SubmitWebhooks
 
@@ -376,3 +382,150 @@ class ScanProperties:
         '''
         assert value
         self.customMetadata = value
+
+    def get_scan_time_zone(self):
+        '''
+            Get the time zone of the scan time shown in the PDF report.
+        '''
+        return self.scanTimeZone
+
+    def set_scan_time_zone(self, value):
+        '''
+            Set the time zone of the scan time shown in the PDF report.
+            Leave it unset to use the time zone of your account's country, or UTC when it is unknown.
+
+            Parameters:
+                value: String. A case-sensitive IANA time zone name, for example "America/New_York".
+        '''
+        assert isinstance(value, str) and value
+        self.scanTimeZone = value
+
+    def get_course(self):
+        '''
+            Get the course of the submission.
+        '''
+        return self.course
+
+    def set_course(self, value):
+        '''
+            Set the course of the submission, for analytics.
+
+            Parameters:
+                value: `Course`.
+        '''
+        assert isinstance(value, Course)
+        self.course = value
+
+    def get_assignment(self):
+        '''
+            Get the assignment of the submission.
+        '''
+        return self.assignment
+
+    def set_assignment(self, value):
+        '''
+            Set the assignment of the submission, for analytics.
+
+            Parameters:
+                value: `Assignment`.
+        '''
+        assert isinstance(value, Assignment)
+        self.assignment = value
+
+    def get_institution(self):
+        '''
+            Get the institution of the submission.
+        '''
+        return self.institution
+
+    def set_institution(self, value):
+        '''
+            Set the institution of the submission, for analytics.
+
+            Parameters:
+                value: `Institution`.
+        '''
+        assert isinstance(value, Institution)
+        self.institution = value
+
+    def get_sensitive_data_protection(self):
+        '''
+            Get the sensitive data masking settings.
+        '''
+        return self.sensitiveDataProtection
+
+    def set_sensitive_data_protection(self, value):
+        '''
+            Mask sensitive data, such as email addresses and credit card numbers, in the scanned document.
+            Available for users on a plan of 2500 pages or more.
+
+            Parameters:
+                value: `SensitiveDataProtection`.
+        '''
+        assert isinstance(value, SensitiveDataProtection)
+        self.sensitiveDataProtection = value
+
+    def get_writing_feedback(self):
+        '''
+            Get the Grammar Checker settings of the scan.
+        '''
+        return self.writingFeedback
+
+    def set_writing_feedback(self, value):
+        '''
+            Run the Grammar Checker as part of the scan.
+
+            Parameters:
+                value: `WritingFeedback`.
+        '''
+        assert isinstance(value, WritingFeedback)
+        self.writingFeedback = value
+
+    def get_overview(self):
+        '''
+            Get the Gen-AI Overview settings of the scan.
+        '''
+        return self.overview
+
+    def set_overview(self, value):
+        '''
+            Generate a Gen-AI Overview with the key insights of the scan.
+
+            Parameters:
+                value: `Overview`.
+        '''
+        assert isinstance(value, Overview)
+        self.overview = value
+
+    def get_internal_ai_source_match(self):
+        '''
+            Get the Internal AI Source Match settings.
+        '''
+        return self.internalAiSourceMatch
+
+    def set_internal_ai_source_match(self, value):
+        '''
+            Find sources in the Copyleaks internal AI database that contain AI-generated text.
+            Leave it unset to get the server default (disabled).
+
+            Parameters:
+                value: `InternalAISourceMatch` (an `AISourceMatch` is accepted too).
+        '''
+        assert isinstance(value, AISourceMatch)
+        self.internalAiSourceMatch = value
+
+    def get_references(self):
+        '''
+            Get the Citation Checker settings.
+        '''
+        return self.references
+
+    def set_references(self, value):
+        '''
+            Citation Checker: detect, parse and validate the references in the submitted text.
+
+            Parameters:
+                value: `References`.
+        '''
+        assert isinstance(value, References)
+        self.references = value

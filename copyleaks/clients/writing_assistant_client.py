@@ -1,4 +1,3 @@
-
 '''
  The MIT License(MIT)
  
@@ -23,42 +22,33 @@
  SOFTWARE.
 '''
 
-import requests
 from copyleaks.consts import Consts
-from copyleaks.exceptions.command_error import CommandError
-from copyleaks.exceptions.under_maintenance_error import UnderMaintenanceError
 from copyleaks.helpers.copyleaks_client_helper import CopyleaksClientHelper
+from copyleaks.helpers.copyleaks_http_client import CopyleaksHttpClient
 from copyleaks.models.WritingAssistant.Responses.CopyleaksWritingAssistantResponseModel import CopyleaksWritingAssistantResponseModel
+
 
 class _WritingAssistantClient:
     @staticmethod
-    def __submit(url, auth_token, scan_id, submission):
+    def __submit(url, auth_token, scan_id, submission, timeout):
         assert url and scan_id and submission
 
         CopyleaksClientHelper.verify_auth_token(auth_token)
 
-        headers = {
-            'Content-Type': 'application/json',
-            'User-Agent': Consts.USER_AGENT,
-            'Authorization': f"Bearer {auth_token['access_token']}"
-        }
-        json = submission.toJSON()
-        response = requests.post(url, headers=headers, data=json)
-        if response.ok:
-            return CopyleaksWritingAssistantResponseModel(**response.json())
-        elif response.status_code == 503:
-            raise UnderMaintenanceError()
-        else:
-            raise CommandError(response)
-        
+        response = CopyleaksHttpClient.request('POST', url, headers=CopyleaksClientHelper.headers(auth_token),
+                                               data=CopyleaksClientHelper.to_json_bytes(submission), timeout=timeout)
+        return CopyleaksWritingAssistantResponseModel(**response.json())
+
     @staticmethod
-    def submit_text(auth_token, scan_id, submission):
+    def submit_text(auth_token, scan_id, submission, timeout=None):
         '''
             Use Copyleaks Writing Assistant to generate grammar, spelling and sentence corrections for a given text.
             This endpoint will receive submitted text to be checked. The response will show the suggested corrections to the input text.
+            For more info: https://docs.copyleaks.com/reference/actions/writing-assistant/check
 
             Raises:
                 `CommandError`: Server reject the request. See response status code, headers and content for more info.
+                `RateLimitError`: Too many requests. Please wait before calling again.
                 `UnderMaintenanceError`: Copyleaks servers are unavailable for maintenance. We recommend to implement exponential backoff algorithm as described here: https://api.copyleaks.com/documentation/v3/exponential-backoff
                 `pydantic.ValidationError`: The server returned a success response whose body does not match the response model.
 
@@ -66,14 +56,15 @@ class _WritingAssistantClient:
                 `CopyleaksWritingAssistantResponseModel`. Dict-style access (`response['score']['corrections']['overallScore']`) still works for backward compatibility.
         '''
         url = f"{Consts.API_SERVER_URI}/v1/writing-feedback/{scan_id}/check"
-        return _WritingAssistantClient.__submit(url, auth_token, scan_id, submission)
-    
+        return _WritingAssistantClient.__submit(url, auth_token, scan_id, submission, timeout)
+
     @staticmethod
-    def get_correction_types(language_code):
+    def get_correction_types(language_code, timeout=None):
         '''
-            Get a list of correction types supported within the Writing Assistant API. 
-            Correction types apply to all supported languages. 
+            Get a list of correction types supported within the Writing Assistant API.
+            Correction types apply to all supported languages.
             The supplied language code for this request is used to determine the language of the texts returned.
+            For more info: https://docs.copyleaks.com/reference/actions/writing-assistant/correction-types
 
             Raises:
                 `CommandError`: Server reject the request. See response status code, headers and content for more info.
@@ -84,14 +75,6 @@ class _WritingAssistantClient:
         '''
 
         url = f"{Consts.API_SERVER_URI}/v1/writing-feedback/correction-types/{language_code}"
-        headers = {
-            'User-Agent': Consts.USER_AGENT
-        }
-
-        response = requests.get(url, headers=headers)
-        if response.ok:
-            return response.json()
-        elif response.status_code == 503:
-            raise UnderMaintenanceError()
-        else:
-            raise CommandError(response.content)
+        response = CopyleaksHttpClient.request('GET', url, headers=CopyleaksClientHelper.headers(content_type=None),
+                                               timeout=timeout)
+        return response.json()

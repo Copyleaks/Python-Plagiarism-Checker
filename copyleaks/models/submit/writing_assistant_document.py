@@ -22,14 +22,15 @@
  SOFTWARE.
 '''
 
-import json
+from copyleaks.helpers.copyleaks_client_helper import CopyleaksClientHelper
+
 
 class WritingAssistantDocument():
 
     def __init__(self, text):
         assert text
         self.text = text
-        
+
     def get_text(self):
         return self.text
 
@@ -41,7 +42,7 @@ class WritingAssistantDocument():
         return self.sandbox
 
     def set_sandbox(self, value):
-        assert value
+        assert isinstance(value, bool)
         self.sandbox = value
 
     def get_language(self):
@@ -55,9 +56,8 @@ class WritingAssistantDocument():
         return self.score
 
     def set_score(self, value):
-        assert value
+        assert value is not None
         self.score = value
 
     def toJSON(self):
-        return json.dumps(self, default=lambda o: o.__dict__,
-                          sort_keys=True, indent=4)
+        return CopyleaksClientHelper.to_json(self)

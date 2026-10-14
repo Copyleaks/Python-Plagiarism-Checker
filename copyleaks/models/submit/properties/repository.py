@@ -23,6 +23,9 @@
 '''
 
 
+from copyleaks.models.submit.properties.masking_policy import MaskingPolicy
+
+
 class Repository:
     def get_id(self):
         '''
@@ -93,6 +96,7 @@ class IndexingRepository(Repository):
 
             value: `MaskingPolicy` enum
         '''
-        assert value
+        assert value is not None and not isinstance(value, bool)
+        MaskingPolicy(value)  # raises ValueError for an unknown policy
 
         self.maskingPolicy = value

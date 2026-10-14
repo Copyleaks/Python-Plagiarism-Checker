@@ -103,9 +103,10 @@ class Pdf:
 
     def set_version(self, value):
         '''
+            Deprecated: use `set_report_version`, which overrides it.
             Set PDF version to generate
 
-            value: `PdfVersion` enum
+            value: `PdfVersion` enum (V1, V2 or V3)
         '''
         assert value
 
@@ -138,14 +139,28 @@ class Pdf:
         '''
             Customizable colors
         '''
-        return self.report_customization_colors
+        return self.colors
 
     def set_report_customization_colors(self, value):
         '''
-            Set customizable colors
+            Set the colors of the PDF report. Sent as `pdf.colors`.
 
             value: `ReportCustomizationColors`
         '''
         assert value
 
-        self.report_customization_colors = value
+        self.colors = value
+
+    def get_colors(self):
+        '''
+            Customizable colors. Same as `get_report_customization_colors`.
+        '''
+        return self.colors
+
+    def set_colors(self, value):
+        '''
+            Set the colors of the PDF report. Same as `set_report_customization_colors`.
+
+            value: `ReportCustomizationColors`
+        '''
+        self.set_report_customization_colors(value)

@@ -34,9 +34,47 @@ class ScanningExclude:
         '''
             Exclude your submissions from results if their id matches the supplied pattern. Matched submissions will be excluded from batch, internal database and repositories results.
 
+            `*` matches any number of characters and `.` matches exactly one non-whitespace character.
+
             Parameters: 
-                value: Boolean.
+                value: String. For example "abc*".
         '''
-        assert isinstance(value, bool)
+        assert isinstance(value, str) and value
 
         self.idPattern = value
+
+    def get_backlinks_domains(self):
+        '''
+            Domains whose backlinks exclude a result.
+        '''
+        return self.backlinksDomains
+
+    def set_backlinks_domains(self, value):
+        '''
+            Exclude results that contain backlinks to these domains.
+
+            Parameters:
+                value: List of up to 10 domains, each 1 to 256 characters.
+        '''
+        assert isinstance(value, list) and len(value) <= 10
+        assert all(isinstance(domain, str) and 1 <= len(domain) <= 256 for domain in value)
+
+        self.backlinksDomains = value
+
+    def get_text(self):
+        '''
+            Phrases that exclude a result.
+        '''
+        return self.text
+
+    def set_text(self, value):
+        '''
+            Exclude results that contain text matching these phrases.
+
+            Parameters:
+                value: List of up to 5 phrases, each 1 to 30 characters.
+        '''
+        assert isinstance(value, list) and len(value) <= 5
+        assert all(isinstance(phrase, str) and 1 <= len(phrase) <= 30 for phrase in value)
+
+        self.text = value

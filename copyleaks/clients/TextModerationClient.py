@@ -1,5 +1,5 @@
-''' 
-The MIT License(MIT)
+'''
+ The MIT License(MIT)
  
  Copyright(c) 2016 Copyleaks LTD (https://copyleaks.com)
  
@@ -22,39 +22,41 @@ The MIT License(MIT)
  SOFTWARE.
 '''
 
-import requests
 from copyleaks.consts import Consts
-from copyleaks.exceptions.command_error import CommandError
-from copyleaks.exceptions.under_maintenance_error import UnderMaintenanceError
 from copyleaks.helpers.copyleaks_client_helper import CopyleaksClientHelper
+from copyleaks.helpers.copyleaks_http_client import CopyleaksHttpClient
 from copyleaks.models.TextModeration.Responses.CopyleaksTextModerationResponseModel import CopyleaksTextModerationResponseModel
 
 
 class _TextModerationClient:
     @staticmethod
-    def __submit_text(url, auth_token, scan_id, requestModel):
+    def __submit_text(url, auth_token, scan_id, requestModel, timeout):
         assert url and scan_id and requestModel
 
         CopyleaksClientHelper.verify_auth_token(auth_token)
 
-        headers = {
-            'Content-Type': 'application/json',
-            'User-Agent': Consts.USER_AGENT,
-            'Authorization': f"Bearer {auth_token['access_token']}"
-        }
+        response = CopyleaksHttpClient.request('POST', url, headers=CopyleaksClientHelper.headers(auth_token),
+                                               data=CopyleaksClientHelper.model_to_json_bytes(requestModel),
+                                               timeout=timeout)
+        return CopyleaksTextModerationResponseModel(**response.json())
 
-        json = requestModel.json()
-        response = requests.post(url, headers=headers, data=json)
-
-        if response.ok:
-           return CopyleaksTextModerationResponseModel(**response.json())
-        elif response.status_code == 503:
-            raise UnderMaintenanceError()
-        else:
-            raise CommandError(response)
-        
     @staticmethod
-    def submit_text(auth_token, scan_id, submission):
+    def submit_text(auth_token, scan_id, submission, timeout=None):
+        '''
+            Moderate a text: find unsafe or inappropriate content in the categories (labels) you request.
+            For more info: https://docs.copyleaks.com/reference/actions/text-moderation/check
+
+            Parameters:
+                submission: `CopyleaksTextModerationRequestModel`.
+
+            Raises:
+                `CommandError`: Server reject the request. See response status code, headers and content for more info.
+                `RateLimitError`: Too many requests. Please wait before calling again.
+                `UnderMaintenanceError`: Copyleaks servers are unavailable for maintenance. We recommend to implement exponential backoff algorithm as described here: https://api.copyleaks.com/documentation/v3/exponential-backoff
+
+            Returns:
+                `CopyleaksTextModerationResponseModel`.
+        '''
 
         url = f"{Consts.API_SERVER_URI}/v1/text-moderation/{scan_id}/check"
-        return _TextModerationClient.__submit_text(url, auth_token, scan_id, submission)
+        return _TextModerationClient.__submit_text(url, auth_token, scan_id, submission, timeout)

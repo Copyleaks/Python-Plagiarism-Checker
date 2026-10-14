@@ -1,18 +1,18 @@
 '''
  The MIT License(MIT)
-
+ 
  Copyright(c) 2016 Copyleaks LTD (https://copyleaks.com)
-
+ 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
  in the Software without restriction, including without limitation the rights
  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  copies of the Software, and to permit persons to whom the Software is
  furnished to do so, subject to the following conditions:
-
+ 
  The above copyright notice and this permission notice shall be included in all
  copies or substantial portions of the Software.
-
+ 
  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,18 +23,26 @@
 '''
 
 from typing import Optional
-from pydantic import BaseModel
+from pydantic import Field, model_validator
 
-class NewResultScoreModel(BaseModel):
-    
-    """The percentage of similar words from all results. The calculation does not include excluded references, quotations, etc... """
-    _aggregated_score: Optional[float] = None
+from ..BaseModels.CopyleaksWebhookBaseModel import CopyleaksWebhookBaseModel
 
-    def __init__(self,
-                 aggregated_score: Optional[float] = None): 
-        """
-        Initializes a NewResultScore object.
-        """
-        super().__init__(aggregated_score=aggregated_score)
-        self._aggregated_score = aggregated_score
 
+class NewResultScoreModel(CopyleaksWebhookBaseModel):
+    """
+    The score of the scan so far, in the new result webhook. A plain number is accepted as `aggregated_score`.
+    """
+    __positional_fields__ = ('aggregated_score',)
+
+    aggregated_score: Optional[float] = Field(
+        default=None,
+        description="The percentage of similar words from all results found so far.",
+        alias="aggregatedScore"
+    )
+
+    @model_validator(mode='before')
+    @classmethod
+    def number_to_score(cls, data):
+        if isinstance(data, (int, float)) and not isinstance(data, bool):
+            return {'aggregatedScore': data}
+        return data

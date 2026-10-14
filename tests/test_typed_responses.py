@@ -118,7 +118,7 @@ class _MockedPostTest(unittest.TestCase):
     def mock_post(self, payload):
         response = MagicMock(ok=True, status_code=200)
         response.json.return_value = copy.deepcopy(payload)
-        patcher = patch('requests.post', return_value=response)
+        patcher = patch('requests.Session.request', return_value=response)
         patcher.start()
         self.addCleanup(patcher.stop)
 

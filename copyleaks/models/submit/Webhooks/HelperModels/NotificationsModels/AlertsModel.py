@@ -23,10 +23,11 @@
 '''
 
 from typing import Any, Optional
-from pydantic import BaseModel, ConfigDict, Field, TypeAdapter
+from pydantic import ConfigDict, Field, TypeAdapter
 
 from copyleaks.models.AiDetection.Responses.CopyleaksAiTextDetectionResponseModel import CopyleaksAiTextDetectionResponseModel
 from copyleaks.models.constants.CopyleaksAlertCodes import CopyleaksAlertCodes
+from ..BaseModels.CopyleaksWebhookBaseModel import CopyleaksWebhookBaseModel
 
 # Characters removed from the end of `additionalData` before it is parsed: NUL and the ASCII
 # whitespace tab, line feed, vertical tab, form feed, carriage return and space.
@@ -36,7 +37,7 @@ _TRAILING_PADDING = frozenset("\x00\t\n\x0b\x0c\r ")
 # gives None. Malformed JSON raises pydantic.ValidationError, titled like the result model.
 _JSON_ADAPTER = TypeAdapter(Any, config=ConfigDict(title=CopyleaksAiTextDetectionResponseModel.__name__))
 
-class AlertsModel(BaseModel):
+class AlertsModel(CopyleaksWebhookBaseModel):
     """
     A scan alert from `notifications.alerts` of the completed webhook.
     """

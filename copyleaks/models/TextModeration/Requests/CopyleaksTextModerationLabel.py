@@ -21,12 +21,18 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
 '''
-from pydantic import BaseModel, Field
-"""
-    Represents a Copyleaks Text Moderation Label.
-"""
+
+from pydantic import BaseModel, Field, field_validator
+
 
 class CopyleaksTextModerationLabel(BaseModel):
+    """
+    A moderation category (label) to check. See `CopyleaksTextModerationConstants`.
+    """
 
-    """The input text to be moderated."""
-    id: str 
+    id: str = Field(
+        ...,
+        description="The label id, for example \"toxic-v1\". 1 to 32 characters.",
+        min_length=1,
+        max_length=32
+    )

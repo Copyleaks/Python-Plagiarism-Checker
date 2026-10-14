@@ -1,6 +1,6 @@
 '''
 Unit tests for Copyleaks.submit_file_ocr.
-The HTTP layer (`requests`) is mocked, so no network calls are made.
+The HTTP layer (`requests.Session.request`) is mocked, so no network calls are made.
 
 Run from the repository root:
     python -m unittest discover -s tests -v
@@ -26,11 +26,12 @@ class SubmitOcrTest(unittest.TestCase):
         document.set_properties(ScanProperties('https://example.com/webhook/{STATUS}'))
         response = MagicMock(ok=True, status_code=201)
 
-        with patch('requests.put', return_value=response) as put:
+        with patch('requests.Session.request', return_value=response) as request:
             Copyleaks.submit_file_ocr(AUTH_TOKEN, 'my-scan-1', document)
 
-        put.assert_called_once()
-        self.assertEqual(put.call_args.args[0], f'{Consts.API_SERVER_URI}/v3/scans/submit/ocr/my-scan-1')
+        request.assert_called_once()
+        self.assertEqual(request.call_args.args[0], 'PUT')
+        self.assertEqual(request.call_args.args[1], f'{Consts.API_SERVER_URI}/v3/scans/submit/ocr/my-scan-1')
 
 
 if __name__ == '__main__':

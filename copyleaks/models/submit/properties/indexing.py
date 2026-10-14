@@ -41,3 +41,21 @@ class Indexing:
         assert value
 
         self.repositories = value
+
+    def get_copyleaks_db(self):
+        '''
+            Whether to add the submitted document to the Copyleaks Shared Data Hub.
+        '''
+        return self.copyleaksDb
+
+    def set_copyleaks_db(self, value):
+        '''
+            Add the submitted document to the Copyleaks Shared Data Hub.
+            Leave it unset to get the server default (False).
+
+            Parameters:
+                value: Boolean.
+        '''
+        assert isinstance(value, bool)
+
+        self.copyleaksDb = value

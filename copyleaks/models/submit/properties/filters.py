@@ -60,7 +60,7 @@ class Filters:
 
         self.minorChangesEnabled = value
 
-    def get_minor_changes_enabled(self):
+    def get_related_meaning_enabled(self):
         '''
             Should enable matching of paraphrased content stating similar ideas with different words.
         '''
@@ -151,7 +151,7 @@ class Filters:
         '''
             when set to true it will allow results from the same domain as the submitted url.
         '''
-        return self.identicalEnabled
+        return self.allowSameDomain
 
     def set_allow_same_domain(self, value):
         '''

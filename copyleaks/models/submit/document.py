@@ -23,7 +23,7 @@
 '''
 
 from abc import ABC
-import json
+from copyleaks.helpers.copyleaks_client_helper import CopyleaksClientHelper
 
 
 class Document(ABC):
@@ -35,8 +35,7 @@ class Document(ABC):
         self.properties = value
 
     def toJSON(self):
-        return json.dumps(self, default=lambda o: o.__dict__,
-                          sort_keys=True, indent=4)
+        return CopyleaksClientHelper.to_json(self)
 
 
 class FileDocument(Document):
@@ -73,3 +72,40 @@ class UrlDocument(Document):
 
     def set_url(self, value):
         self.url = value
+
+    def get_verb(self):
+        '''
+            The HTTP method Copyleaks uses to fetch the URL.
+        '''
+        return self.verb
+
+    def set_verb(self, value):
+        '''
+            The HTTP method Copyleaks uses to fetch the URL: "GET", "POST" or "PUT".
+            Leave it unset to get the server default ("GET").
+
+            Parameters:
+                value: String.
+        '''
+        assert isinstance(value, str) and value.upper() in ('GET', 'POST', 'PUT')
+        self.verb = value.upper()
+
+    def get_headers(self):
+        '''
+            Custom headers Copyleaks sends when it fetches the URL.
+        '''
+        return self.headers
+
+    def set_headers(self, value):
+        '''
+            Custom headers Copyleaks sends when it fetches the URL, for example to scan a page that needs
+            authentication. When set, Copyleaks sends no default headers. Use `Set-Cookie` for cookies.
+
+            Parameters:
+                value: List of [name, value] pairs.
+
+            Example:
+                [["Authorization", "Bearer my-token"], ["Set-Cookie", "session=abc"]]
+        '''
+        assert isinstance(value, list) and all(isinstance(pair, (list, tuple)) and len(pair) == 2 for pair in value)
+        self.headers = [list(pair) for pair in value]

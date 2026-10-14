@@ -23,7 +23,8 @@
 '''
 
 from abc import ABC
-import json
+from copyleaks.helpers.copyleaks_client_helper import CopyleaksClientHelper
+
 
 class AiDetectionDocument(ABC):
     def __init__(self, text):
@@ -44,8 +45,7 @@ class AiDetectionDocument(ABC):
         self.sandbox = value
 
     def toJSON(self):
-        return json.dumps(self, default=lambda o: o.__dict__,
-                          sort_keys=True, indent=4)
+        return CopyleaksClientHelper.to_json(self)
 
 
 class NaturalLanguageDocument(AiDetectionDocument):
@@ -58,3 +58,38 @@ class NaturalLanguageDocument(AiDetectionDocument):
     def set_language(self, value):
         self.language = value
 
+    def get_explain(self):
+        """
+            Whether AI Logic explanations are requested.
+        """
+        return self.explain
+
+    def set_explain(self, value):
+        """
+            Enable AI Logic: the response then has `explain`, which shows the AI patterns found in the text.
+            Explanations are returned for the AI Logic supported languages only.
+            Leave it unset to get the server default (False).
+
+            Parameters:
+                value: Boolean.
+        """
+        assert isinstance(value, bool)
+        self.explain = value
+
+    def get_sensitivity(self):
+        """
+            The AI detection sensitivity.
+        """
+        return self.sensitivity
+
+    def set_sensitivity(self, value):
+        """
+            Control the behavior of the AI detection, from 1 to 3:
+            1 detects text copied from an AI tool without edits, 2 (the server default) also detects
+            text with minor changes, and 3 also detects heavily modified text.
+
+            Parameters:
+                value: Integer from 1 to 3.
+        """
+        assert isinstance(value, int) and not isinstance(value, bool) and 1 <= value <= 3
+        self.sensitivity = value

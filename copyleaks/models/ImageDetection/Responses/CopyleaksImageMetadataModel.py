@@ -23,7 +23,7 @@
 '''
 
 from typing import Optional
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field
 
 
 class CopyleaksImageMetadataModel(BaseModel):
@@ -47,4 +47,10 @@ class CopyleaksImageMetadataModel(BaseModel):
         default=None,
         description="The application or device used to create the image.",
         alias="appOrDeviceUsed"
+    )
+
+    content_summary: Optional[str] = Field(
+        default=None,
+        description="A summary of how the image was generated (if available).",
+        alias="contentSummary"
     )

@@ -107,3 +107,35 @@ class ReportCustomizationColors:
         assert value
 
         self.relatedMeaning = value
+
+    def get_ai_detection(self):
+        '''
+            Get the highlight color of AI content detection
+        '''
+        return self.aiDetection
+
+    def set_ai_detection(self, value):
+        '''
+            Set the highlight color of AI content detection, in HEX format. The server default is "#FE5758".
+
+            value: string
+        '''
+        assert value
+
+        self.aiDetection = value
+
+    def get_writing_feedback(self):
+        '''
+            Get the highlight color of writing feedback (Grammar Checker)
+        '''
+        return self.writingFeedback
+
+    def set_writing_feedback(self, value):
+        '''
+            Set the highlight color of writing feedback (Grammar Checker), in HEX format. The server default is "#FF9A02".
+
+            value: string
+        '''
+        assert value
+
+        self.writingFeedback = value

@@ -22,8 +22,8 @@
  SOFTWARE.
 '''
 
-import json
 from xmlrpc.client import Boolean
+from copyleaks.helpers.copyleaks_client_helper import CopyleaksClientHelper
 
 
 class Delete:
@@ -49,7 +49,7 @@ class Delete:
         '''
             Delete all trace of the scan from Copyleaks server, including from internal database. A purged process will not be available as a result for previous scans.
         '''
-        return self.scans
+        return self.purge
 
     def set_purge(self, value):
         '''
@@ -83,9 +83,29 @@ class Delete:
 
         self.completionWebhook = value
 
+    def get_headers(self):
+        '''
+            Custom headers of the completion webhook.
+        '''
+        return self.headers
+
+    def set_headers(self, value):
+        '''
+            Custom headers to add to the completion webhook request, for example when your endpoint needs an
+            `Authorization` header.
+
+            Parameters:
+                value: List of [name, value] pairs.
+
+            Example:
+                [["header-key1", "header-value1"], ["header-key2", "header-value2"]]
+        '''
+        assert isinstance(value, list) and all(isinstance(pair, (list, tuple)) and len(pair) == 2 for pair in value)
+
+        self.headers = [list(pair) for pair in value]
+
     def toJSON(self):
-        return json.dumps(self, default=lambda o: o.__dict__,
-                          sort_keys=True, indent=4)
+        return CopyleaksClientHelper.to_json(self)
 
 
 class DeleteScan:

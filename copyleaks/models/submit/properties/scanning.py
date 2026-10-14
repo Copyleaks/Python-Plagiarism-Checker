@@ -92,50 +92,53 @@ class Scanning:
 
         self.copyleaksDb = value
 
-    def get_exclude(self):
-        '''
-            Defines which parts of the document won't be scan.
-        '''
-        return self.exclude
-
-    def set_exclude(self, value):
-        '''
-            Defines which parts of the document won't be scan.
-
-            Parameters: 
-                value: `Exclude`.
-        '''
-        assert value
-
-        self.exclude = value
-
-
     def get_cross_languages(self):
-
-        return self.cross_languages
+        '''
+            Cross language plagiarism detection settings.
+        '''
+        return self.crossLanguages
 
     def set_cross_languages(self, value):
         '''
-            Cross language plagiarism detection. Choose which languages to scan your content against. 
-            For each additional language chosen, your pages will be deducted per page submitted. 
-            The language of the original document submitted is always scanned, 
+            Cross language plagiarism detection. Choose which languages to scan your content against.
+            For each additional language chosen, your pages will be deducted per page submitted.
+            The language of the original document submitted is always scanned,
             therefore should not be included in the additional languages chosen.
+            Get the supported languages with `Copyleaks.allowed_cross_languages()`.
+            Sent as `scanning.crossLanguages`.
 
-            value: Language array
+            value: `CrossLanguages`
         '''
         assert value
 
-        self.cross_languages = value
+        self.crossLanguages = value
 
+    def get_include(self):
+        '''
+            Which of your submissions to include in the results.
+        '''
+        return self.include
 
-    def get_copylekas_db(self):
+    def set_include(self, value):
+        '''
+            Include only your submissions whose scan id matches a pattern in the internal database and
+            repositories results.
 
-        return self.copyleaksDb
-
-    def set_copylekas_db(self, value):
-
+            Parameters:
+                value: `ScanningInclude`.
+        '''
         assert value
 
-        self.copyleaksDb = value
+        self.include = value
 
+    def get_copylekas_db(self):
+        '''
+            Deprecated misspelled name of `get_copyleaks_db`.
+        '''
+        return self.get_copyleaks_db()
 
+    def set_copylekas_db(self, value):
+        '''
+            Deprecated misspelled name of `set_copyleaks_db`.
+        '''
+        self.set_copyleaks_db(value)

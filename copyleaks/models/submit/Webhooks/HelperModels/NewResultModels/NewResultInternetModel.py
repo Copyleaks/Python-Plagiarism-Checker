@@ -1,18 +1,18 @@
 '''
  The MIT License(MIT)
-
+ 
  Copyright(c) 2016 Copyleaks LTD (https://copyleaks.com)
-
+ 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
  in the Software without restriction, including without limitation the rights
  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  copies of the Software, and to permit persons to whom the Software is
  furnished to do so, subject to the following conditions:
-
+ 
  The above copyright notice and this permission notice shall be included in all
  copies or substantial portions of the Software.
-
+ 
  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -22,45 +22,69 @@
  SOFTWARE.
 '''
 
-from typing import Optional
+from typing import List, Optional
+from pydantic import AliasChoices, Field, field_validator
+
+from ..BaseModels.CopyleaksWebhookBaseModel import CopyleaksWebhookBaseModel, none_to_empty_list, str_or_number_to_str
 from ..BaseModels.MetadataModel import MetadataModel
-from pydantic import BaseModel
+from ..ResultsModels.TagsModel import TagsModel
 
-class NewResultsInternetModel(BaseModel):
 
-    """Unique result ID to identify the result."""
-    _id: Optional[str] = None, 
-    
-    """Document title. Mostly extracted from the document content."""
-    _title: Optional[str] = None,
+class NewResultsInternetModel(CopyleaksWebhookBaseModel):
+    """
+    A result found on the internet.
+    """
+    __positional_fields__ = ('id', 'title', 'introduction', 'matched_words', 'metadata', 'url')
 
-    """Document brief introduction. Mostly extracted from the document content."""
-    _introduction: Optional[str] = None,
+    id: Optional[str] = Field(
+        default=None,
+        description="Unique result ID to identify the result. `id_val=` is accepted too.",
+        alias="id",
+        validation_alias=AliasChoices("id", "id_val")
+    )
 
-    """Total matched words between this result and the scanned document."""
-    _matched_words: Optional[int] = None,  
+    title: Optional[str] = Field(
+        default=None,
+        description="Document title. Mostly extracted from the document content.",
+        alias="title"
+    )
 
-    """Metadata object"""
-    _metadata: Optional[MetadataModel] = None, 
+    introduction: Optional[str] = Field(
+        default=None,
+        description="Document brief introduction. Mostly extracted from the document content.",
+        alias="introduction"
+    )
 
-    """Public URL of the resource."""
-    _url: Optional[str] = None
-    
+    matched_words: Optional[int] = Field(
+        default=None,
+        description="Total matched words between this result and the scanned document.",
+        alias="matchedWords"
+    )
 
-    def __init__(self,
-                 id: Optional[str] = None, 
-                 title: Optional[str] = None,
-                 introduction: Optional[str] = None,
-                 matched_words: Optional[int] = None, 
-                 metadata: Optional[MetadataModel] = None, 
-                 url: Optional[str] = None):
-        """
-        Initializes a NewResultsInternet object, storing values in internal attributes..
-        """
-        super().__init__(id=id,title=title,introduction=introduction,matched_words=matched_words,metadata=metadata,url=url)
-        self._id: Optional[str] = id
-        self._title: Optional[str] = title
-        self._introduction: Optional[str] = introduction
-        self._matched_words: Optional[int] = matched_words
-        self._metadata: Optional[MetadataModel] = metadata 
-        self._url: Optional[str] = url
+    metadata: Optional[MetadataModel] = Field(
+        default=None,
+        description="Metadata of the result.",
+        alias="metadata"
+    )
+
+    url: Optional[str] = Field(
+        default=None,
+        description="Public URL of the resource.",
+        alias="url"
+    )
+
+    tags: List[TagsModel] = Field(
+        default_factory=list,
+        description="Result tags.",
+        alias="tags"
+    )
+
+    @field_validator('id', mode='before')
+    @classmethod
+    def id_to_str(cls, v):
+        return str_or_number_to_str(v)
+
+    @field_validator('tags', mode='before')
+    @classmethod
+    def tags_none_to_empty(cls, v):
+        return none_to_empty_list(v)

@@ -22,7 +22,12 @@
  SOFTWARE.
 '''
 
-from pydantic import BaseModel, Field, field_validator, validator
+from typing import List, Optional
+from pydantic import BaseModel, Field, field_validator
+
+from copyleaks.models.ImageDetection.Requests.CopyleaksAiImageObjectDetectionModel import CopyleaksAiImageObjectDetectionModel, to_object_detection_list
+
+SUPPORTED_IMAGE_EXTENSIONS = ['.png', '.bmp', '.jpg', '.jpeg', '.webp', '.heic', '.heif', '.avif']
 
 
 class CopyleaksAiImageDetectionRequestModel(BaseModel):
@@ -60,40 +65,60 @@ class CopyleaksAiImageDetectionRequestModel(BaseModel):
         alias="sandbox"
     )
     
-    def __init__(self, base64: str, file_name: str, model: str, sandbox: bool = False, **data):
+    mask_type: Optional[str] = Field(
+        default=None,
+        description="The detection mask to return: \"binary\" (default), \"heatmap\" or \"none\". See `CopyleaksAiImageMaskTypes`.",
+        alias="maskType"
+    )
+
+    object_detection: Optional[List[CopyleaksAiImageObjectDetectionModel]] = Field(
+        default=None,
+        description="Up to 3 objects to locate in the image, for example [\"face\", \"hand\"].",
+        alias="objectDetection"
+    )
+
+    def __init__(self, base64: str, file_name: str, model: str, sandbox: bool = False,
+                 mask_type: Optional[str] = None, object_detection: Optional[list] = None, **data):
         """
         Initialize the CopyleaksAiImageDetectionRequestModel.
-        
+
         Args:
             base64: The base64-encoded image data to be analyzed for AI generation.
                    Requirements:
-                   - Minimum 512×512px, maximum 16 megapixels, less than 32MB
-                   - Supported formats: PNG, JPEG, BMP, WebP, HEIC/HEIF
+                   - Minimum 512x512px, maximum 6000x4500px (27 megapixels), less than 32MB
+                   - Supported formats: PNG, JPEG, BMP, WebP, HEIC/HEIF, AVIF
             file_name: The name of the image file including its extension.
                       Requirements:
-                      - Supported extensions: .png, .bmp, .jpg, .jpeg, .webp, .heic, .heif
+                      - Supported extensions: .png, .bmp, .jpg, .jpeg, .webp, .heic, .heif, .avif
                       - Maximum 255 characters
             model: The AI detection model to use for analysis.
                   Available models:
-                  - AI Image 1 Ultra: "ai-image-1-ultra-01-09-2025" (full name) or "ai-image-1-ultra" (alias)
-                    AI image detection model. Produces an overlay of the detected AI segments.
+                  - AI Image 1 Ultra: "ai-image-1-ultra" (see `CopyleaksAiImageDetectionModels`)
             sandbox: Use sandbox mode to test your integration with the Copyleaks API without consuming any credits.
-                    Submit images for AI detection and get returned mock results, simulating Copyleaks' API functionality 
+                    Submit images for AI detection and get returned mock results, simulating Copyleaks' API functionality
                     to ensure you have successfully integrated the API.
                     This feature is intended to be used for development purposes only.
                     Default value is False.
+            mask_type: Optional. The detection mask to return, one of `CopyleaksAiImageMaskTypes`:
+                    "binary" (the server default), "heatmap" (adds `result.labels`) or "none" (no `result`).
+            object_detection: Optional. 1 to 3 objects to locate and segment in the image, as strings
+                    (for example ["face", "hand"]) or `CopyleaksAiImageObjectDetectionModel` objects.
+                    The response then lists the objects found in `detected_objects`.
         """
+        if mask_type is not None:
+            data['maskType'] = mask_type
+        if object_detection is not None:
+            data['objectDetection'] = object_detection
         super().__init__(base64=base64, filename=file_name, model=model, sandbox=sandbox, **data)
-    
+
     @field_validator('file_name')
     def validate_file_name(cls, v):
         """Validate the file name has a supported extension."""
         if not v:
             raise ValueError('File name is required')
         
-        supported_extensions = ['.png', '.bmp', '.jpg', '.jpeg', '.webp', '.heic', '.heif']
-        if not any(v.lower().endswith(ext) for ext in supported_extensions):
-            raise ValueError(f'File name must have one of the supported extensions: {", ".join(supported_extensions)}')
+        if not any(v.lower().endswith(ext) for ext in SUPPORTED_IMAGE_EXTENSIONS):
+            raise ValueError(f'File name must have one of the supported extensions: {", ".join(SUPPORTED_IMAGE_EXTENSIONS)}')
         
         return v
     
@@ -111,3 +136,8 @@ class CopyleaksAiImageDetectionRequestModel(BaseModel):
             raise ValueError('Model name is required and cannot be empty')
         return v
 
+    @field_validator('object_detection', mode='before')
+    @classmethod
+    def validate_object_detection(cls, v):
+        """1 to 3 entries; strings are accepted as object names."""
+        return to_object_detection_list(v)

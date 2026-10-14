@@ -22,31 +22,42 @@
  SOFTWARE.
 '''
 
+
+def _validate_weight(value):
+    assert isinstance(value, (int, float)) and not isinstance(value, bool) and 0.0 <= value <= 1.0, \
+        'score weights must be numbers from 0.0 to 1.0'
+
+
 class ScoreWeights:
+    """
+        Weights of the correction categories in the overall Grammar Checker score, each from 0.0 to 1.0.
+        A weight of 0.0 ignores the category. Unset weights use the server default (1.0).
+    """
+
     def get_grammar_score_weight(self):
         return self.grammarScoreWeight
 
     def set_grammar_score_weight(self, value):
-        assert value
+        _validate_weight(value)
         self.grammarScoreWeight = value
 
     def get_mechanics_score_weight(self):
         return self.mechanicsScoreWeight
 
     def set_mechanics_score_weight(self, value):
-        assert value
+        _validate_weight(value)
         self.mechanicsScoreWeight = value
 
     def get_sentence_structure_score_weight(self):
         return self.sentenceStructureScoreWeight
 
     def set_sentence_structure_score_weight(self, value):
-        assert value
+        _validate_weight(value)
         self.sentenceStructureScoreWeight = value
 
     def get_word_choice_score_weight(self):
         return self.wordChoiceScoreWeight
 
     def set_word_choice_score_weight(self, value):
+        _validate_weight(value)
         self.wordChoiceScoreWeight = value
-        assert value

@@ -22,8 +22,8 @@
  SOFTWARE.
 '''
 
-import json
 from abc import ABC
+from copyleaks.helpers.copyleaks_client_helper import CopyleaksClientHelper
 
 
 class Export:
@@ -44,6 +44,26 @@ class Export:
         assert value
 
         self.completionWebhook = value
+
+    def get_completion_webhook_headers(self):
+        '''
+            Custom headers of the completion webhook.
+        '''
+        return self.completionWebhookHeaders
+
+    def set_completion_webhook_headers(self, value):
+        '''
+            Custom headers to add to the completion webhook request.
+
+            Parameters:
+                value: List of [name, value] pairs.
+
+            Example:
+                [["header-key1", "header-value1"], ["header-key2", "header-value2"]]
+        '''
+        assert isinstance(value, list) and all(isinstance(pair, (list, tuple)) and len(pair) == 2 for pair in value)
+
+        self.completionWebhookHeaders = [list(pair) for pair in value]
 
     def get_max_retries(self):
         '''
@@ -139,9 +159,65 @@ class Export:
 
         self.crawledVersion = value
 
+    def get_ai_detection(self):
+        '''
+            Export the AI content detection report.
+        '''
+        return self.aiDetection
+
+    def set_ai_detection(self, value):
+        '''
+            Export the AI content detection report. Allowed only when AI detection
+            (`properties.aiGeneratedText.detect`) was enabled on the scan submission.
+
+            Parameters:
+                value: `ExportAiDetection`.
+        '''
+
+        assert value
+
+        self.aiDetection = value
+
+    def get_writing_feedback(self):
+        '''
+            Export the Grammar Checker report.
+        '''
+        return self.writingFeedback
+
+    def set_writing_feedback(self, value):
+        '''
+            Export the Grammar Checker report. Allowed only when the Grammar Checker
+            (`properties.writingFeedback.enable`) was enabled on the scan submission.
+
+            Parameters:
+                value: `ExportWritingFeedback`.
+        '''
+
+        assert value
+
+        self.writingFeedback = value
+
+    def get_overview(self):
+        '''
+            Export the Gen-AI Overview report.
+        '''
+        return self.overview
+
+    def set_overview(self, value):
+        '''
+            Export the Gen-AI Overview report. Allowed only when the overview
+            (`properties.overview.enable`) was enabled on the scan submission.
+
+            Parameters:
+                value: `ExportOverview`.
+        '''
+
+        assert value
+
+        self.overview = value
+
     def toJSON(self):
-        return json.dumps(self, default=lambda o: o.__dict__,
-                          sort_keys=True, indent=4)
+        return CopyleaksClientHelper.to_json(self)
 
 
 class ExportItem(ABC):
@@ -229,5 +305,20 @@ class ExportPdf(ExportItem):
 
 
 class ExportCrawledVersion(ExportItem):
+    def __init__(self):
+        pass
+
+
+class ExportAiDetection(ExportItem):
+    def __init__(self):
+        pass
+
+
+class ExportWritingFeedback(ExportItem):
+    def __init__(self):
+        pass
+
+
+class ExportOverview(ExportItem):
     def __init__(self):
         pass

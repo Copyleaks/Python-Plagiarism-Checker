@@ -1,18 +1,18 @@
 '''
  The MIT License(MIT)
-
+ 
  Copyright(c) 2016 Copyleaks LTD (https://copyleaks.com)
-
+ 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
  in the Software without restriction, including without limitation the rights
  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  copies of the Software, and to permit persons to whom the Software is
  furnished to do so, subject to the following conditions:
-
+ 
  The above copyright notice and this permission notice shall be included in all
  copies or substantial portions of the Software.
-
+ 
  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -22,19 +22,17 @@
  SOFTWARE.
 '''
 
-from typing import Any, Optional
+from typing import Optional
+from pydantic import Field
+
 from ..BaseModels.MetadataModel import MetadataModel
 
+
 class RepositoryMetadataModel(MetadataModel):
+    __positional_fields__ = ('submitted_by',)
 
-    """Email of the user which added this document to the repository."""
-    _submitted_by: Optional[str] = None
-
-    def __init__(self,
-                 submitted_by: Optional[str] = None, 
-                 **kwargs: Any): 
-        """
-        Initializes RepositoryMetadata.
-        """
-        super().__init__(**kwargs)
-        self._submitted_by = submitted_by
+    submitted_by: Optional[str] = Field(
+        default=None,
+        description="Email of the user which added this document to the repository.",
+        alias="submittedBy"
+    )

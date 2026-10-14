@@ -23,7 +23,12 @@
 '''
 
 
-class CopyleaksDictAccessMixin:
+from typing import Optional
+
+from pydantic import BaseModel, PrivateAttr
+
+
+class CopyleaksDictAccessMixin(BaseModel):
     """
     Read-only dict-style access for pydantic response models of endpoints that used to return the raw JSON dict,
     so existing code such as `response['summary']['ai']`, `response.get('explain')` and `'explain' in response`
@@ -32,10 +37,30 @@ class CopyleaksDictAccessMixin:
     Keys are the camelCase JSON keys. Values are plain dicts and lists, as in the JSON response.
     Only keys that the model defines and that were present in the response are available.
     Kept for backward compatibility; prefer attribute access, e.g. `response.summary.ai`.
+
+    The dict is built once, on the first dict-style read, and reused by later reads. Setting an attribute of
+    the model itself rebuilds it on the next read. Treat responses as read-only: changes made to nested
+    models after the first dict-style read are not reflected in dict-style reads.
     """
 
+    _dict_access_cache: Optional[dict] = PrivateAttr(default=None)
+
     def _to_response_dict(self):
-        return self.model_dump(by_alias=True, exclude_unset=True)
+        cache = self._dict_access_cache
+        if cache is None:
+            cache = self.model_dump(by_alias=True, exclude_unset=True)
+            self._dict_access_cache = cache
+        return cache
+
+    def __setattr__(self, name, value):
+        super().__setattr__(name, value)
+        if not name.startswith('_'):
+            self._dict_access_cache = None
+
+    def model_copy(self, *, update=None, deep=False):
+        copied = super().model_copy(update=update, deep=deep)
+        copied._dict_access_cache = None
+        return copied
 
     def __getitem__(self, key):
         return self._to_response_dict()[key]

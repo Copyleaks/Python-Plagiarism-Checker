@@ -23,7 +23,7 @@
 '''
 
 from enum import IntEnum
-import json
+from copyleaks.helpers.copyleaks_client_helper import CopyleaksClientHelper
 
 
 class Start:
@@ -61,8 +61,7 @@ class Start:
         self.errorHandling = value
 
     def toJSON(self):
-        return json.dumps(self, default=lambda o: o.__dict__,
-                          sort_keys=True, indent=4)
+        return CopyleaksClientHelper.to_json(self)
 
 
 class StartErrorHandling(IntEnum):
