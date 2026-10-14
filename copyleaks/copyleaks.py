@@ -439,7 +439,8 @@ class Copyleaks(object):
 
             Returns:
                 `CopyleaksAllowedCrossLanguagesResponseModel`, with `document_languages` (supported languages of the
-                scanned document) and `result_languages` (languages you can scan against).
+                scanned document) and `result_languages` (languages you can scan against), each a dict of
+                language name to code. `document_language_codes` and `result_language_codes` list the codes.
         '''
 
         url = f"{Consts.API_SERVER_URI}/v3/miscellaneous/allowed-cross-languages"

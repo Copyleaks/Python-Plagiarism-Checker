@@ -411,6 +411,7 @@ scan_properties.set_sensitive_data_protection(sensitive_data)
 
 # Cross-language plagiarism: list the supported languages, then pick some
 languages = Copyleaks.allowed_cross_languages()  # public, no login needed
+print(languages.result_language_codes)            # for example ['sq', 'bg', ...]; result_languages maps names to codes
 french = Language()
 french.set_code('fr')
 cross_languages = CrossLanguages()

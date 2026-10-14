@@ -13,7 +13,7 @@ This is a major release. It adds AI Video Detection, Image Plagiarism Detection,
   - `Copyleaks.VideoDetectionClient.submit(auth_token, scan_id, CopyleaksAiVideoDetectionRequestModel)`: AI Video Detection. Submits a video URL; the result is posted to your webhook. Parse it with `CopyleaksAiVideoDetectionResponseModel(**request.json)`. New constant `CopyleaksAiVideoDetectionModels.AI_VIDEO_1_PRO`.
   - `Copyleaks.ImageDetectionClient.submit_async(auth_token, scan_id, CopyleaksAiImageDetectionAsyncRequestModel)`: asynchronous AI Image Detection of an image URL, with the result posted to your webhook. Parse it with `CopyleaksAiImageDetectionResponseModel(**request.json)`.
   - `Copyleaks.AiDetectionClient.credits_balance(auth_token)`: the AI Text Detector credit balance, as a `CopyleaksAiTextDetectionCreditsResponseModel`.
-  - `Copyleaks.allowed_cross_languages()`: the languages supported by cross-language plagiarism detection. Public, no login needed.
+  - `Copyleaks.allowed_cross_languages()`: the languages supported by cross-language plagiarism detection, as a `CopyleaksAllowedCrossLanguagesResponseModel`. `document_languages` and `result_languages` map each language name to its code, and `document_language_codes` and `result_language_codes` list the codes. Public, no login needed.
   - `Copyleaks.supported_ai_text_detection_file_types()`: the file types supported by AI Text Detection. Public, no login needed.
   - `Copyleaks.repository_info(auth_token, repository_id)`: the information of a Private Cloud Hub repository (credits, masking policy, status). New constants `CopyleaksRepositoryRoles` and `CopyleaksRepositoryStatuses`.
 - **AI Image Detection.**

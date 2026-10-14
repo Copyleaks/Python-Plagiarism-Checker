@@ -212,12 +212,22 @@ class PublicEndpointsTest(HttpTestCase):
         self.assertEqual(response['supportedAiFileTypes'], ['pdf', 'docx', 'LaTeX'])
 
     def test_allowed_cross_languages(self):
-        self.respond({'documentLanguages': ['en', 'es'], 'resultLanguages': ['fr', 'de']})
+        # The API returns {language name: code} objects.
+        self.respond({'documentLanguages': {'english': 'en', 'spanish': 'es'},
+                      'resultLanguages': {'french': 'fr', 'german': 'de'}})
         response = Copyleaks.allowed_cross_languages()
         self.assertCall('GET', f'{API}/v3/miscellaneous/allowed-cross-languages', auth=False, content_type=None)
         self.assertIsInstance(response, CopyleaksAllowedCrossLanguagesResponseModel)
-        self.assertEqual(response.document_languages, ['en', 'es'])
-        self.assertEqual(response.result_languages, ['fr', 'de'])
+        self.assertEqual(response.document_languages, {'english': 'en', 'spanish': 'es'})
+        self.assertEqual(response.document_language_codes, ['en', 'es'])
+        self.assertEqual(response.result_language_codes, ['fr', 'de'])
+        self.assertEqual(response['resultLanguages'], {'french': 'fr', 'german': 'de'})
+
+    def test_allowed_cross_languages_accepts_lists_of_codes(self):
+        self.respond({'documentLanguages': ['en', 'es'], 'resultLanguages': ['fr']})
+        response = Copyleaks.allowed_cross_languages()
+        self.assertEqual(response.document_language_codes, ['en', 'es'])
+        self.assertEqual(response.result_language_codes, ['fr'])
 
     def test_correction_types(self):
         self.respond({'correctionTypes': [{'id': 1}]})
