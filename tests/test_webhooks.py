@@ -15,11 +15,14 @@ from copyleaks.models.submit.Webhooks.CompletedWebhookModel import CompletedWebh
 from copyleaks.models.submit.Webhooks.CreditsCheckedWebhookModel import CreditsCheckedWebhookModel
 from copyleaks.models.submit.Webhooks.ErrorWebhookModel import ErrorWebhookModel
 from copyleaks.models.submit.Webhooks.ExportCompletedWebhookModel import ExportCompletedWebhookModel
+from copyleaks.models.submit.Webhooks.HelperModels.BaseModels.MetadataModel import MetadataModel
 from copyleaks.models.submit.Webhooks.HelperModels.CompletedModels.ResultsModel import ResultsModel
 from copyleaks.models.submit.Webhooks.HelperModels.CompletedModels.ScannedDocumentModel import ScannedDocumentModel
 from copyleaks.models.submit.Webhooks.HelperModels.ErrorModels.ErrorModel import ErrorModel
 from copyleaks.models.submit.Webhooks.HelperModels.ExportModels.TaskModel import TaskModel
+from copyleaks.models.submit.Webhooks.HelperModels.ResultsModels.InternetModel import InternetModel
 from copyleaks.models.submit.Webhooks.HelperModels.ResultsModels.SharedResultsModel import SharedResultsModel
+from copyleaks.models.submit.Webhooks.HelperModels.ResultsModels.TagsModel import TagsModel
 from copyleaks.models.submit.Webhooks.IndexedWebhookModel import IndexedWebhookModel
 from copyleaks.models.submit.Webhooks.NewResultWebhookModel import NewResultWebhookModel
 
@@ -135,6 +138,16 @@ class CompletedWebhookTest(unittest.TestCase):
         with self.assertRaises(TypeError):
             ErrorModel(1, 'm', 'extra')
 
+    def test_internet_result_keeps_the_5x_positional_order(self):
+        tag = TagsModel('c1', 'Tag', 'desc')
+        result = InternetModel([tag], 'i1', 'Title', 'intro', 10, None, MetadataModel(author='Jane'), 'https://e/p')
+        self.assertEqual((result.id, result.title, result.introduction, result.matched_words, result.url),
+                         ('i1', 'Title', 'intro', 10, 'https://e/p'))
+        self.assertEqual(result.tags[0].code, 'c1')
+        self.assertEqual(result.metadata.author, 'Jane')
+        with self.assertRaises(TypeError):
+            InternetModel([tag], 'i1', 'Title', 'intro', 10, None, None, 'https://e/p', 'extra')
+
     def test_numeric_result_id_is_a_string(self):
         completed = CompletedWebhookModel(**{"results": {"database": [{"id": 12345}]}})
         self.assertEqual(completed.results.database[0].id, '12345')
@@ -225,6 +238,7 @@ class AsyncDetectionWebhooksTest(unittest.TestCase):
         self.assertEqual(result.video_info.metadata.content_summary, 'Created using generative AI')
         self.assertEqual(result.scanned_video.scan_id, 'video1')
         self.assertEqual(result.developer_payload, 'order-1')
+        self.assertIsNone(result.error)
         self.assertEqual(result['summary']['visualAIRatio'], 0.5817)
 
     def test_ai_image_webhook_and_response_fields(self):
@@ -246,6 +260,27 @@ class AsyncDetectionWebhooksTest(unittest.TestCase):
         self.assertEqual(result.detected_objects[0].mask.lengths, [512])
         self.assertEqual(result.developer_payload, 'order-1')
         self.assertEqual(result.scan_type, 'sandbox')
+        self.assertIsNone(result.error)
+
+    def test_ai_video_and_image_failure_webhooks(self):
+        payload = {"error": {"type": "invalid_request_error", "id": "unsupported_file", "code": 400,
+                             "message": "The file is not supported.", "url": "https://docs.example.com/errors",
+                             "details": [{"param": "url", "message": "unsupported format"}]},
+                   "developerPayload": "order-2", "undocumented": 7}
+        for model in (CopyleaksAiVideoDetectionResponseModel, CopyleaksAiImageDetectionResponseModel):
+            result = model(**payload)
+            error = result.error
+            self.assertEqual((error.type, error.id, error.code, error.message, error.url),
+                             ('invalid_request_error', 'unsupported_file', 400, 'The file is not supported.',
+                              'https://docs.example.com/errors'), model.__name__)
+            self.assertEqual((error.details[0].param, error.details[0].message), ('url', 'unsupported format'))
+            self.assertEqual(result.developer_payload, 'order-2')
+            self.assertIsNone(result.summary)
+            self.assertEqual(result.model_dump(by_alias=True)['undocumented'], 7)
+        minimal = CopyleaksAiVideoDetectionResponseModel(**{"error": {"code": 500, "message": "Failed."}})
+        self.assertEqual((minimal.error.code, minimal.error.type, minimal.error.details), (500, None, []))
+        self.assertIsNone(minimal.developer_payload)
+        self.assertEqual(minimal['error']['code'], 500)
 
     def test_ai_image_without_mask(self):
         result = CopyleaksAiImageDetectionResponseModel(**{"model": "ai-image-1-ultra", "summary": {"human": 1, "ai": 0},

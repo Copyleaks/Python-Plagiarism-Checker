@@ -87,7 +87,8 @@ class UrlDocument(Document):
             Parameters:
                 value: String.
         '''
-        assert isinstance(value, str) and value.upper() in ('GET', 'POST', 'PUT')
+        if not isinstance(value, str) or value.upper() not in ('GET', 'POST', 'PUT'):
+            raise ValueError('verb must be "GET", "POST" or "PUT"')
         self.verb = value.upper()
 
     def get_headers(self):
@@ -107,5 +108,6 @@ class UrlDocument(Document):
             Example:
                 [["Authorization", "Bearer my-token"], ["Set-Cookie", "session=abc"]]
         '''
-        assert isinstance(value, list) and all(isinstance(pair, (list, tuple)) and len(pair) == 2 for pair in value)
+        if not isinstance(value, list) or not all(isinstance(pair, (list, tuple)) and len(pair) == 2 for pair in value):
+            raise ValueError('headers must be a list of [name, value] pairs')
         self.headers = [list(pair) for pair in value]

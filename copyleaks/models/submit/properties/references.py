@@ -39,5 +39,6 @@ class References:
             Parameters:
                 value: Boolean.
         '''
-        assert isinstance(value, bool)
+        if not isinstance(value, bool):
+            raise TypeError('validate must be True or False')
         self.validate = value

@@ -16,6 +16,8 @@ from copyleaks.models.ImagePlagiarism.Requests.CopyleaksImagePlagiarismRequestMo
 from copyleaks.models.TextModeration.Requests.CopyleaksTextModerationLabel import CopyleaksTextModerationLabel
 from copyleaks.models.TextModeration.Requests.CopyleaksTextModerationRequestModel import CopyleaksTextModerationRequestModel
 from copyleaks.models.VideoDetection.Requests.CopyleaksAiVideoDetectionRequestModel import CopyleaksAiVideoDetectionRequestModel
+from copyleaks.models.delete import Delete
+from copyleaks.models.export import Export
 from copyleaks.models.submit.ai_detection_document import NaturalLanguageDocument
 from copyleaks.models.submit.document import FileDocument, UrlDocument
 from copyleaks.models.submit.properties.ai_generated_text import AIGeneratedText
@@ -205,21 +207,44 @@ class NewScanPropertiesTest(unittest.TestCase):
         self.assertIs(scanning.get_copylekas_db(), copyleaks_db)
 
     def test_limits(self):
+        # The setters added in 6.0.0 raise ValueError or TypeError, so they also validate under `python -O`.
         exclude = ScanningExclude()
-        with self.assertRaises(AssertionError):
+        with self.assertRaises(ValueError):
             exclude.set_backlinks_domains(['d%d.com' % i for i in range(11)])
-        with self.assertRaises(AssertionError):
+        with self.assertRaises(ValueError):
+            exclude.set_backlinks_domains([''])
+        with self.assertRaises(ValueError):
             exclude.set_text(['x' * 31])
-        with self.assertRaises(AssertionError):
+        with self.assertRaises(ValueError):
             exclude.set_text(['a', 'b', 'c', 'd', 'e', 'f'])
-        with self.assertRaises(AssertionError):
-            exclude.set_id_pattern(True)
         ai = AIGeneratedText()
-        for bad in (0, 4, True, '2'):
-            with self.assertRaises(AssertionError):
+        for bad in (0, 4):
+            with self.assertRaises(ValueError):
                 ai.set_sensitivity(bad)
+        for bad in (True, '2', 2.0):
+            with self.assertRaises(TypeError):
+                ai.set_sensitivity(bad)
+        properties = ScanProperties(WEBHOOK)
+        with self.assertRaises(TypeError):
+            properties.set_course('course-1')
+        with self.assertRaises(TypeError):
+            properties.set_references(True)
+        with self.assertRaises(ValueError):
+            properties.set_scan_time_zone('')
+        with self.assertRaises(ValueError):
+            ScanningInclude().set_id_pattern('')
+        with self.assertRaises(ValueError):
+            Course().set_id('')
+        for setter in (Overview().set_enable, SensitiveDataProtection().set_email_address, WritingFeedback().set_enable,
+                       References().set_validate, Indexing().set_copyleaks_db, InternalAISourceMatch().set_enable,
+                       AIGeneratedTextExplain().set_enable):
+            with self.assertRaises(TypeError):
+                setter('yes')
+
+    @unittest.skipUnless(__debug__, 'assert statements are stripped by python -O')
+    def test_id_pattern_must_be_a_string(self):
         with self.assertRaises(AssertionError):
-            ScanProperties(WEBHOOK).set_course('course-1')
+            ScanningExclude().set_id_pattern(True)
 
     def test_score_weights_accept_zero_and_reject_out_of_range(self):
         weights = ScoreWeights()
@@ -227,10 +252,12 @@ class NewScanPropertiesTest(unittest.TestCase):
                        'set_sentence_structure_score_weight', 'set_word_choice_score_weight'):
             getattr(weights, setter)(0.0)
             getattr(weights, setter)(1.0)
-            with self.assertRaises(AssertionError):
+            with self.assertRaises(ValueError):
                 getattr(weights, setter)(1.5)
-            with self.assertRaises(AssertionError):
+            with self.assertRaises(ValueError):
                 getattr(weights, setter)(-0.1)
+            with self.assertRaises(TypeError):
+                getattr(weights, setter)('0.5')
 
 
 class GetterAndValidationFixesTest(unittest.TestCase):
@@ -264,19 +291,25 @@ class GetterAndValidationFixesTest(unittest.TestCase):
 
     def test_url_document_verb_validation(self):
         doc = UrlDocument()
-        with self.assertRaises(AssertionError):
+        with self.assertRaises(ValueError):
             doc.set_verb('DELETE')
-        with self.assertRaises(AssertionError):
+        with self.assertRaises(ValueError):
             doc.set_headers([['only-a-name']])
+        with self.assertRaises(ValueError):
+            Delete().set_headers('Authorization: x')
+        with self.assertRaises(ValueError):
+            Export().set_completion_webhook_headers([('a', 'b', 'c')])
 
     def test_natural_language_document(self):
         doc = NaturalLanguageDocument('text')
         doc.set_explain(False)
         doc.set_sensitivity(2)
         self.assertEqual(wire(doc), {'text': 'text', 'explain': False, 'sensitivity': 2})
-        with self.assertRaises(AssertionError):
+        with self.assertRaises(ValueError):
             doc.set_sensitivity(5)
-        with self.assertRaises(AssertionError):
+        with self.assertRaises(TypeError):
+            doc.set_sensitivity('2')
+        with self.assertRaises(TypeError):
             doc.set_explain('yes')
 
 

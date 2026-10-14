@@ -29,6 +29,7 @@ from copyleaks.models.ImageDetection.Responses.CopyleaksAiImageDetectionImageInf
 from copyleaks.models.ImageDetection.Responses.CopyleaksAiImageDetectionResultModel import CopyleaksAiImageDetectionResultModel
 from copyleaks.models.ImageDetection.Responses.CopyleaksAiImageDetectionScannedDocumentModel import CopyleaksAiImageDetectionScannedDocumentModel
 from copyleaks.models.ImageDetection.Responses.CopyleaksAiImageDetectionSummaryModel import CopyleaksAiImageDetectionSummaryModel
+from copyleaks.models.submit.Webhooks.HelperModels.ErrorModels.ErrorModel import ErrorModel
 
 
 class CopyleaksAiImageDetectionResponseModel(BaseModel):
@@ -36,10 +37,18 @@ class CopyleaksAiImageDetectionResponseModel(BaseModel):
     Response model for Copyleaks AI image detection analysis.
     Contains the AI detection results, image information, and scan metadata.
     It is also the payload of the asynchronous AI Image Detection webhook:
-    `CopyleaksAiImageDetectionResponseModel(**request.json)`.
+    `CopyleaksAiImageDetectionResponseModel(**request.json)`. In a webhook, check `error` first: when the scan
+    failed, the webhook has `error` and `developer_payload` and no result.
+    Fields that the model does not define are kept.
     """
 
-    model_config = ConfigDict(populate_by_name=True)
+    model_config = ConfigDict(populate_by_name=True, extra='allow')
+
+    error: Optional[ErrorModel] = Field(
+        default=None,
+        description="Why an asynchronous scan failed, in its webhook. None when the scan succeeded.",
+        alias="error"
+    )
 
     model: Optional[str] = Field(
         default=None,

@@ -49,7 +49,7 @@ class ErrorDetailModel(CopyleaksWebhookBaseModel):
 
 class ErrorModel(CopyleaksWebhookBaseModel):
     """
-    The error of the error webhook.
+    The error of the error webhook, and of a failed AI Image or AI Video Detection webhook.
     """
     __positional_fields__ = ('code', 'message')
 

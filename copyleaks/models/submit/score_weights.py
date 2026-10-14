@@ -24,8 +24,10 @@
 
 
 def _validate_weight(value):
-    assert isinstance(value, (int, float)) and not isinstance(value, bool) and 0.0 <= value <= 1.0, \
-        'score weights must be numbers from 0.0 to 1.0'
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise TypeError('score weights must be numbers')
+    if not 0.0 <= value <= 1.0:
+        raise ValueError('score weights must be from 0.0 to 1.0')
 
 
 class ScoreWeights:

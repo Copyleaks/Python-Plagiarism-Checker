@@ -26,6 +26,7 @@ from typing import Optional
 from pydantic import ConfigDict, Field
 
 from copyleaks.helpers.copyleaks_dict_access_mixin import CopyleaksDictAccessMixin
+from copyleaks.models.submit.Webhooks.HelperModels.ErrorModels.ErrorModel import ErrorModel
 from copyleaks.models.VideoDetection.Responses.CopyleaksAiVideoDetectionScannedVideoModel import CopyleaksAiVideoDetectionScannedVideoModel
 from copyleaks.models.VideoDetection.Responses.CopyleaksAiVideoDetectionSummaryModel import CopyleaksAiVideoDetectionSummaryModel
 from copyleaks.models.VideoDetection.Responses.CopyleaksAiVideoDetectionTrackResultModel import CopyleaksAiVideoDetectionTrackResultModel
@@ -36,10 +37,18 @@ class CopyleaksAiVideoDetectionResponseModel(CopyleaksDictAccessMixin):
     """
     Result of AI Video Detection, delivered to the webhook of `VideoDetectionClient.submit`.
     Parse the webhook body with `CopyleaksAiVideoDetectionResponseModel(**request.json)`.
+    Check `error` first: when the scan failed, the webhook has `error` and `developer_payload` and no result.
     Positions and lengths of the track results are in milliseconds.
+    Fields that the model does not define are kept.
     """
 
-    model_config = ConfigDict(populate_by_name=True, protected_namespaces=())
+    model_config = ConfigDict(populate_by_name=True, extra='allow', protected_namespaces=())
+
+    error: Optional[ErrorModel] = Field(
+        default=None,
+        description="Why the scan failed. None when the scan succeeded.",
+        alias="error"
+    )
 
     model: Optional[str] = Field(
         default=None,

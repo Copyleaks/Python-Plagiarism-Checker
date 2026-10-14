@@ -56,8 +56,10 @@ class ScanningExclude:
             Parameters:
                 value: List of up to 10 domains, each 1 to 256 characters.
         '''
-        assert isinstance(value, list) and len(value) <= 10
-        assert all(isinstance(domain, str) and 1 <= len(domain) <= 256 for domain in value)
+        if not isinstance(value, list) or len(value) > 10:
+            raise ValueError('backlinks_domains must be a list of up to 10 domains')
+        if not all(isinstance(domain, str) and 1 <= len(domain) <= 256 for domain in value):
+            raise ValueError('each backlinks domain must be a string of 1 to 256 characters')
 
         self.backlinksDomains = value
 
@@ -74,7 +76,9 @@ class ScanningExclude:
             Parameters:
                 value: List of up to 5 phrases, each 1 to 30 characters.
         '''
-        assert isinstance(value, list) and len(value) <= 5
-        assert all(isinstance(phrase, str) and 1 <= len(phrase) <= 30 for phrase in value)
+        if not isinstance(value, list) or len(value) > 5:
+            raise ValueError('text must be a list of up to 5 phrases')
+        if not all(isinstance(phrase, str) and 1 <= len(phrase) <= 30 for phrase in value):
+            raise ValueError('each text phrase must be a string of 1 to 30 characters')
 
         self.text = value

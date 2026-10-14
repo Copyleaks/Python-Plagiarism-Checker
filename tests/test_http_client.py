@@ -1,7 +1,7 @@
 '''
 Unit tests for the shared HTTP layer: one keep-alive session, default and per-call timeouts,
-error mapping (429, 503 and other statuses) on every endpoint, and no output on stdout.
-No network calls are made.
+error mapping (429, 503 and other statuses) on every endpoint, read timeouts, fork safety and no output on stdout.
+No calls leave the machine: the read timeout test uses a local server on 127.0.0.1.
 
 Run from the repository root:
     python -m unittest discover -s tests -v
@@ -9,7 +9,11 @@ Run from the repository root:
 import base64
 import contextlib
 import io
+import os
+import threading
+import time
 import unittest
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from unittest.mock import patch
 
 import requests
@@ -128,9 +132,34 @@ class SessionTest(unittest.TestCase):
 
     def test_default_session_retries_only_connection_errors(self):
         retries = Copyleaks.get_session().get_adapter('https://api.copyleaks.com').max_retries
-        self.assertEqual(retries.read, 0)
+        self.assertIs(retries.read, False)
         self.assertEqual(retries.status, 0)
         self.assertGreater(retries.connect, 0)
+
+    @unittest.skipUnless(hasattr(os, 'fork'), 'needs os.fork')
+    def test_forked_child_gets_a_new_default_session(self):
+        parent = Copyleaks.get_session()
+        self.assertIs(self._in_forked_child(lambda: Copyleaks.get_session() is not parent), True)
+        own = requests.Session()
+        Copyleaks.set_session(own)
+        self.assertIs(self._in_forked_child(lambda: Copyleaks.get_session() is own), True)
+
+    @staticmethod
+    def _in_forked_child(check):
+        '''Run `check` in a forked child and return its boolean result (None if the child failed).'''
+        read_end, write_end = os.pipe()
+        pid = os.fork()
+        if pid == 0:
+            try:
+                os.close(read_end)
+                os.write(write_end, b'1' if check() else b'0')
+            finally:
+                os._exit(0)
+        os.close(write_end)
+        with os.fdopen(read_end, 'rb') as pipe:
+            result = pipe.read()
+        os.waitpid(pid, 0)
+        return {b'1': True, b'0': False}.get(result)
 
     def test_every_endpoint_uses_the_shared_session(self):
         session = Copyleaks.get_session()
@@ -194,6 +223,46 @@ class TimeoutTest(HttpTestCase):
                 Copyleaks.set_timeout(bad)
         with self.assertRaises(ValueError):
             Copyleaks.release_notes(timeout=-5)
+
+
+class _SlowHandler(BaseHTTPRequestHandler):
+    def _respond_late(self):
+        length = int(self.headers.get('Content-Length') or 0)
+        if length:
+            self.rfile.read(length)
+        time.sleep(0.5)
+        try:
+            self.send_response(200)
+            self.send_header('Content-Length', '2')
+            self.end_headers()
+            self.wfile.write(b'{}')
+        except OSError:  # the client has already given up
+            pass
+
+    do_GET = do_PUT = do_POST = _respond_late
+
+    def log_message(self, *args):
+        pass
+
+
+class ReadTimeoutTest(unittest.TestCase):
+    '''A real local server that answers after the read timeout, through the SDK's default session.'''
+
+    def setUp(self):
+        CopyleaksHttpClient.set_session(None)
+        self.addCleanup(CopyleaksHttpClient.set_session, None)
+        server = ThreadingHTTPServer(('127.0.0.1', 0), _SlowHandler)
+        server.daemon_threads = True
+        threading.Thread(target=server.serve_forever, daemon=True).start()
+        self.addCleanup(server.server_close)
+        self.addCleanup(server.shutdown)
+        self.url = 'http://127.0.0.1:%d/x' % server.server_address[1]
+
+    def test_read_timeout_raises_timeout_on_every_method(self):
+        for method in ('GET', 'PUT', 'POST'):
+            data = None if method == 'GET' else b'{}'
+            with self.assertRaises(requests.exceptions.Timeout, msg=method):
+                CopyleaksHttpClient.request(method, self.url, headers={}, data=data, timeout=(2, 0.1))
 
 
 class ErrorMappingTest(HttpTestCase):

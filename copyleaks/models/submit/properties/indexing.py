@@ -56,6 +56,7 @@ class Indexing:
             Parameters:
                 value: Boolean.
         '''
-        assert isinstance(value, bool)
+        if not isinstance(value, bool):
+            raise TypeError('copyleaks_db must be True or False')
 
         self.copyleaksDb = value

@@ -40,5 +40,6 @@ class AIGeneratedTextExplain:
             Parameters:
                 value: Boolean.
         '''
-        assert isinstance(value, bool)
+        if not isinstance(value, bool):
+            raise TypeError('enable must be True or False')
         self.enable = value

@@ -397,7 +397,8 @@ class ScanProperties:
             Parameters:
                 value: String. A case-sensitive IANA time zone name, for example "America/New_York".
         '''
-        assert isinstance(value, str) and value
+        if not isinstance(value, str) or not value:
+            raise ValueError('scan_time_zone must be a non-empty string')
         self.scanTimeZone = value
 
     def get_course(self):
@@ -413,7 +414,8 @@ class ScanProperties:
             Parameters:
                 value: `Course`.
         '''
-        assert isinstance(value, Course)
+        if not isinstance(value, Course):
+            raise TypeError('value must be a `Course`')
         self.course = value
 
     def get_assignment(self):
@@ -429,7 +431,8 @@ class ScanProperties:
             Parameters:
                 value: `Assignment`.
         '''
-        assert isinstance(value, Assignment)
+        if not isinstance(value, Assignment):
+            raise TypeError('value must be an `Assignment`')
         self.assignment = value
 
     def get_institution(self):
@@ -445,7 +448,8 @@ class ScanProperties:
             Parameters:
                 value: `Institution`.
         '''
-        assert isinstance(value, Institution)
+        if not isinstance(value, Institution):
+            raise TypeError('value must be an `Institution`')
         self.institution = value
 
     def get_sensitive_data_protection(self):
@@ -462,7 +466,8 @@ class ScanProperties:
             Parameters:
                 value: `SensitiveDataProtection`.
         '''
-        assert isinstance(value, SensitiveDataProtection)
+        if not isinstance(value, SensitiveDataProtection):
+            raise TypeError('value must be a `SensitiveDataProtection`')
         self.sensitiveDataProtection = value
 
     def get_writing_feedback(self):
@@ -478,7 +483,8 @@ class ScanProperties:
             Parameters:
                 value: `WritingFeedback`.
         '''
-        assert isinstance(value, WritingFeedback)
+        if not isinstance(value, WritingFeedback):
+            raise TypeError('value must be a `WritingFeedback`')
         self.writingFeedback = value
 
     def get_overview(self):
@@ -494,7 +500,8 @@ class ScanProperties:
             Parameters:
                 value: `Overview`.
         '''
-        assert isinstance(value, Overview)
+        if not isinstance(value, Overview):
+            raise TypeError('value must be an `Overview`')
         self.overview = value
 
     def get_internal_ai_source_match(self):
@@ -511,7 +518,8 @@ class ScanProperties:
             Parameters:
                 value: `InternalAISourceMatch` (an `AISourceMatch` is accepted too).
         '''
-        assert isinstance(value, AISourceMatch)
+        if not isinstance(value, AISourceMatch):
+            raise TypeError('value must be an `AISourceMatch`')
         self.internalAiSourceMatch = value
 
     def get_references(self):
@@ -527,5 +535,6 @@ class ScanProperties:
             Parameters:
                 value: `References`.
         '''
-        assert isinstance(value, References)
+        if not isinstance(value, References):
+            raise TypeError('value must be a `References`')
         self.references = value

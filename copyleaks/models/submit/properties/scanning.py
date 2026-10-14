@@ -127,7 +127,8 @@ class Scanning:
             Parameters:
                 value: `ScanningInclude`.
         '''
-        assert value
+        if not value:
+            raise ValueError('include is required')
 
         self.include = value
 

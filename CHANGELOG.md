@@ -36,9 +36,11 @@ This is a major release. It adds AI Video Detection, Image Plagiarism Detection,
   - `Delete.set_headers(...)` for the completion webhook.
   - `Export.set_completion_webhook_headers(...)`, and the export targets `Export.set_ai_detection(ExportAiDetection)`, `set_writing_feedback(ExportWritingFeedback)` and `set_overview(ExportOverview)`.
   - `NaturalLanguageDocument.set_explain(...)` (AI Logic) and `NaturalLanguageDocument.set_sensitivity(1 to 3)` for AI Text Detection.
+  - The new setters raise `ValueError` or `TypeError` for an invalid value, also when Python runs with `-O`.
 - **New response and webhook fields.**
   - Completed webhook: `developer_payload`, `scanned_document`, `references_validation`, `results.internal_ai_data` and typed `results`.
   - Error webhook: `error.type`, `error.id`, `error.url` and `error.details`.
+  - AI Video Detection and asynchronous AI Image Detection webhooks: `error` (`type`, `id`, `code`, `message`, `url`, `details`) when the scan failed. Check it before you read the result. Fields the models do not define are kept.
   - New result webhook: `internal_ai_data`.
   - Text Moderation response: `modelVersion`.
 - **Timeouts and connections.** `Copyleaks.set_timeout(...)` and `Copyleaks.get_timeout()` set the default timeout of every call, and every method that calls the API accepts `timeout=` for that call. `Copyleaks.set_session(...)` sends the calls through your own `requests.Session`, for example to use a proxy.
@@ -59,7 +61,7 @@ This is a major release. It adds AI Video Detection, Image Plagiarism Detection,
 
 ### Changed
 
-- **One shared connection pool.** Every call goes through one `requests.Session`, so TCP and TLS connections are kept alive and reused instead of opened for every call. The default session retries connection errors only, never a request that may have reached the server.
+- **One shared connection pool.** Every call goes through one `requests.Session`, so TCP and TLS connections are kept alive and reused instead of opened for every call. The default session retries connection errors only, never a request that may have reached the server. A process created with `os.fork()` (for example by `multiprocessing` or a pre-fork server) creates its own default session instead of sharing the parent's connections.
 - **Every call has a timeout.** The default is 10 seconds to connect and 180 seconds to read the response. Earlier versions waited forever.
 - **HTTP 429 raises `RateLimitError` on every call.** Earlier versions did this only for the credits balance and the usage history, and raised `CommandError` everywhere else. `RateLimitError` is now a subclass of `CommandError`, so code that catches `CommandError` still catches it.
 - **AI Text Detection and Grammar Checker responses are models, not dicts.** See the upgrade notes.
@@ -89,6 +91,7 @@ This is a major release. It adds AI Video Detection, Image Plagiarism Detection,
 ### Upgrade notes
 
 - **Install:** `pip install --upgrade copyleaks`. If you pin versions, change the pin to `copyleaks>=6,<7`. The package name and import paths are unchanged.
+- **Python 3.8 or later, with pydantic 2.** Earlier READMEs listed Python 3.6, which pydantic 2 does not support.
 - **Cross-language scans now run, and cost credits.** If your code called `Scanning.set_cross_languages`, those scans were plain scans in 5.x. In 6.0.0 they scan the extra languages, and each additional language uses credits per page. Remove the call if you do not want cross-language scans. Get the supported languages with `Copyleaks.allowed_cross_languages()`.
 - **PDF report colors now apply.** Colors set with `Pdf.set_report_customization_colors` were ignored in 5.x and now change the PDF report.
 - **Timeouts.** A call that takes longer than the timeout now raises `requests.exceptions.Timeout`. If you send very long texts or large files, raise the timeout with `Copyleaks.set_timeout((10, 600))` or `timeout=` on the call. `Copyleaks.set_timeout(None)` restores the 5.x behavior of no timeout.
@@ -113,5 +116,6 @@ This is a major release. It adds AI Video Detection, Image Plagiarism Detection,
   If you need a plain dict, call `response.model_dump(by_alias=True, exclude_unset=True)`. For new code, prefer attributes such as `response.summary.ai`.
 - **Typed responses: errors.** If the server returns a success response whose body does not match the model, the call raises `pydantic.ValidationError`.
 - **Webhook models.** The nested webhook values (`results`, `notifications`, `error`, `score`, `tasks` and the result lists) are now models instead of raw dicts. The dict-style reads above still work, but `isinstance(..., dict)` and `json.dumps(...)` on them do not; use `model_dump(by_alias=True)` to get the JSON back. Prefer attributes, for example `completed.notifications.alerts`, `alert.code` and `alert.additional_data`. The helper models now keep their data in public fields: code that built them by hand and read underscore attributes such as `_scan_id`, `_code` or `_additional_data` should use `scan_id`, `code` and `additional_data`. The keyword arguments `id_val` and `endpont` still work and map to `id` and `endpoint`.
-- **AI Image Detection response.** All fields of `CopyleaksAiImageDetectionResponseModel` are now optional. `result` is `None` when the request used the "none" mask type.
-- **Request objects.** `toJSON()` returns compact JSON. `Pdf` stores its colors in `colors` (was `report_customization_colors`) and `Scanning` stores cross-languages in `crossLanguages` (was `cross_languages`); use the getters. `ScoreWeights` setters accept only numbers from `0.0` to `1.0`.
+- **AI Image Detection response.** All fields of `CopyleaksAiImageDetectionResponseModel` are now optional. `result` is `None` when the request used the "none" mask type. Fields that the model does not define are kept, so `model_dump()` returns them too.
+- **`ScanningExclude.set_id_pattern` takes a string.** It accepted only booleans in 5.x. It now takes the pattern string, for example `"abc*"`, and `set_id_pattern(True)` raises `AssertionError`.
+- **Request objects.** `toJSON()` returns compact JSON. `Pdf` stores its colors in `colors` (was `report_customization_colors`) and `Scanning` stores cross-languages in `crossLanguages` (was `cross_languages`); use the getters. `ScoreWeights` setters accept only numbers from `0.0` to `1.0`, and raise `ValueError` or `TypeError` otherwise.

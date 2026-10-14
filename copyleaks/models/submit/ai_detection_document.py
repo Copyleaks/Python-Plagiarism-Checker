@@ -73,7 +73,8 @@ class NaturalLanguageDocument(AiDetectionDocument):
             Parameters:
                 value: Boolean.
         """
-        assert isinstance(value, bool)
+        if not isinstance(value, bool):
+            raise TypeError('explain must be True or False')
         self.explain = value
 
     def get_sensitivity(self):
@@ -91,5 +92,8 @@ class NaturalLanguageDocument(AiDetectionDocument):
             Parameters:
                 value: Integer from 1 to 3.
         """
-        assert isinstance(value, int) and not isinstance(value, bool) and 1 <= value <= 3
+        if isinstance(value, bool) or not isinstance(value, int):
+            raise TypeError('sensitivity must be an integer')
+        if not 1 <= value <= 3:
+            raise ValueError('sensitivity must be from 1 to 3')
         self.sensitivity = value

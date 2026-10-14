@@ -39,5 +39,6 @@ class ScanningInclude:
             Parameters:
                 value: String. For example "course-a-*".
         '''
-        assert isinstance(value, str) and value
+        if not isinstance(value, str) or not value:
+            raise ValueError('id_pattern must be a non-empty string')
         self.idPattern = value

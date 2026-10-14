@@ -23,6 +23,7 @@
 '''
 
 import logging
+import os
 import threading
 
 import requests
@@ -45,11 +46,12 @@ def _connect_only_retry():
     """
     Retry only connection errors, which happen before the request reaches the server.
     Read errors and error statuses are never retried, so a request that may have been processed
-    (and charged) is never sent twice.
+    (and charged) is never sent twice. `read=False` (not 0) re-raises a read timeout as is, so it reaches
+    the caller as `requests.exceptions.ReadTimeout` instead of a `ConnectionError`.
     """
     if Retry is None:
         return 0
-    kwargs = dict(total=2, connect=2, read=0, status=0, backoff_factor=0.5, raise_on_status=False)
+    kwargs = dict(total=2, connect=2, read=False, status=0, backoff_factor=0.5, raise_on_status=False)
     try:
         return Retry(other=0, **kwargs)
     except TypeError:  # urllib3 older than 1.26 has no `other`
@@ -70,6 +72,7 @@ class CopyleaksHttpClient:
 
     _lock = threading.Lock()
     _session = None
+    _owns_session = False
     _timeout = DEFAULT_TIMEOUT
 
     @classmethod
@@ -88,6 +91,7 @@ class CopyleaksHttpClient:
             with cls._lock:
                 if cls._session is None:
                     cls._session = cls._create_session()
+                    cls._owns_session = True
                 session = cls._session
         return session
 
@@ -101,6 +105,17 @@ class CopyleaksHttpClient:
             raise TypeError('session must be a requests.Session or None')
         with cls._lock:
             cls._session = session
+            cls._owns_session = False
+
+    @classmethod
+    def _after_fork_in_child(cls):
+        # A forked child must not share the parent's pooled connections, so the SDK's own session is created
+        # again on first use. A session passed to `set_session` is kept. The lock may have been held by another
+        # thread of the parent at fork time, so it is replaced.
+        cls._lock = threading.Lock()
+        if cls._owns_session:
+            cls._session = None
+            cls._owns_session = False
 
     @classmethod
     def get_timeout(cls):
@@ -165,3 +180,7 @@ class CopyleaksHttpClient:
         if status == 503:
             raise UnderMaintenanceError(response)
         raise CommandError(response)
+
+
+if hasattr(os, 'register_at_fork'):  # not available on Windows
+    os.register_at_fork(after_in_child=CopyleaksHttpClient._after_fork_in_child)

@@ -120,7 +120,8 @@ class ReportCustomizationColors:
 
             value: string
         '''
-        assert value
+        if not value:
+            raise ValueError('ai_detection is required')
 
         self.aiDetection = value
 
@@ -136,6 +137,7 @@ class ReportCustomizationColors:
 
             value: string
         '''
-        assert value
+        if not value:
+            raise ValueError('writing_feedback is required')
 
         self.writingFeedback = value

@@ -61,7 +61,8 @@ class Export:
             Example:
                 [["header-key1", "header-value1"], ["header-key2", "header-value2"]]
         '''
-        assert isinstance(value, list) and all(isinstance(pair, (list, tuple)) and len(pair) == 2 for pair in value)
+        if not isinstance(value, list) or not all(isinstance(pair, (list, tuple)) and len(pair) == 2 for pair in value):
+            raise ValueError('headers must be a list of [name, value] pairs')
 
         self.completionWebhookHeaders = [list(pair) for pair in value]
 
@@ -174,7 +175,8 @@ class Export:
                 value: `ExportAiDetection`.
         '''
 
-        assert value
+        if not value:
+            raise ValueError('ai_detection is required')
 
         self.aiDetection = value
 
@@ -193,7 +195,8 @@ class Export:
                 value: `ExportWritingFeedback`.
         '''
 
-        assert value
+        if not value:
+            raise ValueError('writing_feedback is required')
 
         self.writingFeedback = value
 
@@ -212,7 +215,8 @@ class Export:
                 value: `ExportOverview`.
         '''
 
-        assert value
+        if not value:
+            raise ValueError('overview is required')
 
         self.overview = value
 

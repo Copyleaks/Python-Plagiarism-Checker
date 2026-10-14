@@ -41,5 +41,6 @@ class Institution:
             Parameters:
                 value: String.
         '''
-        assert value
+        if not value:
+            raise ValueError('id is required')
         self.id = value

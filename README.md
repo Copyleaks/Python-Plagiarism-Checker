@@ -1,5 +1,5 @@
 # Copyleaks SDK
-The official [Copyleaks](https://copyleaks.com/) Python library, supporting Python versions: Python 3.6.+
+The official [Copyleaks](https://copyleaks.com/) Python library, supporting Python 3.8 and later.
 
 Copyleaks is the integrity layer for your tech stack that helps organizations and individuals understand what's human-made and original, AI-generated, or manipulated across text, image, audio and video.
 
@@ -311,7 +311,7 @@ request = CopyleaksAiImageDetectionAsyncRequestModel(
 )
 Copyleaks.ImageDetectionClient.submit_async(auth_token, scan_id, request)
 ```
-The result is posted to your webhook. Parse it with `CopyleaksAiImageDetectionResponseModel(**request.json)` (from `copyleaks.models.ImageDetection.Responses.CopyleaksAiImageDetectionResponseModel`).
+The result is posted to your webhook. Parse it with `CopyleaksAiImageDetectionResponseModel(**request.json)` (from `copyleaks.models.ImageDetection.Responses.CopyleaksAiImageDetectionResponseModel`). Check `error` first: when the scan failed, it is set and there is no result.
 
 For a full guide please refer to our step by step [Guide](https://docs.copyleaks.com/guides/ai-detector/ai-image-detection/)
 
@@ -340,7 +340,10 @@ In your webhook handler, parse the result:
 from copyleaks.models.VideoDetection.Responses.CopyleaksAiVideoDetectionResponseModel import CopyleaksAiVideoDetectionResponseModel
 
 result = CopyleaksAiVideoDetectionResponseModel(**request.json)
-print(f"AI detected: {result.is_ai_detected}, overall AI ratio: {result.summary.overall_ai_ratio}")
+if result.error is not None:  # the scan failed
+    print(f"Scan failed: {result.error.code} {result.error.message}")
+else:
+    print(f"AI detected: {result.is_ai_detected}, overall AI ratio: {result.summary.overall_ai_ratio}")
 ```
 For more details, refer to the AI Video Detection [Documentation](https://docs.copyleaks.com/reference/actions/ai-video-detector/submit)
 ##

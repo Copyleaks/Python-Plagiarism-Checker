@@ -41,7 +41,8 @@ class WritingFeedback:
             Parameters:
                 value: Boolean.
         '''
-        assert isinstance(value, bool)
+        if not isinstance(value, bool):
+            raise TypeError('enable must be True or False')
         self.enable = value
 
     def get_score(self):
@@ -54,5 +55,6 @@ class WritingFeedback:
             Parameters:
                 value: `ScoreWeights`.
         '''
-        assert isinstance(value, ScoreWeights)
+        if not isinstance(value, ScoreWeights):
+            raise TypeError('value must be a `ScoreWeights`')
         self.score = value

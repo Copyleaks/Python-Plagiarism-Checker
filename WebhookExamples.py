@@ -46,7 +46,7 @@ from werkzeug.serving import make_server
 #- /webhook/completed         --> Triggered when scan is completed
 #- /webhook/error             --> Triggered when a scan errors
 #- /webhook/indexed           --> Triggered when scan is indexed
-#- /webhook/creditsChecked    --> Triggered after credit check
+#- /webhook/creditschecked    --> Triggered after credit check (the {STATUS} placeholder is lowercase)
 #
 #Usage with Ngrok (example):
 #    ngrok http 5000
@@ -140,7 +140,7 @@ def webhook_indexed():
     return jsonify({'message': f'Indexed received - {indexed_data}'}), 200
 
 # === Webhook: Credits Checked ===
-@app.route('/webhook/creditsChecked', methods=['POST'])
+@app.route('/webhook/creditschecked', methods=['POST'])
 def webhook_credits_checked():
     logging.info("[Webhook] CREDITS CHECKED")
     logging.info("Payload:")

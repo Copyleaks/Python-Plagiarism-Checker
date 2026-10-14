@@ -30,7 +30,8 @@ class SensitiveDataProtection:
 
     @staticmethod
     def _check(value):
-        assert isinstance(value, bool)
+        if not isinstance(value, bool):
+            raise TypeError('value must be True or False')
         return value
 
     def get_drivers_license(self):
