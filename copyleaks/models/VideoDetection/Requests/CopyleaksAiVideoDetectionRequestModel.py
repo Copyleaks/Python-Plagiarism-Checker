@@ -1,39 +1,9 @@
 from typing import List, Optional
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
-from copyleaks.models.ImageDetection.Requests.CopyleaksAiImageDetectionAsyncRequestModel import validate_headers
+from copyleaks.models.shared.CopyleaksDetectionWebhooksModel import CopyleaksDetectionWebhooksModel, validate_headers
 
 SUPPORTED_VIDEO_EXTENSIONS = ['.mp4', '.avi', '.mov', '.mkv', '.webm', '.flv', '.wmv', '.mpg', '.m4v', '.3gp', '.mxf']
-
-
-class CopyleaksAiVideoDetectionWebhooksModel(BaseModel):
-    """Where Copyleaks sends the result of an AI Video Detection."""
-
-    model_config = ConfigDict(populate_by_name=True)
-
-    url: str = Field(
-        ...,
-        description="The URL that Copyleaks will POST the detection result to.",
-        alias="url"
-    )
-
-    headers: Optional[List[List[str]]] = Field(
-        default=None,
-        description="Custom headers for the webhook request, as [name, value] pairs.",
-        alias="headers"
-    )
-
-    @field_validator('url')
-    @classmethod
-    def validate_url(cls, v):
-        if not v or not v.strip():
-            raise ValueError('webhooks url is required')
-        return v
-
-    @field_validator('headers', mode='before')
-    @classmethod
-    def validate_headers(cls, v):
-        return validate_headers(v)
 
 
 class CopyleaksAiVideoDetectionRequestModel(BaseModel):
@@ -64,7 +34,7 @@ class CopyleaksAiVideoDetectionRequestModel(BaseModel):
         alias="model"
     )
 
-    webhooks: CopyleaksAiVideoDetectionWebhooksModel = Field(
+    webhooks: CopyleaksDetectionWebhooksModel = Field(
         ...,
         description="Where to send the result. A dict such as {\"url\": \"https://...\"} is accepted.",
         alias="webhooks"

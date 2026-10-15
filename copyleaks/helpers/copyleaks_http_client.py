@@ -3,11 +3,13 @@ import os
 import threading
 
 import requests
+from pydantic import BaseModel
 from requests.adapters import HTTPAdapter
 
 from copyleaks.exceptions.command_error import CommandError
 from copyleaks.exceptions.rate_limit_error import RateLimitError
 from copyleaks.exceptions.under_maintenance_error import UnderMaintenanceError
+from copyleaks.helpers.copyleaks_client_helper import CopyleaksClientHelper
 
 logger = logging.getLogger('copyleaks')
 logger.addHandler(logging.NullHandler())
@@ -16,6 +18,8 @@ try:
     from urllib3.util.retry import Retry
 except ImportError:  # pragma: no cover
     Retry = None
+
+_NO_AUTH = object()
 
 
 def _connect_only_retry():
@@ -103,6 +107,32 @@ class CopyleaksHttpClient:
                 continue
             if isinstance(value, bool) or not isinstance(value, (int, float)) or value <= 0:
                 raise ValueError('timeout values must be positive numbers of seconds')
+
+    @classmethod
+    def send(cls, method, url, auth_token=_NO_AUTH, json=None, form=None, files=None, content_type=None,
+             timeout=None, response_model=None):
+        """
+        Send an API call. Returns `response_model` parsed from the JSON body, or the `requests.Response` without one.
+        A given `auth_token` (even None) is checked, then sent as a Bearer token. `json` (a request object or pydantic
+        model) is sent as compact JSON with a JSON `content_type`; `form` and `files` as multipart.
+        Errors as in `request`.
+        """
+        if auth_token is _NO_AUTH:
+            auth_token = None
+        else:
+            CopyleaksClientHelper.verify_auth_token(auth_token)
+        data = form
+        if json is not None:
+            content_type = content_type or 'application/json'
+            if isinstance(json, BaseModel):
+                data = CopyleaksClientHelper.model_to_json_bytes(json)
+            else:
+                data = CopyleaksClientHelper.to_json_bytes(json)
+        headers = CopyleaksClientHelper.headers(auth_token, content_type)
+        response = cls.request(method, url, headers=headers, data=data, files=files, timeout=timeout)
+        if response_model is None:
+            return response
+        return response_model.model_validate(response.json())
 
     @classmethod
     def request(cls, method, url, headers=None, data=None, files=None, timeout=None):

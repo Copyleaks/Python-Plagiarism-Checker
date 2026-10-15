@@ -46,7 +46,10 @@ class Copyleaks(object):
 
     @staticmethod
     def set_timeout(timeout):
-        '''Default timeout of every API call: seconds, a (connect, read) tuple, or None. SDK default: (10, 180).'''
+        '''
+        Default timeout of every API call: seconds, a (connect, read) tuple, or None. SDK default: (10, 180).
+        The read timeout is the longest wait for data from the server, not a limit on the whole call.
+        '''
         CopyleaksHttpClient.set_timeout(timeout)
 
     @staticmethod
@@ -75,15 +78,7 @@ class Copyleaks(object):
         assert email and key
 
         url = f"{Consts.IDENTITY_SERVER_URI}/v3/account/login/api"
-        payload = {
-            'email': email,
-            'key': key
-        }
-
-        response = CopyleaksHttpClient.request('POST', url, headers=CopyleaksClientHelper.headers(),
-                                               data=CopyleaksClientHelper.to_json(payload).encode('utf-8'),
-                                               timeout=timeout)
-        return response.json()
+        return CopyleaksHttpClient.send('POST', url, json={'email': email, 'key': key}, timeout=timeout).json()
 
     @staticmethod
     def verify_auth_token(auth_token):
@@ -94,10 +89,7 @@ class Copyleaks(object):
     def __submit(url, auth_token, scan_id, submission, timeout):
         assert url and scan_id and submission
 
-        Copyleaks.verify_auth_token(auth_token)
-
-        CopyleaksHttpClient.request('PUT', url, headers=CopyleaksClientHelper.headers(auth_token),
-                                    data=CopyleaksClientHelper.to_json_bytes(submission), timeout=timeout)
+        CopyleaksHttpClient.send('PUT', url, auth_token=auth_token, json=submission, timeout=timeout)
 
     @staticmethod
     def submit_file(auth_token, scan_id, submission, timeout=None):
@@ -135,12 +127,8 @@ class Copyleaks(object):
         '''
         assert scan_id and export_id and model
 
-        Copyleaks.verify_auth_token(auth_token)
-
         url = f"{Consts.API_SERVER_URI}/v3/downloads/{scan_id}/export/{export_id}"
-
-        CopyleaksHttpClient.request('POST', url, headers=CopyleaksClientHelper.headers(auth_token),
-                                    data=CopyleaksClientHelper.to_json_bytes(model), timeout=timeout)
+        CopyleaksHttpClient.send('POST', url, auth_token=auth_token, json=model, timeout=timeout)
 
     @staticmethod
     def start(auth_token, model, timeout=None):
@@ -150,13 +138,8 @@ class Copyleaks(object):
         '''
         assert model
 
-        Copyleaks.verify_auth_token(auth_token)
-
         url = f"{Consts.API_SERVER_URI}/v3/scans/start"
-
-        response = CopyleaksHttpClient.request('PATCH', url, headers=CopyleaksClientHelper.headers(auth_token),
-                                               data=CopyleaksClientHelper.to_json_bytes(model), timeout=timeout)
-        return response.json()
+        return CopyleaksHttpClient.send('PATCH', url, auth_token=auth_token, json=model, timeout=timeout).json()
 
     @staticmethod
     def delete(auth_token, delete_model, timeout=None):
@@ -166,12 +149,8 @@ class Copyleaks(object):
         '''
         assert delete_model
 
-        Copyleaks.verify_auth_token(auth_token)
-
         url = f"{Consts.API_SERVER_URI}/v3.1/scans/delete"
-
-        CopyleaksHttpClient.request('PATCH', url, headers=CopyleaksClientHelper.headers(auth_token),
-                                    data=CopyleaksClientHelper.to_json_bytes(delete_model), timeout=timeout)
+        CopyleaksHttpClient.send('PATCH', url, auth_token=auth_token, json=delete_model, timeout=timeout)
 
     @staticmethod
     def resend_webhook(auth_token, scan_id, timeout=None):
@@ -181,11 +160,8 @@ class Copyleaks(object):
         '''
         assert scan_id
 
-        Copyleaks.verify_auth_token(auth_token)
-
         url = f"{Consts.API_SERVER_URI}/v3/scans/{scan_id}/webhooks/resend"
-
-        CopyleaksHttpClient.request('POST', url, headers=CopyleaksClientHelper.headers(auth_token), timeout=timeout)
+        CopyleaksHttpClient.send('POST', url, auth_token=auth_token, content_type='application/json', timeout=timeout)
 
     @staticmethod
     def credits_balance(auth_token, timeout=None):
@@ -193,13 +169,8 @@ class Copyleaks(object):
         Remaining credits of the account.
         Docs: https://docs.copyleaks.com/reference/actions/admin/check-credits
         '''
-        Copyleaks.verify_auth_token(auth_token)
-
         url = f"{Consts.API_SERVER_URI}/v3/scans/credits"
-
-        response = CopyleaksHttpClient.request('GET', url, headers=CopyleaksClientHelper.headers(auth_token, None),
-                                               timeout=timeout)
-        return response.json()
+        return CopyleaksHttpClient.send('GET', url, auth_token=auth_token, timeout=timeout).json()
 
     @staticmethod
     def usages_history_csv(auth_token, start_date, end_date, timeout=None):
@@ -209,13 +180,9 @@ class Copyleaks(object):
         '''
         assert start_date and end_date
 
-        Copyleaks.verify_auth_token(auth_token)
-
         url = f"{Consts.API_SERVER_URI}/v3/scans/usages/history?start={start_date}&end={end_date}"
-
-        response = CopyleaksHttpClient.request('GET', url, headers=CopyleaksClientHelper.headers(auth_token),
-                                               timeout=timeout)
-        return response.content
+        return CopyleaksHttpClient.send('GET', url, auth_token=auth_token, content_type='application/json',
+                                        timeout=timeout).content
 
     @staticmethod
     def release_notes(timeout=None):
@@ -225,9 +192,7 @@ class Copyleaks(object):
         '''
 
         url = f"{Consts.API_SERVER_URI}/v3/release-logs.json"
-        response = CopyleaksHttpClient.request('GET', url, headers=CopyleaksClientHelper.headers(content_type=None),
-                                               timeout=timeout)
-        return response.json()
+        return CopyleaksHttpClient.send('GET', url, timeout=timeout).json()
 
     @staticmethod
     def supported_file_types(timeout=None):
@@ -237,9 +202,7 @@ class Copyleaks(object):
         '''
 
         url = f"{Consts.API_SERVER_URI}/v3/miscellaneous/supported-plagiarism-file-types"
-        response = CopyleaksHttpClient.request('GET', url, headers=CopyleaksClientHelper.headers(content_type=None),
-                                               timeout=timeout)
-        return response.json()
+        return CopyleaksHttpClient.send('GET', url, timeout=timeout).json()
 
     @staticmethod
     def supported_ai_text_detection_file_types(timeout=None):
@@ -249,9 +212,8 @@ class Copyleaks(object):
         '''
 
         url = f"{Consts.API_SERVER_URI}/v3/miscellaneous/supported-ai-text-detection-file-types"
-        response = CopyleaksHttpClient.request('GET', url, headers=CopyleaksClientHelper.headers(content_type=None),
-                                               timeout=timeout)
-        return CopyleaksSupportedAiTextDetectionFileTypesResponseModel.model_validate(response.json())
+        return CopyleaksHttpClient.send('GET', url, timeout=timeout,
+                                        response_model=CopyleaksSupportedAiTextDetectionFileTypesResponseModel)
 
     @staticmethod
     def allowed_cross_languages(timeout=None):
@@ -261,9 +223,8 @@ class Copyleaks(object):
         '''
 
         url = f"{Consts.API_SERVER_URI}/v3/miscellaneous/allowed-cross-languages"
-        response = CopyleaksHttpClient.request('GET', url, headers=CopyleaksClientHelper.headers(content_type=None),
-                                               timeout=timeout)
-        return CopyleaksAllowedCrossLanguagesResponseModel.model_validate(response.json())
+        return CopyleaksHttpClient.send('GET', url, timeout=timeout,
+                                        response_model=CopyleaksAllowedCrossLanguagesResponseModel)
 
     @staticmethod
     def ocr_supported_langauges(timeout=None):
@@ -273,9 +234,7 @@ class Copyleaks(object):
         '''
 
         url = f"{Consts.API_SERVER_URI}/v3/miscellaneous/ocr-languages-list"
-        response = CopyleaksHttpClient.request('GET', url, headers=CopyleaksClientHelper.headers(content_type=None),
-                                               timeout=timeout)
-        return response.json()
+        return CopyleaksHttpClient.send('GET', url, timeout=timeout).json()
 
     @staticmethod
     def repository_info(auth_token, repository_id, timeout=None):
@@ -285,9 +244,6 @@ class Copyleaks(object):
         '''
         assert repository_id
 
-        Copyleaks.verify_auth_token(auth_token)
-
         url = f"{Consts.API_SERVER_URI}/v3/repositories/repository/{repository_id}/info"
-        response = CopyleaksHttpClient.request('GET', url, headers=CopyleaksClientHelper.headers(auth_token, None),
-                                               timeout=timeout)
-        return CopyleaksRepositoryInfoResponseModel.model_validate(response.json())
+        return CopyleaksHttpClient.send('GET', url, auth_token=auth_token, timeout=timeout,
+                                        response_model=CopyleaksRepositoryInfoResponseModel)

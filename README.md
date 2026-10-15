@@ -437,7 +437,7 @@ print(info.name, info.status, info.current_credits, info.max_credits)
 Requires the "Super Admin" or "Admin" role on the repository. For more details, refer to the [Documentation](https://docs.copyleaks.com/reference/actions/private-cloud-hub/info)
 ##
 ### Timeouts, connections and errors
-Every call goes through one shared `requests.Session`, so connections are kept alive and reused. Every call has a timeout: by default 10 seconds to connect and 180 seconds to read the response.
+Every call goes through one shared `requests.Session`, so connections are kept alive and reused. Every call has a timeout: by default 10 seconds to connect and 180 seconds to read. The read timeout is how long the SDK waits for the server to send data (between bytes), not a limit on the whole call.
 
 ```python
 import requests

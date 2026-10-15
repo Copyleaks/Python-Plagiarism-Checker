@@ -20,6 +20,7 @@ from copyleaks.exceptions.command_error import CommandError
 from copyleaks.exceptions.rate_limit_error import RateLimitError
 from copyleaks.exceptions.under_maintenance_error import UnderMaintenanceError
 from copyleaks.helpers.copyleaks_http_client import CopyleaksHttpClient
+from copyleaks.models.AiDetection.Responses.CopyleaksAiTextDetectionCreditsResponseModel import CopyleaksAiTextDetectionCreditsResponseModel
 from copyleaks.models.ImageDetection.Requests.CopyleaksAiImageDetectionAsyncRequestModel import CopyleaksAiImageDetectionAsyncRequestModel
 from copyleaks.models.ImageDetection.Requests.CopyleaksAiImageDetectionFileRequestModel import CopyleaksAiImageDetectionFileRequestModel
 from copyleaks.models.ImageDetection.Requests.CopyleaksAiImageDetectionRequestModel import CopyleaksAiImageDetectionRequestModel
@@ -332,6 +333,93 @@ class ExceptionsTest(unittest.TestCase):
     def test_command_error_message(self):
         self.assertEqual(str(CommandError(FakeResponse(404, {'message': 'nope'}))), 'HTTP 404: {"message": "nope"}')
         self.assertEqual(str(CommandError(b'raw body')), 'raw body')
+
+    def test_response_errors_share_one_implementation(self):
+        for name in ('get_response', 'status_code', 'retry_after', '__str__'):
+            self.assertIs(getattr(UnderMaintenanceError, name), getattr(CommandError, name), name)
+            self.assertIs(getattr(RateLimitError, name), getattr(CommandError, name), name)
+        maintenance = UnderMaintenanceError(FakeResponse(503, headers={'Retry-After': '30'}))
+        self.assertEqual((maintenance.status_code, maintenance.retry_after, str(maintenance)), (503, 30, 'HTTP 503'))
+        self.assertEqual((str(UnderMaintenanceError()), str(RateLimitError()), str(CommandError(None))),
+                         ('Under maintenance', 'Too many requests', ''))
+
+    def test_under_maintenance_error_is_still_not_a_command_error(self):
+        # As in 5.x: `except CommandError` does not catch HTTP 503, so the order of existing except clauses still works.
+        self.assertFalse(issubclass(UnderMaintenanceError, CommandError))
+        self.assertTrue(issubclass(RateLimitError, CommandError))
+
+
+class ExceptClauseTest(HttpTestCase):
+
+    def test_each_except_clause_catches_its_status(self):
+        for status, expected in ((503, 'maintenance'), (429, 'rate limit'), (400, 'command')):
+            self.respond({'error': 'x'}, status_code=status)
+            try:
+                Copyleaks.credits_balance(AUTH_TOKEN)
+                caught = 'nothing'
+            except CommandError as e:
+                caught = 'rate limit' if isinstance(e, RateLimitError) else 'command'
+            except UnderMaintenanceError:
+                caught = 'maintenance'
+            self.assertEqual(caught, expected, status)
+
+
+class SendHelperTest(HttpTestCase):
+    '''`CopyleaksHttpClient.send`: the one place that checks the token, builds headers and body, and parses.'''
+
+    def test_every_endpoint_calls_send_once(self):
+        with patch.object(CopyleaksHttpClient, 'send', wraps=CopyleaksHttpClient.send) as send:
+            for name, call in all_endpoint_calls():
+                send.reset_mock()
+                try:
+                    call()
+                except Exception:  # some typed responses do not accept the empty test body
+                    pass
+                self.assertEqual(send.call_count, 1, name)
+
+    def test_json_body_of_plain_objects_and_pydantic_models(self):
+        doc = NaturalLanguageDocument(TEXT)
+        CopyleaksHttpClient.send('POST', 'https://api.example.com/a', auth_token=AUTH_TOKEN, json=doc)
+        self.assertEqual(self.session.last.data, doc.toJSON().encode('utf-8'))
+        moderation = CopyleaksTextModerationRequestModel(text=TEXT, labels=[CopyleaksTextModerationLabel(id='a')])
+        CopyleaksHttpClient.send('POST', 'https://api.example.com/b', auth_token=AUTH_TOKEN, json=moderation)
+        self.assertEqual(self.session.last.data, moderation.model_dump_json(by_alias=True, exclude_none=True).encode())
+        for call in self.session.calls:
+            self.assertEqual(call.headers, {'User-Agent': 'python-sdk/3.0', 'Content-Type': 'application/json',
+                                            'Authorization': 'Bearer test-token'})
+
+    def test_headers_without_body_and_without_token(self):
+        CopyleaksHttpClient.send('GET', 'https://api.example.com/a')
+        self.assertEqual(self.session.last.headers, {'User-Agent': 'python-sdk/3.0'})
+        CopyleaksHttpClient.send('GET', 'https://api.example.com/b', auth_token=AUTH_TOKEN,
+                                 content_type='application/json')
+        self.assertEqual(self.session.last.headers, {'User-Agent': 'python-sdk/3.0', 'Content-Type': 'application/json',
+                                                     'Authorization': 'Bearer test-token'})
+        CopyleaksHttpClient.send('POST', 'https://api.example.com/c', auth_token=AUTH_TOKEN, form={'a': '1'},
+                                 files={'image': ('a.png', PNG, 'image/png')})
+        call = self.session.last
+        self.assertEqual(call.headers, {'User-Agent': 'python-sdk/3.0', 'Authorization': 'Bearer test-token'})
+        self.assertEqual((call.data, call.files), ({'a': '1'}, {'image': ('a.png', PNG, 'image/png')}))
+
+    def test_token_is_checked_before_the_request(self):
+        from copyleaks.exceptions.auth_expired_error import AuthExipredError
+        with self.assertRaises(AuthExipredError):
+            CopyleaksHttpClient.send('GET', 'https://api.example.com/a',
+                                     auth_token={'access_token': 'x', '.expires': '2000-01-01T00:00:00Z'})
+        with self.assertRaises((AssertionError, TypeError)):  # TypeError when Python runs with -O
+            CopyleaksHttpClient.send('GET', 'https://api.example.com/a', auth_token=None)
+        self.assertEqual(self.session.calls, [])
+
+    def test_returns_the_parsed_model_or_the_response(self):
+        self.respond({'credits': 5})
+        response = CopyleaksHttpClient.send('GET', 'https://api.example.com/a')
+        self.assertEqual(response.json(), {'credits': 5})
+        self.respond({'credits': 5})
+        model = CopyleaksHttpClient.send('GET', 'https://api.example.com/a',
+                                         response_model=CopyleaksAiTextDetectionCreditsResponseModel)
+        self.assertIsInstance(model, CopyleaksAiTextDetectionCreditsResponseModel)
+        self.assertEqual(model.credits, 5)
+        self.assertEqual(self.session.last.timeout, (10, 180))
 
 
 if __name__ == '__main__':

@@ -1,5 +1,4 @@
 from copyleaks.consts import Consts
-from copyleaks.helpers.copyleaks_client_helper import CopyleaksClientHelper
 from copyleaks.helpers.copyleaks_http_client import CopyleaksHttpClient
 
 
@@ -13,8 +12,5 @@ class _AiVideoDetectionClient:
         '''
         assert scan_id and submission
 
-        CopyleaksClientHelper.verify_auth_token(auth_token)
-
         url = f"{Consts.API_SERVER_URI}/v1/ai-video-detector/{scan_id}/submit"
-        CopyleaksHttpClient.request('POST', url, headers=CopyleaksClientHelper.headers(auth_token),
-                                    data=CopyleaksClientHelper.model_to_json_bytes(submission), timeout=timeout)
+        CopyleaksHttpClient.send('POST', url, auth_token=auth_token, json=submission, timeout=timeout)

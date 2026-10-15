@@ -221,12 +221,6 @@ class PublicEndpointsTest(HttpTestCase):
         self.assertEqual(response.result_language_codes, ['fr', 'de'])
         self.assertEqual(response['resultLanguages'], {'french': 'fr', 'german': 'de'})
 
-    def test_allowed_cross_languages_accepts_lists_of_codes(self):
-        self.respond({'documentLanguages': ['en', 'es'], 'resultLanguages': ['fr']})
-        response = Copyleaks.allowed_cross_languages()
-        self.assertEqual(response.document_language_codes, ['en', 'es'])
-        self.assertEqual(response.result_language_codes, ['fr'])
-
     def test_correction_types(self):
         self.respond({'correctionTypes': [{'id': 1}]})
         self.assertEqual(Copyleaks.WritingAssistantClient.get_correction_types('en'), {'correctionTypes': [{'id': 1}]})

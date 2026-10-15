@@ -1,30 +1,4 @@
-from typing import Optional
-from pydantic import BaseModel, Field
+from copyleaks.models.shared.CopyleaksMediaMetadataModel import CopyleaksMediaMetadataModel
 
-
-class CopyleaksImageMetadataModel(BaseModel):
-    """Optional metadata extracted from the image."""
-    
-    issued_time: Optional[str] = Field(
-        default=None,
-        description="Timestamp when the image was created (if available).",
-        alias="issuedTime"
-    )
-    
-    issued_by: Optional[str] = Field(
-        default=None,
-        description="The AI service or tool that created the image (if detected).",
-        alias="issuedBy"
-    )
-    
-    app_or_device_used: Optional[str] = Field(
-        default=None,
-        description="The application or device used to create the image.",
-        alias="appOrDeviceUsed"
-    )
-
-    content_summary: Optional[str] = Field(
-        default=None,
-        description="A summary of how the image was generated (if available).",
-        alias="contentSummary"
-    )
+CopyleaksImageMetadataModel = CopyleaksMediaMetadataModel
+"""`CopyleaksMediaMetadataModel` under its 5.x name: metadata extracted from the image."""

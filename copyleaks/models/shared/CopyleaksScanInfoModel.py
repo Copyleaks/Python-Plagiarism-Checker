@@ -2,8 +2,8 @@ from typing import Optional
 from pydantic import BaseModel, ConfigDict, Field
 
 
-class CopyleaksAiVideoDetectionScannedVideoModel(BaseModel):
-    """Metadata about the AI Video Detection scan. Missing fields are None."""
+class CopyleaksScanInfoModel(BaseModel):
+    """ID, credits and creation time of an AI Image or AI Video Detection scan. Missing fields are None."""
 
     model_config = ConfigDict(populate_by_name=True)
 
@@ -15,7 +15,7 @@ class CopyleaksAiVideoDetectionScannedVideoModel(BaseModel):
 
     actual_credits: Optional[int] = Field(
         default=None,
-        description="The actual number of credits consumed by the scan.",
+        description="The number of credits the scan used.",
         alias="actualCredits"
     )
 

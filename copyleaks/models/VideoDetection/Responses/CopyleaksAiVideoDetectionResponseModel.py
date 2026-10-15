@@ -2,8 +2,8 @@ from typing import Optional
 from pydantic import ConfigDict, Field
 
 from copyleaks.helpers.copyleaks_dict_access_mixin import CopyleaksDictAccessMixin
+from copyleaks.models.shared.CopyleaksScanInfoModel import CopyleaksScanInfoModel
 from copyleaks.models.submit.Webhooks.HelperModels.ErrorModels.ErrorModel import ErrorModel
-from copyleaks.models.VideoDetection.Responses.CopyleaksAiVideoDetectionScannedVideoModel import CopyleaksAiVideoDetectionScannedVideoModel
 from copyleaks.models.VideoDetection.Responses.CopyleaksAiVideoDetectionSummaryModel import CopyleaksAiVideoDetectionSummaryModel
 from copyleaks.models.VideoDetection.Responses.CopyleaksAiVideoDetectionTrackResultModel import CopyleaksAiVideoDetectionTrackResultModel
 from copyleaks.models.VideoDetection.Responses.CopyleaksAiVideoDetectionVideoInfoModel import CopyleaksAiVideoDetectionVideoInfoModel
@@ -59,7 +59,7 @@ class CopyleaksAiVideoDetectionResponseModel(CopyleaksDictAccessMixin):
         alias="videoInfo"
     )
 
-    scanned_video: Optional[CopyleaksAiVideoDetectionScannedVideoModel] = Field(
+    scanned_video: Optional[CopyleaksScanInfoModel] = Field(
         default=None,
         description="Metadata about the scan.",
         alias="scannedVideo"

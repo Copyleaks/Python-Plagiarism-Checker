@@ -1,11 +1,10 @@
-from typing import Any, List, Optional
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from typing import Any
+from pydantic import ConfigDict, Field, field_validator
 
-from copyleaks.models.ImageDetection.Requests.CopyleaksAiImageDetectionRequestModel import SUPPORTED_IMAGE_EXTENSIONS
-from copyleaks.models.ImageDetection.Requests.CopyleaksAiImageObjectDetectionModel import CopyleaksAiImageObjectDetectionModel, to_object_detection_list
+from copyleaks.models.ImageDetection.Requests.CopyleaksAiImageDetectionBaseRequestModel import CopyleaksAiImageDetectionBaseRequestModel
 
 
-class CopyleaksAiImageDetectionFileRequestModel(BaseModel):
+class CopyleaksAiImageDetectionFileRequestModel(CopyleaksAiImageDetectionBaseRequestModel):
     """
     Request of AI Image Detection with the image file uploaded as multipart/form-data, without base64.
     Recommended for large images. Use it with `ImageDetectionClient.submit_file`.
@@ -39,18 +38,6 @@ class CopyleaksAiImageDetectionFileRequestModel(BaseModel):
         alias="sandbox"
     )
 
-    mask_type: Optional[str] = Field(
-        default=None,
-        description="The detection mask to return: \"binary\" (default), \"heatmap\" or \"none\". See `CopyleaksAiImageMaskTypes`.",
-        alias="maskType"
-    )
-
-    object_detection: Optional[List[CopyleaksAiImageObjectDetectionModel]] = Field(
-        default=None,
-        description="Up to 3 objects to locate in the image, for example [\"face\", \"hand\"].",
-        alias="objectDetection"
-    )
-
     @field_validator('image')
     @classmethod
     def validate_image(cls, v):
@@ -61,24 +48,3 @@ class CopyleaksAiImageDetectionFileRequestModel(BaseModel):
         if callable(getattr(v, 'read', None)):
             return v
         raise ValueError('image must be bytes or a file object opened in binary mode')
-
-    @field_validator('file_name')
-    @classmethod
-    def validate_file_name(cls, v):
-        if not v or not v.strip():
-            raise ValueError('File name is required')
-        if not any(v.lower().endswith(ext) for ext in SUPPORTED_IMAGE_EXTENSIONS):
-            raise ValueError(f'File name must have one of the supported extensions: {", ".join(SUPPORTED_IMAGE_EXTENSIONS)}')
-        return v
-
-    @field_validator('model')
-    @classmethod
-    def validate_model(cls, v):
-        if not v or not v.strip():
-            raise ValueError('Model name is required and cannot be empty')
-        return v
-
-    @field_validator('object_detection', mode='before')
-    @classmethod
-    def validate_object_detection(cls, v):
-        return to_object_detection_list(v)

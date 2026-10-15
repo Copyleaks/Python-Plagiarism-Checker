@@ -12,23 +12,51 @@ def _describe_response(response):
     return f"HTTP {status}: {body[:500]}" if body else f"HTTP {status}"
 
 
-class CommandError(Exception):
-    """The server rejected the request. `get_response()` returns the `requests.Response`."""
+def _parse_retry_after(response):
+    """The `Retry-After` header in seconds, or None when it is missing or is not a number of seconds."""
+    headers = getattr(response, 'headers', None)
+    if not headers:
+        return None
+    try:
+        value = headers.get('Retry-After')
+    except Exception:
+        return None
+    if value is None:
+        return None
+    try:
+        seconds = float(str(value).strip())
+    except ValueError:
+        return None
+    return seconds if seconds >= 0 else None
 
-    def __init__(self, response):
-        super().__init__(response)
-        self.__set_response(response)
+
+class _ResponseError(Exception):
+    """Base of the errors that carry the `requests.Response` of a failed call (or None)."""
+
+    _message_without_response = ''
+
+    def __init__(self, response=None):
+        super().__init__(*(() if response is None else (response,)))
+        self._response = response
 
     def get_response(self):
-        return self.__x
-
-    def __set_response(self, x):
-        self.__x = x
+        return self._response
 
     @property
     def status_code(self):
         """The HTTP status code of the response, or None."""
-        return getattr(self.__x, 'status_code', None)
+        return getattr(self._response, 'status_code', None)
+
+    @property
+    def retry_after(self):
+        """Seconds to wait before retrying, from the `Retry-After` response header, or None."""
+        return _parse_retry_after(self._response)
 
     def __str__(self):
-        return _describe_response(self.__x)
+        if self._response is None and self._message_without_response:
+            return self._message_without_response
+        return _describe_response(self._response)
+
+
+class CommandError(_ResponseError):
+    """The server rejected the request. `get_response()` returns the `requests.Response`."""

@@ -1,5 +1,4 @@
 from copyleaks.consts import Consts
-from copyleaks.helpers.copyleaks_client_helper import CopyleaksClientHelper
 from copyleaks.helpers.copyleaks_http_client import CopyleaksHttpClient
 from copyleaks.helpers.copyleaks_multipart import CopyleaksMultipart
 from copyleaks.models.ImagePlagiarism.Responses.CopyleaksImagePlagiarismResponseModel import CopyleaksImagePlagiarismResponseModel
@@ -15,8 +14,6 @@ class _ImagePlagiarismClient:
         '''
         assert scan_id and submission
 
-        CopyleaksClientHelper.verify_auth_token(auth_token)
-
         url = f"{Consts.API_SERVER_URI}/v1/image-plagiarism-detector/{scan_id}/check"
         fields = {
             'filename': submission.file_name,
@@ -25,6 +22,5 @@ class _ImagePlagiarismClient:
         if submission.developer_payload is not None:
             fields['developerPayload'] = submission.developer_payload
         files = {'image': CopyleaksMultipart.file_part(submission.file_name, submission.image)}
-        response = CopyleaksHttpClient.request('POST', url, headers=CopyleaksClientHelper.headers(auth_token, None),
-                                               data=fields, files=files, timeout=timeout)
-        return CopyleaksImagePlagiarismResponseModel.model_validate(response.json())
+        return CopyleaksHttpClient.send('POST', url, auth_token=auth_token, form=fields, files=files, timeout=timeout,
+                                        response_model=CopyleaksImagePlagiarismResponseModel)

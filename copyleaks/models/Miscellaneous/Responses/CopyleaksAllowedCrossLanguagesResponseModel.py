@@ -5,12 +5,8 @@ from copyleaks.helpers.copyleaks_dict_access_mixin import CopyleaksDictAccessMix
 
 
 def _to_language_map(value):
-    """The API returns {language name: ISO-639-1 code}. A plain list of codes is accepted too ({code: code})."""
-    if value is None:
-        return {}
-    if isinstance(value, (list, tuple)):
-        return {code: code for code in value}
-    return value
+    """The API returns {language name: ISO-639-1 code}; null is read as {}."""
+    return {} if value is None else value
 
 
 class CopyleaksAllowedCrossLanguagesResponseModel(CopyleaksDictAccessMixin):
