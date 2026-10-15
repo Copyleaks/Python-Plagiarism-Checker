@@ -26,5 +26,7 @@ from enum import IntEnum
 
 
 class PdfVersion(IntEnum):
+    '''Deprecated: PDF report versions 1 and 2 are deprecated; use `Pdf.set_report_version('v3')` instead.'''
+
     V1 = 1
     V2 = 2

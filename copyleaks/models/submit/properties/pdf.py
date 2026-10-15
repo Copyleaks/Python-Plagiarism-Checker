@@ -22,6 +22,8 @@
  SOFTWARE.
 '''
 
+import warnings
+
 
 class Pdf:
 
@@ -97,16 +99,17 @@ class Pdf:
 
     def get_version(self):
         '''
-            Get PDF version to generate
+            Deprecated: get the legacy PDF version; use `get_report_version` instead.
         '''
         return self.version
 
     def set_version(self, value):
         '''
-            Set PDF version to generate
+            Deprecated: set the legacy PDF version; use `set_report_version('v3')` instead.
 
             value: `PdfVersion` enum
         '''
+        warnings.warn("PDF report versions 1 and 2 are deprecated. Use set_report_version('v3') instead.", DeprecationWarning, stacklevel=2)
         assert value
 
         self.version = value
@@ -126,7 +129,7 @@ class Pdf:
             Leave it unset to get the server default.
 
             Parameters:
-                value: String. One of "v1", "v2", "v3", "latest".
+                value: String. One of "v1" (deprecated), "v2" (deprecated), "v3", "latest".
                     Values are lowercase and case-sensitive. Do not pass the `PdfVersion` enum.
         '''
         assert isinstance(value, str) and value
