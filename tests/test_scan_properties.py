@@ -1,9 +1,4 @@
-'''
-Unit tests for the submit properties and request models: JSON names on the wire, new fields, and validation.
-
-Run from the repository root:
-    python -m unittest discover -s tests -v
-'''
+'''Unit tests for the submit properties and request models: JSON names on the wire, new fields, and validation.'''
 import json
 import unittest
 

@@ -1,44 +1,14 @@
-'''
- The MIT License(MIT)
- 
- Copyright(c) 2016 Copyleaks LTD (https://copyleaks.com)
- 
- Permission is hereby granted, free of charge, to any person obtaining a copy
- of this software and associated documentation files (the "Software"), to deal
- in the Software without restriction, including without limitation the rights
- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- copies of the Software, and to permit persons to whom the Software is
- furnished to do so, subject to the following conditions:
- 
- The above copyright notice and this permission notice shall be included in all
- copies or substantial portions of the Software.
- 
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- SOFTWARE.
-'''
-
 class References:
     '''
-        Citation Checker: detect, parse and validate the references in the submitted text.
-        The summary is reported in the completed webhook `references_validation`.
+    Citation Checker: detect, parse and validate the references in the submitted text.
+    The summary is in the completed webhook `references_validation`.
     '''
 
     def get_validate(self):
         return self.validate
 
     def set_validate(self, value):
-        '''
-            Detect, parse and validate every reference in the submitted text.
-            Leave it unset to get the server default (False).
-
-            Parameters:
-                value: Boolean.
-        '''
+        '''Turn the Citation Checker on. Default False.'''
         if not isinstance(value, bool):
             raise TypeError('validate must be True or False')
         self.validate = value

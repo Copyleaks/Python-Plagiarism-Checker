@@ -1,8 +1,6 @@
 '''
 Unit tests for every API call: exact HTTP method, URL, headers and body. No network calls are made.
-
-Run from the repository root:
-    python -m unittest discover -s tests -v
+Run all the tests from the repository root: python -m unittest discover -s tests -v
 '''
 import base64
 import io

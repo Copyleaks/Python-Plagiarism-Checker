@@ -1,10 +1,6 @@
 '''
-Unit tests for the shared HTTP layer: one keep-alive session, default and per-call timeouts,
-error mapping (429, 503 and other statuses) on every endpoint, read timeouts, fork safety and no output on stdout.
-No calls leave the machine: the read timeout test uses a local server on 127.0.0.1.
-
-Run from the repository root:
-    python -m unittest discover -s tests -v
+Unit tests for the shared HTTP layer: keep-alive session, timeouts, error mapping on every endpoint, read timeouts,
+fork safety and no output on stdout. The read timeout test uses a local server on 127.0.0.1.
 '''
 import base64
 import contextlib

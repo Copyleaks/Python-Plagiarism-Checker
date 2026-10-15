@@ -1,27 +1,3 @@
-'''
- The MIT License(MIT)
- 
- Copyright(c) 2016 Copyleaks LTD (https://copyleaks.com)
- 
- Permission is hereby granted, free of charge, to any person obtaining a copy
- of this software and associated documentation files (the "Software"), to deal
- in the Software without restriction, including without limitation the rights
- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- copies of the Software, and to permit persons to whom the Software is
- furnished to do so, subject to the following conditions:
- 
- The above copyright notice and this permission notice shall be included in all
- copies or substantial portions of the Software.
- 
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- SOFTWARE.
-'''
-
 import logging
 import os
 import threading
@@ -44,10 +20,8 @@ except ImportError:  # pragma: no cover
 
 def _connect_only_retry():
     """
-    Retry only connection errors, which happen before the request reaches the server.
-    Read errors and error statuses are never retried, so a request that may have been processed
-    (and charged) is never sent twice. `read=False` (not 0) re-raises a read timeout as is, so it reaches
-    the caller as `requests.exceptions.ReadTimeout` instead of a `ConnectionError`.
+    Retry only connection errors, which happen before the request reaches the server, so a request that may have been
+    processed (and charged) is never sent twice. `read=False` (not 0) re-raises a read timeout as `ReadTimeout`.
     """
     if Retry is None:
         return 0
@@ -59,13 +33,7 @@ def _connect_only_retry():
 
 
 class CopyleaksHttpClient:
-    """
-    The HTTP transport shared by every Copyleaks SDK call.
-
-    All calls go through one `requests.Session`, so connections (TCP and TLS) are kept alive and reused.
-    Every call has a timeout. The default is `DEFAULT_TIMEOUT`; change it with `set_timeout`, or pass
-    `timeout=` to a single call.
-    """
+    """HTTP transport of every SDK call: one keep-alive `requests.Session`, and a timeout on every call."""
 
     DEFAULT_TIMEOUT = (10, 180)
     """(connect, read) timeout in seconds used when no other timeout is configured."""
@@ -97,10 +65,7 @@ class CopyleaksHttpClient:
 
     @classmethod
     def set_session(cls, session):
-        """
-        Use your own `requests.Session` (for example with your own proxies, retries or pool sizes).
-        Pass None to go back to the SDK's default session.
-        """
+        """Use your own `requests.Session`, or None for the SDK's default session."""
         if session is not None and not callable(getattr(session, 'request', None)):
             raise TypeError('session must be a requests.Session or None')
         with cls._lock:
@@ -123,12 +88,6 @@ class CopyleaksHttpClient:
 
     @classmethod
     def set_timeout(cls, timeout):
-        """
-        Set the default timeout of every call.
-
-        Parameters:
-            timeout: seconds as a number, a (connect, read) tuple, or None for no timeout.
-        """
         cls._validate_timeout(timeout)
         cls._timeout = timeout
 
@@ -148,14 +107,8 @@ class CopyleaksHttpClient:
     @classmethod
     def request(cls, method, url, headers=None, data=None, files=None, timeout=None):
         """
-        Send a request and return the `requests.Response` of a successful (2xx) call.
-
-        Raises:
-            `RateLimitError`: HTTP 429.
-            `UnderMaintenanceError`: HTTP 503.
-            `CommandError`: any other non-2xx status.
-            `requests.exceptions.Timeout`: the connect or read timeout expired.
-            `requests.exceptions.ConnectionError`: the server could not be reached.
+        Send a request and return the 2xx `requests.Response`. Raises `RateLimitError` on HTTP 429,
+        `UnderMaintenanceError` on 503, `CommandError` on any other error status.
         """
         if timeout is None:
             timeout = cls._timeout

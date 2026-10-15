@@ -1,28 +1,3 @@
-'''
- The MIT License(MIT)
-
- Copyright(c) 2016 Copyleaks LTD (https://copyleaks.com)
-
- Permission is hereby granted, free of charge, to any person obtaining a copy
- of this software and associated documentation files (the "Software"), to deal
- in the Software without restriction, including without limitation the rights
- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- copies of the Software, and to permit persons to whom the Software is
- furnished to do so, subject to the following conditions:
-
- The above copyright notice and this permission notice shall be included in all
- copies or substantial portions of the Software.
-
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- SOFTWARE.
-'''
-
-
 from typing import Optional
 
 from pydantic import BaseModel, PrivateAttr
@@ -30,17 +5,12 @@ from pydantic import BaseModel, PrivateAttr
 
 class CopyleaksDictAccessMixin(BaseModel):
     """
-    Read-only dict-style access for pydantic response models of endpoints that used to return the raw JSON dict,
-    so existing code such as `response['summary']['ai']`, `response.get('explain')` and `'explain' in response`
-    keeps working.
-
-    Keys are the camelCase JSON keys. Values are plain dicts and lists, as in the JSON response.
-    Only keys that the model defines and that were present in the response are available.
-    Kept for backward compatibility; prefer attribute access, e.g. `response.summary.ai`.
-
-    The dict is built once, on the first dict-style read, and reused by later reads. Setting an attribute of
-    the model itself rebuilds it on the next read. Treat responses as read-only: changes made to nested
-    models after the first dict-style read are not reflected in dict-style reads.
+    Read-only dict-style access with the camelCase JSON keys, kept for backward compatibility:
+    `response['summary']['ai']`, `response.get('explain')` and `'explain' in response` still work.
+    Prefer attributes, e.g. `response.summary.ai`. Only keys the model defines and the response contained are
+    available; values are plain dicts and lists. The dict is built on the first dict-style read and reused;
+    setting a model attribute rebuilds it, but later changes to nested models are not seen.
+    Treat responses as read-only.
     """
 
     _dict_access_cache: Optional[dict] = PrivateAttr(default=None)

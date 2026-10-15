@@ -1,7 +1,4 @@
-'''
-Test helpers: a fake `requests.Session` that records every request and returns canned responses,
-so the unit tests make no network calls.
-'''
+'''Test helpers: a fake `requests.Session` that records every request and returns canned responses.'''
 import json
 import unittest
 

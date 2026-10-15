@@ -1,10 +1,4 @@
-'''
-Unit tests for the dict-style access of the typed responses: the response is serialized once and reused,
-not on every `response['key']` read.
-
-Run from the repository root:
-    python -m unittest discover -s tests -v
-'''
+'''Unit tests for the dict-style access of the typed responses: the dict is built once and reused.'''
 import unittest
 from unittest.mock import patch
 

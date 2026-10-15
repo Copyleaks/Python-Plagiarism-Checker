@@ -1,10 +1,4 @@
-'''
-Unit tests for Copyleaks.submit_file_ocr.
-The HTTP layer (`requests.Session.request`) is mocked, so no network calls are made.
-
-Run from the repository root:
-    python -m unittest discover -s tests -v
-'''
+'''Unit tests for Copyleaks.submit_file_ocr, with the HTTP layer mocked.'''
 import unittest
 from unittest.mock import MagicMock, patch
 
@@ -18,9 +12,8 @@ AUTH_TOKEN = {'access_token': 'token', '.expires': '2999-01-01T00:00:00Z'}
 
 class SubmitOcrTest(unittest.TestCase):
     def test_submit_file_ocr_uses_the_ocr_endpoint(self):
-        # The API route is PUT /v3/scans/submit/ocr/{scanId}
-        # (https://docs.copyleaks.com/reference/actions/authenticity/submit-ocr).
-        # The SDK used /v3/scans/submit/file/ocr/{scanId}, which does not exist and returns 404.
+        # The API route is PUT /v3/scans/submit/ocr/{scanId}. The SDK used to call
+        # /v3/scans/submit/file/ocr/{scanId}, which does not exist and returns 404.
         document = OcrFileDocument('aW1hZ2U=', 'scan.png')
         document.set_language('en')
         document.set_properties(ScanProperties('https://example.com/webhook/{STATUS}'))

@@ -1,166 +1,76 @@
-'''
- The MIT License(MIT)
-
- Copyright(c) 2016 Copyleaks LTD (https://copyleaks.com)
-
- Permission is hereby granted, free of charge, to any person obtaining a copy
- of this software and associated documentation files (the "Software"), to deal
- in the Software without restriction, including without limitation the rights
- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- copies of the Software, and to permit persons to whom the Software is
- furnished to do so, subject to the following conditions:
-
- The above copyright notice and this permission notice shall be included in all
- copies or substantial portions of the Software.
-
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- SOFTWARE.
-'''
-
-
 class Pdf:
 
     def get_create(self):
-        '''
-            Returns whether to create PDF report or not.
-        '''
         return self.create
 
     def set_create(self, value):
-        '''
-            Set whether to create PDF report or not.
-
-            Parameters: 
-                value: Boolean.
-        '''
+        '''Create a PDF report.'''
         assert isinstance(value, bool)
 
         self.create = value
 
     def get_title(self):
-        '''
-            Customize the title for the PDF report.
-        '''
         return self.title
 
     def set_title(self, value):
-        '''
-            Customize the title for the PDF report.
-
-            Parameters: 
-                value: String.
-        '''
+        '''Title of the PDF report.'''
         assert value
 
         self.title = value
 
     def get_large_logo_base64(self):
-        '''
-            Customize the logo image in the PDF report.
-        '''
         return self.largeLogo
 
     def set_large_logo_base64(self, value):
-        '''
-            Customize the logo image in the PDF report.
-
-            Parameters: 
-                value: String.
-        '''
+        '''Logo of the PDF report, base64-encoded.'''
         assert value
 
         self.largeLogo = value
     
 
     def get_rtl(self):
-        '''
-            When set to true the text in the report will be aligned from right to left.
-        '''
         return self.rtl
 
     def set_rtl(self, value):
-        '''
-            When set to true the text in the report will be aligned from right to left.
-
-            Parameters: 
-                value: Boolean.
-        '''
+        '''Align the report text right to left.'''
         assert isinstance(value, bool)
 
         self.rtl = value
 
 
     def get_version(self):
-        '''
-            Get PDF version to generate
-        '''
         return self.version
 
     def set_version(self, value):
-        '''
-            Deprecated: use `set_report_version`, which overrides it.
-            Set PDF version to generate
-
-            value: `PdfVersion` enum (V1, V2 or V3)
-        '''
+        '''Deprecated: use `set_report_version`, which overrides it. A `PdfVersion`.'''
         assert value
 
         self.version = value
 
 
     def get_report_version(self):
-        '''
-            Get which version of the PDF report to generate.
-        '''
         return self.reportVersion
 
     def set_report_version(self, value):
-        '''
-            Set which version of the PDF report to generate.
-            Overrides `version` when both are supplied.
-            Only takes effect when `create` is True.
-            Leave it unset to get the server default.
-
-            Parameters:
-                value: String. One of "v1", "v2", "v3", "latest".
-                    Values are lowercase and case-sensitive. Do not pass the `PdfVersion` enum.
-        '''
+        '''"v1", "v2", "v3" or "latest": lowercase strings, not `PdfVersion`. Overrides `version`; needs `create`.'''
         assert isinstance(value, str) and value
 
         self.reportVersion = value
 
 
     def get_report_customization_colors(self):
-        '''
-            Customizable colors
-        '''
         return self.colors
 
     def set_report_customization_colors(self, value):
-        '''
-            Set the colors of the PDF report. Sent as `pdf.colors`.
-
-            value: `ReportCustomizationColors`
-        '''
+        '''Colors of the PDF report, a `ReportCustomizationColors`. Sent as `pdf.colors`.'''
         assert value
 
         self.colors = value
 
     def get_colors(self):
-        '''
-            Customizable colors. Same as `get_report_customization_colors`.
-        '''
+        '''Same as `get_report_customization_colors`.'''
         return self.colors
 
     def set_colors(self, value):
-        '''
-            Set the colors of the PDF report. Same as `set_report_customization_colors`.
-
-            value: `ReportCustomizationColors`
-        '''
+        '''Same as `set_report_customization_colors`.'''
         self.set_report_customization_colors(value)

@@ -1,27 +1,3 @@
-'''
- The MIT License(MIT)
-
- Copyright(c) 2016 Copyleaks LTD (https://copyleaks.com)
-
- Permission is hereby granted, free of charge, to any person obtaining a copy
- of this software and associated documentation files (the "Software"), to deal
- in the Software without restriction, including without limitation the rights
- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- copies of the Software, and to permit persons to whom the Software is
- furnished to do so, subject to the following conditions:
-
- The above copyright notice and this permission notice shall be included in all
- copies or substantial portions of the Software.
-
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- SOFTWARE.
-'''
-
 from typing import List, Optional
 from pydantic import BaseModel, ConfigDict, Field
 from copyleaks.models.ImageDetection.Responses.CopyleaksAiImageDetectionDetectedObjectModel import CopyleaksAiImageDetectionDetectedObjectModel
@@ -34,12 +10,9 @@ from copyleaks.models.submit.Webhooks.HelperModels.ErrorModels.ErrorModel import
 
 class CopyleaksAiImageDetectionResponseModel(BaseModel):
     """
-    Response model for Copyleaks AI image detection analysis.
-    Contains the AI detection results, image information, and scan metadata.
-    It is also the payload of the asynchronous AI Image Detection webhook:
-    `CopyleaksAiImageDetectionResponseModel(**request.json)`. In a webhook, check `error` first: when the scan
-    failed, the webhook has `error` and `developer_payload` and no result.
-    Fields that the model does not define are kept.
+    Result of AI Image Detection, and the body of the asynchronous detection webhook (`Model(**request.json)`).
+    In a webhook, check `error` first: a failed scan has only `error` and `developer_payload`.
+    Undefined fields are kept.
     """
 
     model_config = ConfigDict(populate_by_name=True, extra='allow')

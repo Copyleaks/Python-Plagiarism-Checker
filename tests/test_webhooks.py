@@ -1,9 +1,6 @@
 '''
 Unit tests for the webhook models: `Model(**request.json)` parses every documented field into typed models,
 and the read-only dict-style access of earlier versions keeps working.
-
-Run from the repository root:
-    python -m unittest discover -s tests -v
 '''
 import copy
 import json

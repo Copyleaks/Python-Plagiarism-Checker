@@ -1,27 +1,3 @@
-'''
- The MIT License(MIT)
- 
- Copyright(c) 2016 Copyleaks LTD (https://copyleaks.com)
- 
- Permission is hereby granted, free of charge, to any person obtaining a copy
- of this software and associated documentation files (the "Software"), to deal
- in the Software without restriction, including without limitation the rights
- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- copies of the Software, and to permit persons to whom the Software is
- furnished to do so, subject to the following conditions:
- 
- The above copyright notice and this permission notice shall be included in all
- copies or substantial portions of the Software.
- 
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- SOFTWARE.
-'''
-
 from typing import Any, Tuple
 
 from pydantic import ConfigDict
@@ -37,20 +13,14 @@ def str_or_number_to_str(value):
 
 
 def none_to_empty_list(value):
-    """Treat a null list as an empty list."""
     return [] if value is None else value
 
 
 class CopyleaksWebhookBaseModel(CopyleaksDictAccessMixin):
     """
-    Base of the webhook models. `Model(**request.json)` parses the camelCase webhook JSON into typed models.
-
-    - Fields are snake_case attributes, for example `scanned_document.scan_id`.
-      The snake_case names are accepted as constructor arguments too.
-    - Fields that the model does not define are kept, and are returned by `model_dump(by_alias=True)`
-      and by dict-style access.
-    - Read-only dict-style access with the camelCase JSON keys still works, for example
-      `completed.results['internet'][0]['url']`.
+    Base of the webhook models: `Model(**request.json)` parses the camelCase JSON into snake_case attributes, which
+    are accepted as constructor arguments too. Undefined fields are kept, in `model_dump(by_alias=True)` and in
+    read-only dict-style access with the camelCase keys, e.g. `completed.results['internet'][0]['url']`.
     """
 
     model_config = ConfigDict(populate_by_name=True, extra='allow', protected_namespaces=())
