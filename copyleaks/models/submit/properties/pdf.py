@@ -22,8 +22,6 @@
  SOFTWARE.
 '''
 
-import warnings
-
 
 class Pdf:
 
@@ -97,24 +95,6 @@ class Pdf:
         self.rtl = value
 
 
-    def get_version(self):
-        '''
-            Deprecated: get the legacy PDF version; use `get_report_version` instead.
-        '''
-        return self.version
-
-    def set_version(self, value):
-        '''
-            Deprecated: set the legacy PDF version; use `set_report_version('v3')` instead.
-
-            value: `PdfVersion` enum
-        '''
-        warnings.warn("PDF report versions 1 and 2 are deprecated. Use set_report_version('v3') instead.", DeprecationWarning, stacklevel=2)
-        assert value
-
-        self.version = value
-
-
     def get_report_version(self):
         '''
             Get which version of the PDF report to generate.
@@ -124,13 +104,12 @@ class Pdf:
     def set_report_version(self, value):
         '''
             Set which version of the PDF report to generate.
-            Overrides `version` when both are supplied.
             Only takes effect when `create` is True.
             Leave it unset to get the server default.
 
             Parameters:
-                value: String. One of "v1" (deprecated), "v2" (deprecated), "v3", "latest".
-                    Values are lowercase and case-sensitive. Do not pass the `PdfVersion` enum.
+                value: String. One of "v3", "latest".
+                    Values are lowercase and case-sensitive.
         '''
         assert isinstance(value, str) and value
 
