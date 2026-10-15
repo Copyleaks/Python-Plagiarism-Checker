@@ -436,6 +436,14 @@ class ExpiredTokenTest(HttpTestCase):
             Copyleaks.repository_info(expired, 'repo')
         self.assertEqual(self.session.calls, [])
 
+    def test_core_calls_check_the_token_through_copyleaks_verify_auth_token(self):
+        from unittest import mock
+        expired = {'access_token': 'x', '.expires': '2000-01-01T00:00:00Z'}
+        with mock.patch.object(Copyleaks, 'verify_auth_token') as verify:
+            Copyleaks.credits_balance(expired)
+        verify.assert_called_once_with(expired)
+        self.assertEqual(len(self.session.calls), 1)
+
     def test_naive_expiry_time_is_treated_as_utc(self):
         Copyleaks.verify_auth_token({'access_token': 'x', '.expires': '2999-01-01T00:00:00'})
 

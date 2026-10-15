@@ -44,7 +44,7 @@ This is a major release. It adds AI Video Detection, Image Plagiarism Detection,
   - New result webhook: `internal_ai_data`.
   - Text Moderation response: `modelVersion`.
 - **Timeouts and connections.** `Copyleaks.set_timeout(...)` and `Copyleaks.get_timeout()` set the default timeout of every call, and every method that calls the API accepts `timeout=` for that call. `Copyleaks.set_session(...)` sends the calls through your own `requests.Session`, for example to use a proxy.
-- **Error details.** `CommandError`, `RateLimitError` and `UnderMaintenanceError` now carry the response: `get_response()`, `status_code`, and `retry_after` (the `Retry-After` header in seconds). Their message is `HTTP <status>: <response body>`. `UnderMaintenanceError` is still not a `CommandError`.
+- **Error details.** `CommandError`, `RateLimitError` and `UnderMaintenanceError` all have `get_response()`, and now also `status_code` and `retry_after` (the `Retry-After` header in seconds). Their message is `HTTP <status>: <response body>`. `UnderMaintenanceError` is still not a `CommandError`.
 - **AI alert in the completed webhook.**
   - `CompletedWebhookModel.get_ai_detection_alert()` returns the `suspected-ai-text` alert as an `AlertsModel`, or `None` when the scan has no AI alert.
   - `AlertsModel.get_ai_detection_result()` and the shortcut `CompletedWebhookModel.get_ai_detection_result()` decode the alert's `additionalData` JSON string into a typed `CopyleaksAiTextDetectionResponseModel`. They return `None` when there is no AI alert, or when `additionalData` is empty or is JSON that is not an object. They raise `pydantic.ValidationError` when `additionalData` is not valid JSON or does not match the model.

@@ -86,10 +86,15 @@ class Copyleaks(object):
         CopyleaksClientHelper.verify_auth_token(auth_token)
 
     @staticmethod
+    def __send(method, url, **kwargs):
+        # Checks the token through Copyleaks.verify_auth_token, so patching it (as in 5.x) still works.
+        return CopyleaksHttpClient.send(method, url, verify=Copyleaks.verify_auth_token, **kwargs)
+
+    @staticmethod
     def __submit(url, auth_token, scan_id, submission, timeout):
         assert url and scan_id and submission
 
-        CopyleaksHttpClient.send('PUT', url, auth_token=auth_token, json=submission, timeout=timeout)
+        Copyleaks.__send('PUT', url, auth_token=auth_token, json=submission, timeout=timeout)
 
     @staticmethod
     def submit_file(auth_token, scan_id, submission, timeout=None):
@@ -128,7 +133,7 @@ class Copyleaks(object):
         assert scan_id and export_id and model
 
         url = f"{Consts.API_SERVER_URI}/v3/downloads/{scan_id}/export/{export_id}"
-        CopyleaksHttpClient.send('POST', url, auth_token=auth_token, json=model, timeout=timeout)
+        Copyleaks.__send('POST', url, auth_token=auth_token, json=model, timeout=timeout)
 
     @staticmethod
     def start(auth_token, model, timeout=None):
@@ -139,7 +144,7 @@ class Copyleaks(object):
         assert model
 
         url = f"{Consts.API_SERVER_URI}/v3/scans/start"
-        return CopyleaksHttpClient.send('PATCH', url, auth_token=auth_token, json=model, timeout=timeout).json()
+        return Copyleaks.__send('PATCH', url, auth_token=auth_token, json=model, timeout=timeout).json()
 
     @staticmethod
     def delete(auth_token, delete_model, timeout=None):
@@ -150,7 +155,7 @@ class Copyleaks(object):
         assert delete_model
 
         url = f"{Consts.API_SERVER_URI}/v3.1/scans/delete"
-        CopyleaksHttpClient.send('PATCH', url, auth_token=auth_token, json=delete_model, timeout=timeout)
+        Copyleaks.__send('PATCH', url, auth_token=auth_token, json=delete_model, timeout=timeout)
 
     @staticmethod
     def resend_webhook(auth_token, scan_id, timeout=None):
@@ -161,7 +166,7 @@ class Copyleaks(object):
         assert scan_id
 
         url = f"{Consts.API_SERVER_URI}/v3/scans/{scan_id}/webhooks/resend"
-        CopyleaksHttpClient.send('POST', url, auth_token=auth_token, content_type='application/json', timeout=timeout)
+        Copyleaks.__send('POST', url, auth_token=auth_token, content_type='application/json', timeout=timeout)
 
     @staticmethod
     def credits_balance(auth_token, timeout=None):
@@ -170,7 +175,7 @@ class Copyleaks(object):
         Docs: https://docs.copyleaks.com/reference/actions/admin/check-credits
         '''
         url = f"{Consts.API_SERVER_URI}/v3/scans/credits"
-        return CopyleaksHttpClient.send('GET', url, auth_token=auth_token, timeout=timeout).json()
+        return Copyleaks.__send('GET', url, auth_token=auth_token, timeout=timeout).json()
 
     @staticmethod
     def usages_history_csv(auth_token, start_date, end_date, timeout=None):
@@ -181,7 +186,7 @@ class Copyleaks(object):
         assert start_date and end_date
 
         url = f"{Consts.API_SERVER_URI}/v3/scans/usages/history?start={start_date}&end={end_date}"
-        return CopyleaksHttpClient.send('GET', url, auth_token=auth_token, content_type='application/json',
+        return Copyleaks.__send('GET', url, auth_token=auth_token, content_type='application/json',
                                         timeout=timeout).content
 
     @staticmethod
@@ -245,5 +250,5 @@ class Copyleaks(object):
         assert repository_id
 
         url = f"{Consts.API_SERVER_URI}/v3/repositories/repository/{repository_id}/info"
-        return CopyleaksHttpClient.send('GET', url, auth_token=auth_token, timeout=timeout,
+        return Copyleaks.__send('GET', url, auth_token=auth_token, timeout=timeout,
                                         response_model=CopyleaksRepositoryInfoResponseModel)

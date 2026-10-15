@@ -110,17 +110,18 @@ class CopyleaksHttpClient:
 
     @classmethod
     def send(cls, method, url, auth_token=_NO_AUTH, json=None, form=None, files=None, content_type=None,
-             timeout=None, response_model=None):
+             timeout=None, response_model=None, verify=None):
         """
         Send an API call. Returns `response_model` parsed from the JSON body, or the `requests.Response` without one.
-        A given `auth_token` (even None) is checked, then sent as a Bearer token. `json` (a request object or pydantic
+        A given `auth_token` (even None) is checked with `verify` (default `CopyleaksClientHelper.verify_auth_token`),
+        then sent as a Bearer token. `json` (a request object or pydantic
         model) is sent as compact JSON with a JSON `content_type`; `form` and `files` as multipart.
         Errors as in `request`.
         """
         if auth_token is _NO_AUTH:
             auth_token = None
         else:
-            CopyleaksClientHelper.verify_auth_token(auth_token)
+            (verify or CopyleaksClientHelper.verify_auth_token)(auth_token)
         data = form
         if json is not None:
             content_type = content_type or 'application/json'
