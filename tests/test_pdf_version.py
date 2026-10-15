@@ -1,10 +1,4 @@
-'''
-Unit tests for the deprecated PDF report version (BAC-6814).
-The HTTP layer (`requests`) is mocked, so no network calls are made.
-
-Run from the repository root:
-    python -m unittest discover -s tests -v
-'''
+'''Unit tests for the deprecated PDF report version (BAC-6814); requests is mocked.'''
 import json
 import unittest
 import warnings
