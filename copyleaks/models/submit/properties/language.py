@@ -1,16 +1,9 @@
 class Language:
     def get_code(self):
-        '''
-            Get language code for cross language plagiarism detection.
-        '''
         return self.code
 
     def set_code(self, value):
-        '''
-            Set language code for cross language plagiarism detection.
-
-            value: string
-        '''
+        '''ISO-639-1 language code, see `Copyleaks.allowed_cross_languages()`.'''
         assert value
 
         self.code = value

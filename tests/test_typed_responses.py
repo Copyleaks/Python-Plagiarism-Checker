@@ -1,10 +1,4 @@
-'''
-Unit tests for the typed responses of the AI text detection and Writing Assistant endpoints (BAC-5370).
-The HTTP layer (`requests`) is mocked, so no network calls are made.
-
-Run from the repository root:
-    python -m unittest discover -s tests -v
-'''
+'''Unit tests for the typed AI text detection and Writing Assistant responses, with the HTTP layer mocked.'''
 
 import copy
 import unittest
@@ -17,7 +11,7 @@ from copyleaks.models.WritingAssistant.Responses.CopyleaksWritingAssistantRespon
 AUTH_TOKEN = {'access_token': 'token', '.expires': '2999-01-01T00:00:00Z'}
 
 # Example response from the API docs (reference/data-types/ai-detector/ai-text-detector-response).
-# The docs show `scannedDocument.credits`; the server (ScannedDocumentSection) sends `actualCredits`.
+# The docs show `scannedDocument.credits`; the server sends `actualCredits`.
 AI_TEXT_RESPONSE = {
     "modelVersion": "v11.0",
     "results": [
@@ -60,7 +54,7 @@ AI_TEXT_RESPONSE = {
 }
 
 # Example response from the API docs (reference/data-types/writing/writing-assistant).
-# The docs show `scannedDocument.credits`; the server (ScannedDocumentSection) sends `actualCredits`.
+# The docs show `scannedDocument.credits`; the server sends `actualCredits`.
 WRITING_ASSISTANT_RESPONSE = {
     "score": {
         "corrections": {
@@ -118,7 +112,7 @@ class _MockedPostTest(unittest.TestCase):
     def mock_post(self, payload):
         response = MagicMock(ok=True, status_code=200)
         response.json.return_value = copy.deepcopy(payload)
-        patcher = patch('requests.post', return_value=response)
+        patcher = patch('requests.Session.request', return_value=response)
         patcher.start()
         self.addCleanup(patcher.stop)
 

@@ -1,45 +1,19 @@
-'''
- The MIT License(MIT)
-
- Copyright(c) 2016 Copyleaks LTD (https://copyleaks.com)
-
- Permission is hereby granted, free of charge, to any person obtaining a copy
- of this software and associated documentation files (the "Software"), to deal
- in the Software without restriction, including without limitation the rights
- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- copies of the Software, and to permit persons to whom the Software is
- furnished to do so, subject to the following conditions:
-
- The above copyright notice and this permission notice shall be included in all
- copies or substantial portions of the Software.
-
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- SOFTWARE.
-'''
-
 from typing import Any, Optional
-from pydantic import BaseModel, ConfigDict, Field, TypeAdapter
+from pydantic import ConfigDict, Field, TypeAdapter
 
 from copyleaks.models.AiDetection.Responses.CopyleaksAiTextDetectionResponseModel import CopyleaksAiTextDetectionResponseModel
 from copyleaks.models.constants.CopyleaksAlertCodes import CopyleaksAlertCodes
+from ..BaseModels.CopyleaksWebhookBaseModel import CopyleaksWebhookBaseModel
 
-# Characters removed from the end of `additionalData` before it is parsed: NUL and the ASCII
-# whitespace tab, line feed, vertical tab, form feed, carriage return and space.
+# Padding stripped from the end of `additionalData` before parsing: NUL and ASCII whitespace.
 _TRAILING_PADDING = frozenset("\x00\t\n\x0b\x0c\r ")
 
-# Parses `additionalData` into plain Python values first, so that valid JSON that is not an object
-# gives None. Malformed JSON raises pydantic.ValidationError, titled like the result model.
+# Plain JSON values first, so JSON that is not an object gives None; malformed JSON raises a
+# pydantic.ValidationError titled like the result model.
 _JSON_ADAPTER = TypeAdapter(Any, config=ConfigDict(title=CopyleaksAiTextDetectionResponseModel.__name__))
 
-class AlertsModel(BaseModel):
-    """
-    A scan alert from `notifications.alerts` of the completed webhook.
-    """
+class AlertsModel(CopyleaksWebhookBaseModel):
+    """A scan alert from `notifications.alerts` of the completed webhook."""
 
     category: Optional[int] = Field(
         default=None,
@@ -95,9 +69,8 @@ class AlertsModel(BaseModel):
                  additional_data: Optional[str] = None,
                  **kwargs: Any):
         """
-        Initializes an Alerts object.
-        Accepts the snake_case arguments (positional or keyword) and the camelCase
-        webhook keys `helpLink` and `additionalData`, so `AlertsModel(**alert_json)` works.
+        Accepts the snake_case arguments, positional or keyword, and the camelCase keys `helpLink` and `additionalData`,
+        so `AlertsModel(**alert_json)` works.
         """
         kwargs.setdefault("helpLink", help_link)
         kwargs.setdefault("additionalData", additional_data)
@@ -106,18 +79,9 @@ class AlertsModel(BaseModel):
 
     def get_ai_detection_result(self) -> Optional[CopyleaksAiTextDetectionResponseModel]:
         """
-        Decodes the `additional_data` of a `suspected-ai-text` alert into the AI text detection result.
-        Trailing NUL characters and ASCII whitespace (tab, line feed, vertical tab, form feed, carriage return, space)
-        are removed before parsing; `additional_data` itself is not changed.
-
-        Returns:
-            `CopyleaksAiTextDetectionResponseModel`, or None when the alert code is not
-            `CopyleaksAlertCodes.SUSPECTED_AI_TEXT`, `additional_data` is empty or missing,
-            or `additional_data` is valid JSON that is not an object (for example `null` or an array).
-
-        Raises:
-            `pydantic.ValidationError`: `additional_data` is not valid JSON, or a field has a type
-            the model cannot accept (for example `"summary": 5`).
+        Decode the `additional_data` of a `suspected-ai-text` alert, ignoring trailing NUL and ASCII whitespace.
+        Returns a `CopyleaksAiTextDetectionResponseModel`, or None for another alert code, no data, or JSON that is
+        not an object. Raises `pydantic.ValidationError` for invalid JSON or a field of the wrong type.
         """
         if self.code != CopyleaksAlertCodes.SUSPECTED_AI_TEXT:
             return None

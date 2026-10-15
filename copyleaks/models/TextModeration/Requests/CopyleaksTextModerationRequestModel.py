@@ -1,45 +1,34 @@
-'''
- The MIT License(MIT)
-
- Copyright(c) 2016 Copyleaks LTD (https://copyleaks.com)
-
- Permission is hereby granted, free of charge, to any person obtaining a copy
- of this software and associated documentation files (the "Software"), to deal
- in the Software without restriction, including without limitation the rights
- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- copies of the Software, and to permit persons to whom the Software is
- furnished to do so, subject to the following conditions:
-
- The above copyright notice and this permission notice shall be included in all
- copies or substantial portions of the Software.
-
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- SOFTWARE.
-'''
-
-import json
-from typing import List, Optional, Any
+from typing import List, Optional
 from pydantic import BaseModel, Field, field_validator
 
+from copyleaks.models.TextModeration.Requests.CopyleaksTextModerationLabel import CopyleaksTextModerationLabel
+
+MAX_TEXT_MODERATION_LABELS = 16
+
+
 class CopyleaksTextModerationRequestModel(BaseModel):
+    """Request of Text Moderation. `text` and `labels` are required."""
 
-    """The input text to be moderated."""
-    text: str 
+    text: str = Field(
+        ...,
+        description="The input text to be moderated. 1 to 25000 characters."
+    )
 
-    """Whether to run the moderation in sandbox (test) mode."""
-    sandbox: bool = False  
+    sandbox: bool = Field(
+        default=False,
+        description="Whether to run the moderation in sandbox (test) mode."
+    )
 
-    """The language code of the input text (e.g., "en" for English). If None, auto-detect."""
-    language: Optional[str] = None  
+    language: Optional[str] = Field(
+        default=None,
+        description="The language code of the input text (e.g., \"en\" for English). If None, auto-detect."
+    )
 
-    """A list of label objects specifying which moderation categories to check."""
-    labels: Optional[List[Any]] = None  
-     
+    labels: List[CopyleaksTextModerationLabel] = Field(
+        ...,
+        description="The moderation categories to check: 1 to 16 labels. A dict such as {\"id\": \"toxic-v1\"} is accepted."
+    )
+
     @field_validator('text')
     @classmethod
     def text_must_not_be_empty(cls, v):
@@ -47,11 +36,11 @@ class CopyleaksTextModerationRequestModel(BaseModel):
             raise ValueError('text is required and must be a non-empty string')
         return v
 
-    @field_validator('labels')
+    @field_validator('labels', mode='before')
     @classmethod
     def labels_length(cls, v):
-        if not isinstance(v, list) or not v:
+        if not isinstance(v, (list, tuple)) or not v:
             raise ValueError('labels must be a non-empty list')
-        if not (1 <= len(v) <= 32):
-            raise ValueError('labels must contain at least 1 and no more than 32 elements')
+        if len(v) > MAX_TEXT_MODERATION_LABELS:
+            raise ValueError(f'labels must contain at least 1 and no more than {MAX_TEXT_MODERATION_LABELS} elements')
         return v
