@@ -205,7 +205,7 @@ class ScanProperties:
         return self.scanTimeZone
 
     def set_scan_time_zone(self, value):
-        '''Time zone of the scan time in the PDF report, e.g. "America/New_York". Default: account country or UTC.'''
+        '''IANA time zone (case-sensitive) of the scan time in the PDF report, e.g. "America/New_York". Default: account country or UTC.'''
         if not isinstance(value, str) or not value:
             raise ValueError('scan_time_zone must be a non-empty string')
         self.scanTimeZone = value
