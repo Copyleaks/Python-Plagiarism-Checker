@@ -1,45 +1,19 @@
-'''
- The MIT License(MIT)
+from typing import List
+from pydantic import Field, field_validator
 
- Copyright(c) 2016 Copyleaks LTD (https://copyleaks.com)
-
- Permission is hereby granted, free of charge, to any person obtaining a copy
- of this software and associated documentation files (the "Software"), to deal
- in the Software without restriction, including without limitation the rights
- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- copies of the Software, and to permit persons to whom the Software is
- furnished to do so, subject to the following conditions:
-
- The above copyright notice and this permission notice shall be included in all
- copies or substantial portions of the Software.
-
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- SOFTWARE.
-'''
-
+from ..BaseModels.CopyleaksWebhookBaseModel import CopyleaksWebhookBaseModel
 from ..NotificationsModels.AlertsModel import AlertsModel
-from typing import Any, Optional, List
-from pydantic import BaseModel, Field, field_validator
 
-class NotificationsModel(BaseModel):
+
+class NotificationsModel(CopyleaksWebhookBaseModel):
     """A list of scan alerts that were detected in the scan."""
+    __positional_fields__ = ('alerts',)
+
     alerts: List[AlertsModel] = Field(
         default_factory=list,
         description="Scan alerts that were detected in the scan.",
         alias="alerts"
     )
-
-    def __init__(self, alerts: Optional[List[AlertsModel]] = None, **kwargs: Any):
-        """
-        Initializes a Notifications object.
-        `alerts` items can be `AlertsModel` objects or alert dictionaries with the camelCase webhook keys.
-        """
-        super().__init__(alerts=list(alerts) if alerts else [], **kwargs)
 
     @field_validator('alerts', mode='before')
     @classmethod

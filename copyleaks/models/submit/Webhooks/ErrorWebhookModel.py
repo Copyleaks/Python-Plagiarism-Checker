@@ -1,20 +1,15 @@
-from typing import Optional, Any
+from typing import Optional
+from pydantic import Field
 from .HelperModels.BaseModels.StatusWebhookModel import StatusWebhookModel
 from .HelperModels.ErrorModels.ErrorModel import ErrorModel
 
-class ErrorWebhookModel(StatusWebhookModel):
-    """
-    Represents a webhook payload indicating an error occurred during processing.
-    Inherits from StatusWebhook.
-    """
-    error: Optional[ErrorModel] = None
 
-    def __init__(self,
-                 error: Optional[ErrorModel] = None,
-                 status: Optional[int] = None,
-                 **kwargs: Any):
-        """
-        Initializes an ErrorWebhook object.
-        """
-        super().__init__(status=status, **kwargs)
-        self.error = error
+class ErrorWebhookModel(StatusWebhookModel):
+    """Scan error webhook. Parse it with `ErrorWebhookModel(**request.json)`."""
+    __positional_fields__ = ('error', 'status')
+
+    error: Optional[ErrorModel] = Field(
+        default=None,
+        description="The reason for the failure.",
+        alias="error"
+    )
