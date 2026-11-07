@@ -5,6 +5,7 @@ fork safety and no output on stdout. The read timeout test uses a local server o
 import base64
 import contextlib
 import io
+import json
 import os
 import threading
 import time
@@ -28,12 +29,14 @@ from copyleaks.models.ImagePlagiarism.Requests.CopyleaksImagePlagiarismRequestMo
 from copyleaks.models.TextModeration.Requests.CopyleaksTextModerationLabel import CopyleaksTextModerationLabel
 from copyleaks.models.TextModeration.Requests.CopyleaksTextModerationRequestModel import CopyleaksTextModerationRequestModel
 from copyleaks.models.VideoDetection.Requests.CopyleaksAiVideoDetectionRequestModel import CopyleaksAiVideoDetectionRequestModel
+from copyleaks.models.constants.CopyleaksErrorTypes import CopyleaksErrorTypes
 from copyleaks.models.delete import Delete, DeleteScan
 from copyleaks.models.export import Export
 from copyleaks.models.start import Start
 from copyleaks.models.submit.ai_detection_document import NaturalLanguageDocument
 from copyleaks.models.submit.document import FileDocument, OcrFileDocument, UrlDocument
 from copyleaks.models.submit.properties.scan_properties import ScanProperties
+from copyleaks.models.submit.Webhooks.HelperModels.ErrorModels.ErrorModel import ErrorDetailModel
 from copyleaks.models.submit.writing_assistant_document import WritingAssistantDocument
 
 from http_fakes import AUTH_TOKEN, FakeResponse, HttpTestCase
@@ -335,7 +338,8 @@ class ExceptionsTest(unittest.TestCase):
         self.assertEqual(str(CommandError(b'raw body')), 'raw body')
 
     def test_response_errors_share_one_implementation(self):
-        for name in ('get_response', 'status_code', 'retry_after', '__str__'):
+        for name in ('get_response', 'status_code', 'retry_after', '__str__', 'error_type', 'error_id', 'error_code',
+                     'error_message', 'error_url', 'error_details'):
             self.assertIs(getattr(UnderMaintenanceError, name), getattr(CommandError, name), name)
             self.assertIs(getattr(RateLimitError, name), getattr(CommandError, name), name)
         maintenance = UnderMaintenanceError(FakeResponse(503, headers={'Retry-After': '30'}))
@@ -362,6 +366,122 @@ class ExceptClauseTest(HttpTestCase):
             except UnderMaintenanceError:
                 caught = 'maintenance'
             self.assertEqual(caught, expected, status)
+
+
+FULL_ERROR = {
+    'error': {
+        'type': 'invalid_request_error',
+        'id': 'missing_parameter',
+        'code': 1,
+        'message': 'Bad request. One or several required parameters are missing or incorrect.',
+        'url': 'https://docs.copyleaks.com/using-the-apis/api-errors/#error-reference',
+        'details': [{'param': 'labels', 'message': 'Id Label EXAMPLE-v1 is not supported'}],
+    }
+}
+
+
+def _real_response(status_code, content):
+    response = requests.Response()
+    response.status_code = status_code
+    response._content = content
+    return response
+
+
+class ErrorEnvelopeTest(HttpTestCase):
+    '''The `error` object of the response body, read by `CommandError`, `RateLimitError` and `UnderMaintenanceError`.'''
+
+    def assert_no_envelope(self, error, msg=None):
+        for name in ('error_type', 'error_id', 'error_code', 'error_message', 'error_url'):
+            self.assertIsNone(getattr(error, name), f'{name} {msg}')
+        self.assertEqual(error.error_details, [], msg)
+
+    def details(self, error):
+        return [(detail.param, detail.message) for detail in error.error_details]
+
+    def test_command_error_reads_every_field_and_keeps_its_message(self):
+        self.respond(FULL_ERROR, status_code=400)
+        with self.assertRaises(CommandError) as ctx:
+            Copyleaks.credits_balance(AUTH_TOKEN)
+        error = ctx.exception
+        self.assertEqual(error.error_type, CopyleaksErrorTypes.INVALID_REQUEST_ERROR)
+        self.assertEqual(error.error_id, 'missing_parameter')
+        self.assertEqual(error.error_code, 1)
+        self.assertEqual(error.error_message, 'Bad request. One or several required parameters are missing or incorrect.')
+        self.assertEqual(error.error_url, 'https://docs.copyleaks.com/using-the-apis/api-errors/#error-reference')
+        self.assertTrue(all(isinstance(detail, ErrorDetailModel) for detail in error.error_details))
+        self.assertEqual(self.details(error), [('labels', 'Id Label EXAMPLE-v1 is not supported')])
+        self.assertEqual(error.status_code, 400)
+        self.assertEqual(str(error), 'HTTP 400: ' + json.dumps(FULL_ERROR))
+
+    def test_rate_limit_and_under_maintenance_errors_read_it_too(self):
+        self.respond({'error': {'type': 'api_error', 'id': 'too_many_requests', 'code': 7}}, status_code=429,
+                     headers={'Retry-After': '7'})
+        with self.assertRaises(RateLimitError) as ctx:
+            Copyleaks.credits_balance(AUTH_TOKEN)
+        self.assertEqual((ctx.exception.error_type, ctx.exception.error_id, ctx.exception.error_code),
+                         (CopyleaksErrorTypes.API_ERROR, 'too_many_requests', 7))
+        self.assertEqual(ctx.exception.retry_after, 7)
+        self.respond({'error': {'type': 'api_error', 'message': 'Down for maintenance'}}, status_code=503)
+        with self.assertRaises(UnderMaintenanceError) as ctx:
+            Copyleaks.credits_balance(AUTH_TOKEN)
+        self.assertEqual(ctx.exception.error_message, 'Down for maintenance')
+
+    def test_a_real_requests_response(self):
+        error = CommandError(_real_response(400, json.dumps(FULL_ERROR).encode('utf-8')))
+        self.assertEqual((error.error_type, error.error_id, error.error_code),
+                         ('invalid_request_error', 'missing_parameter', 1))
+        self.assert_no_envelope(CommandError(_real_response(502, b'<html>Bad gateway</html>')))
+
+    def test_missing_optional_fields_are_none_and_details_is_empty(self):
+        error = CommandError(FakeResponse(402, {'error': {
+            'type': 'payment_error', 'id': 'insufficient_credits', 'code': 2}}))
+        self.assertEqual((error.error_type, error.error_id, error.error_code),
+                         (CopyleaksErrorTypes.PAYMENT_ERROR, 'insufficient_credits', 2))
+        self.assertIsNone(error.error_message)
+        self.assertIsNone(error.error_url)
+        self.assertEqual(error.error_details, [])
+        self.assert_no_envelope(CommandError(FakeResponse(400, {'error': {}})))
+
+    def test_code_accepts_an_int_or_a_numeric_string(self):
+        cases = [(12, 12), ('12', 12), (' -3 ', -3), ('+4', 4), ('1.5', None), (1.5, None), ('abc', None), ('', None),
+                 (True, None), (None, None), ({}, None), ('\u0661', None)]
+        for code, expected in cases:
+            error = CommandError(FakeResponse(400, {'error': {'id': 'x', 'code': code}}))
+            self.assertEqual(error.error_code, expected, repr(code))
+            self.assertEqual(error.error_id, 'x')
+
+    def test_fields_that_are_not_strings_are_none(self):
+        error = CommandError(FakeResponse(400, {'error': {
+            'type': 1, 'id': ['x'], 'message': {'text': 'm'}, 'url': False, 'code': 3}}))
+        self.assertEqual((error.error_type, error.error_id, error.error_message, error.error_url, error.error_code),
+                         (None, None, None, None, 3))
+
+    def test_a_body_that_is_not_json_leaves_every_field_empty(self):
+        for content in (b'Bad gateway', b'', b'{"error": {"type": "api_error"', b'\xff\xfe\x00'):
+            self.assert_no_envelope(CommandError(FakeResponse(400, content=content)), content)
+
+    def test_json_without_an_error_object_leaves_every_field_empty(self):
+        for body in ({'error': 'scanId is invalid'}, {'message': 'nope'}, {'error': None},
+                     {'error': ['invalid_request_error']}, [FULL_ERROR], 42, 'text'):
+            self.assert_no_envelope(CommandError(FakeResponse(400, body)), body)
+        self.assert_no_envelope(CommandError(FakeResponse(400)))
+
+    def test_malformed_details_keep_only_objects_and_their_string_fields(self):
+        for details in ('labels is wrong', {'param': 'labels'}, None):
+            self.assertEqual(CommandError(FakeResponse(400, {'error': {'id': 'x', 'details': details}})).error_details, [])
+        error = CommandError(FakeResponse(400, {'error': {'id': 'x', 'details': [
+            {'param': 'labels', 'message': 'bad'}, 'text', None, 3, ['a'], {'param': 5, 'message': 'only message'}, {}]}}))
+        self.assertEqual(self.details(error), [('labels', 'bad'), (None, 'only message'), (None, None)])
+
+    def test_errors_without_a_response_have_no_fields(self):
+        for error in (CommandError(), CommandError(None), RateLimitError(), UnderMaintenanceError(),
+                      CommandError(b'{"error": {"id": "x"}}')):
+            self.assert_no_envelope(error, repr(error))
+
+    def test_error_types(self):
+        self.assertEqual((CopyleaksErrorTypes.INVALID_REQUEST_ERROR, CopyleaksErrorTypes.AUTHENTICATION_ERROR,
+                          CopyleaksErrorTypes.PAYMENT_ERROR, CopyleaksErrorTypes.API_ERROR),
+                         ('invalid_request_error', 'authentication_error', 'payment_error', 'api_error'))
 
 
 class SendHelperTest(HttpTestCase):
