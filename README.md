@@ -445,6 +445,7 @@ from copyleaks.copyleaks import Copyleaks
 from copyleaks.exceptions.command_error import CommandError
 from copyleaks.exceptions.rate_limit_error import RateLimitError
 from copyleaks.exceptions.under_maintenance_error import UnderMaintenanceError
+from copyleaks.models.constants.CopyleaksErrorTypes import CopyleaksErrorTypes
 
 Copyleaks.set_timeout((5, 60))  # (connect, read) seconds for every call; None turns the timeout off
 response = Copyleaks.AiDetectionClient.submit_natural_language(auth_token, scan_id, natural_language_submission, timeout=300)  # one call
@@ -462,7 +463,11 @@ except UnderMaintenanceError:        # HTTP 503
     print("Copyleaks is under maintenance, retry later")
 except CommandError as e:            # any other error status
     print(e.get_response().status_code, e.get_response().text)
+    if e.error_type == CopyleaksErrorTypes.PAYMENT_ERROR:
+        print(e.error_id, e.error_code, e.error_message)  # for example insufficient_credits
 ```
+When the API sends its error object, `{"error": {"type", "id", "code", "message", "url", "details"}}`, `CommandError`, `RateLimitError` and `UnderMaintenanceError` also have `error_type`, `error_id`, `error_code` (an `int`), `error_message`, `error_url` and `error_details` (a list of `ErrorDetailModel` with `param` and `message`). They are `None` (and `error_details` is empty) when the server did not send them. `CopyleaksErrorTypes` lists the documented types: `invalid_request_error`, `authentication_error`, `payment_error` and `api_error`.
+
 The SDK writes nothing to stdout. Failed calls are logged at DEBUG level on the `copyleaks` logger.
 ##
 ### Further Resources
