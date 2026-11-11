@@ -2,6 +2,13 @@
 
 All notable changes to the Copyleaks Python SDK (`pip install copyleaks`) are listed here.
 
+## Unreleased
+
+### Added
+
+- **Error object of failed calls.** `CommandError`, `RateLimitError` and `UnderMaintenanceError` read the error object of the response body, `{"error": {"type", "id", "code", "message", "url", "details"}}`, into `error_type`, `error_id`, `error_code`, `error_message`, `error_url` and `error_details`. A field the server did not send is `None`, and `error_details` is then an empty list. `error_code` is an `int`, also when the server sends it as a numeric string. `error_details` is a list of `ErrorDetailModel` (`param`, `message`), the same model as in the error webhook. The message, `get_response()`, `status_code` and `retry_after` do not change.
+- New constant `CopyleaksErrorTypes` with the documented error types `INVALID_REQUEST_ERROR`, `AUTHENTICATION_ERROR`, `PAYMENT_ERROR` and `API_ERROR`.
+
 ## 6.0.0
 
 This is a major release. It adds AI Video Detection, Image Plagiarism Detection, asynchronous AI Image Detection and four lookup endpoints, and the scan options and response fields of the current API. The AI Text Detection and Grammar Checker clients now return typed models instead of dicts, and the webhook models now parse the webhook JSON into typed models. Every call now goes through one shared connection pool and has a timeout. Read the upgrade notes below before you upgrade from 5.x.
