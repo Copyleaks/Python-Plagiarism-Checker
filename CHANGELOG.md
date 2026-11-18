@@ -2,7 +2,7 @@
 
 All notable changes to the Copyleaks Python SDK (`pip install copyleaks`) are listed here.
 
-## Unreleased
+## 6.1.0
 
 ### Added
 
